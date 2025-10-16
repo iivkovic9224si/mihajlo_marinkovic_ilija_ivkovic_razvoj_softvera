@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Data
@@ -17,9 +18,11 @@ public class Grupa {
 	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-
-	private String naziv;
-
+	
+	@ManyToOne
+	private StudijskiProgram studijskiProgram;
+	
 	@ManyToMany
 	private List<Predmet> predmeti;
+
 }

@@ -1,29 +1,34 @@
 package org.raflab.studsluzba.model;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
 
-import javax.validation.constraints.NotNull;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 import lombok.Data;
 import lombok.ToString;
 
 @Entity
 @Data
-@ToString()
+@ToString(exclude = {"studProgram"})
 public class Predmet {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-
-	@NotNull
-	@Column(unique = true)
+	
 	private String sifra;
-
 	private String naziv;
 	private String opis;
 	private Integer espb;
+
+	@ManyToOne
+	private StudijskiProgram studProgram;
+
 	private boolean obavezan;
+
 
 	@Override
 	public int hashCode() {
@@ -32,7 +37,6 @@ public class Predmet {
 		result = prime * result + ((sifra == null) ? 0 : sifra.hashCode());
 		return result;
 	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

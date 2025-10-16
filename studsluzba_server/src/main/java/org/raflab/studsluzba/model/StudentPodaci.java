@@ -9,10 +9,10 @@ import javax.persistence.*;
 @Entity
 @Data
 public class StudentPodaci {
+	
 	 @Id
 	 @GeneratedValue(strategy=GenerationType.IDENTITY)
 	 private Long id;
-
 	 private String ime;
 	 private String prezime;
 	 private String srednjeIme;
@@ -22,7 +22,7 @@ public class StudentPodaci {
 	 private String mestoPrebivalista;
 	 private String drzavaRodjenja;   
 	 private String drzavljanstvo;
-	 private String nacionalnost;
+	 private String nacionalnost;   // samoizjasnjavanje, moze bilo sta  
 	 private Character pol;
 	 private String adresa;
 	 private String brojTelefonaMobilni;  
@@ -31,5 +31,6 @@ public class StudentPodaci {
 	 private String brojLicneKarte; 
 	 private String licnuKartuIzdao;
 	 private String mestoStanovanja;
-	 private String adresaStanovanja;
+	 private String adresaStanovanja;   // u toku studija
+
 }
