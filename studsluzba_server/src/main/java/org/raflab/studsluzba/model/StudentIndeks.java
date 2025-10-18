@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.*;
 import lombok.Data;
+import net.minidev.json.annotate.JsonIgnore;
 
 @Entity
 @Data
@@ -26,7 +27,8 @@ public class StudentIndeks {
 	private StudijskiProgram studijskiProgram;   // na koji studijski program je upisan
 	private Integer ostvarenoEspb;
 
-    @OneToMany(mappedBy = "ostvareniPredispitni")
+    @JsonIgnore
+    @OneToMany(mappedBy = "studentIndeks")
     private List<OstvareniPredispitni> ostvareniPredispitni;
 
 }

@@ -1,5 +1,6 @@
 package org.raflab.studsluzba.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -20,6 +21,7 @@ public class PredispitneObaveze {
     @ManyToOne
     private Predmet predmet;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "predispitneObaveze")
     private List<OstvareniPredispitni> ostvareniPredispitni;
 }

@@ -1,12 +1,11 @@
 package org.raflab.studsluzba.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -24,4 +23,8 @@ public class DrziPredmet {
 	
 	@ManyToOne
 	private Predmet predmet;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "drziPredmet")
+    private List<Ispit> ispit;
 }

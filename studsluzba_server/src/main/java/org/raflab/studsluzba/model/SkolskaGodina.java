@@ -24,5 +24,9 @@ public class SkolskaGodina {
     @OneToMany(mappedBy = "skolskaGodina")
     private List<DrziPredmet> drziPredmet;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "skolskaGodina")
+    private List<IspitniRok> ispitniRok;
+
 
 }

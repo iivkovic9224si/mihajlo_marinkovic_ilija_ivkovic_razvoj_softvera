@@ -4,6 +4,7 @@ import javax.persistence.*;
 
 import lombok.Data;
 import lombok.ToString;
+import net.minidev.json.annotate.JsonIgnore;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class Predmet {
 
 	private boolean obavezan;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "predmet")
     private List<PredispitneObaveze> predispitneObaveze;
 
