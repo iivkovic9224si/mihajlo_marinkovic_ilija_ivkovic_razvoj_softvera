@@ -15,6 +15,10 @@ public class SlusaPredmet {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
+
+    @ManyToOne
+    private SkolskaGodina skolskaGodina;
+
 	@ManyToOne	
 	private StudentIndeks studentIndeks;
 	

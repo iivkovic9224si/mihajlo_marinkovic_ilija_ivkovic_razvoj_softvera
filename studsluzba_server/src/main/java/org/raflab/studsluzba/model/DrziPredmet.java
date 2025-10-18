@@ -15,7 +15,10 @@ public class DrziPredmet {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	
+
+    @ManyToOne
+    private SkolskaGodina skolskaGodina;
+
 	@ManyToOne
 	private Nastavnik nastavnik;
 	
