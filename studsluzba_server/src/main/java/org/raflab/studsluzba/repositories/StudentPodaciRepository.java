@@ -14,17 +14,21 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StudentPodaciRepository extends JpaRepository<StudentPodaci, Long> {	//	nasljedjene implementacije poput findById i findByAll
-	
+
+	//selekcija studenata na osnovu imena i/ili prezimena (može samo ime, ili samo prezime ili oba da se unesu)
 	@Query("select sp from StudentPodaci sp where "
 			+ "(:ime is null or lower(sp.ime) like :ime) and "
 			+ "(:prezime is null or lower(sp.prezime) like :prezime) and "
 			+ "not exists (select indeks from StudentIndeks indeks where indeks.student = sp)")
 	Page<StudentPodaci> findStudent(String ime, String prezime, Pageable pageable);
-	
+
 	@Query("select si from StudentIndeks si where si.aktivan=true and si.student.id = :studPodaciId")
 	StudentIndeks getAktivanIndeks(Long studPodaciId);
 	
 	@Query("select si from StudentIndeks si where si.aktivan=false and si.student.id = :studPodaciId")
 	List<StudentIndeks> getNeaktivniIndeksi(Long studPodaciId);
-		
+
+	//selekcija studenta (njegovih ličnih podataka) preko broja indeksa
+	@Query("select sp from StudentPodaci sp where sp.id = :indeks")
+	StudentPodaci getStudentByIndeks(Long indeks);
 }
