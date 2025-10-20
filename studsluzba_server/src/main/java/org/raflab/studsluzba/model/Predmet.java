@@ -31,6 +31,9 @@ public class Predmet {
     @OneToMany(mappedBy = "predmet")
     private List<PredispitneObaveze> predispitneObaveze;
 
+    @ManyToMany
+    private List<StudijskiTokAktivnosti> studijskiTokAktivnosti;
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
