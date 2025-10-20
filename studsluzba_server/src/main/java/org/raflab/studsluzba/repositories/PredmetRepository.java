@@ -18,4 +18,8 @@ public interface PredmetRepository extends CrudRepository<Predmet, Long> {
 
 	List<Predmet> findByIdIn(List<Long> ids);
 	List<Predmet> findByNazivIn(List<String> nazivi);
+
+	//spisak predmeta na studijskom programu
+	@Query("select p from Predmet p where p.studProgram = :studProgram")
+	List<Predmet> findByStudProgram(StudijskiProgram studProgram);
 }
