@@ -26,9 +26,4 @@ public class StudentIndeks {
 	@ManyToOne
 	private StudijskiProgram studijskiProgram;   // na koji studijski program je upisan
 	private Integer ostvarenoEspb;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "studentIndeks")
-    private List<OstvareniPredispitni> ostvareniPredispitni;
-
 }

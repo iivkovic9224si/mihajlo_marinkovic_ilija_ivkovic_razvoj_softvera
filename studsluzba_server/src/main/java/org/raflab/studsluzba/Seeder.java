@@ -30,6 +30,18 @@ public class Seeder implements CommandLineRunner {
     private SlusaPredmetRepository slusaPredmetRepository;
     @Autowired
     private GrupaRepository grupaRepository;
+    @Autowired
+    private SkolskaGodinaRepository skolskaGodinaRepository;
+    @Autowired
+    private OstvareniPredispitniRepository ostvareniPredispitniRepository;
+    @Autowired
+    private PredispitneObavezeRepository predispitneObavezeRepository;
+    @Autowired
+    private IspitniRokRepository ispitniRokRepository;
+    @Autowired
+    private IspitRepository ispitRepository;
+    @Autowired
+    private PrijavaIspitaRepository prijavaIspitaRepository;
 
     @Override
     public void run(String... args) throws Exception {

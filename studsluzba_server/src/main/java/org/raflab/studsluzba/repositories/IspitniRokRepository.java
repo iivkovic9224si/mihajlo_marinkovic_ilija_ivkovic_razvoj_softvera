@@ -1,6 +1,9 @@
 package org.raflab.studsluzba.repositories;
 
+import org.raflab.studsluzba.model.IspitniRok;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface IspitniRokRepository extends CrudRepository<IspitniRokRepository, Long> {
+@Repository
+public interface IspitniRokRepository extends CrudRepository<IspitniRok, Long> {
 }

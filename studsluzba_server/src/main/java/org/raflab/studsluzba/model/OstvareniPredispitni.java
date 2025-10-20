@@ -17,5 +17,5 @@ public class OstvareniPredispitni {
     private PredispitneObaveze predispitneObaveze;
 
     @ManyToOne
-    private StudentIndeks studentIndeks;
+    private SlusaPredmet slusaPredmet;
 }
