@@ -22,7 +22,7 @@ public class StudijskiProgram {
 	private Integer trajanjeSemestara;
 	private String vrstaStudija; // OAS - osnovne akademske studje, OSS - osnovne strukovne, 	MAS - master akademske studije
 	private Integer ukupnoEspb;
-	
+
 	@JsonIgnore
 	@OneToMany(mappedBy = "studProgram")
 	private List<Predmet> predmeti;

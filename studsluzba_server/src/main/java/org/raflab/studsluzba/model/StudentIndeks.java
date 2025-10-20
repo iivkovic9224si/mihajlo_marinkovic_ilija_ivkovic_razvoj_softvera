@@ -1,8 +1,10 @@
 package org.raflab.studsluzba.model;
 
 import java.time.LocalDate;
+import java.util.List;
 import javax.persistence.*;
 import lombok.Data;
+import net.minidev.json.annotate.JsonIgnore;
 
 @Entity
 @Data
@@ -24,5 +26,4 @@ public class StudentIndeks {
 	@ManyToOne
 	private StudijskiProgram studijskiProgram;   // na koji studijski program je upisan
 	private Integer ostvarenoEspb;
-
 }
