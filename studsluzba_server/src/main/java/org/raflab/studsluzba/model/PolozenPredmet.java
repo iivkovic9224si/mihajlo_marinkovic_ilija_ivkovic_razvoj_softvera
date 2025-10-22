@@ -23,7 +23,9 @@ public class PolozenPredmet {
     private IzlazakNaIspit izlazakIspita;
 
     private boolean priznato;
-    private String priznatoOdInstitucije;
+
+    @ManyToOne
+    private VisokoSkolskaUstanova priznatoOdInstitucije;
     private LocalDate datum;
     private double brojPoena;
     private Integer ocena;
