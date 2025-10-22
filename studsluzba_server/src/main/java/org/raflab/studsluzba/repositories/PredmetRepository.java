@@ -21,5 +21,5 @@ public interface PredmetRepository extends CrudRepository<Predmet, Long> {
 
 	//spisak predmeta na studijskom programu
 	@Query("select p from Predmet p where p.studProgram = :studProgram")
-	List<Predmet> findByStudProgram(StudijskiProgram studProgram);
+	List<Predmet> findPredmetByStudProgram(StudijskiProgram studProgram);
 }
