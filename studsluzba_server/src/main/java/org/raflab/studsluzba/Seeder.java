@@ -48,6 +48,10 @@ public class Seeder implements CommandLineRunner {
     private PolozenPredmetRepository polozenPredmetRepository;
     @Autowired
     private IzlazakNaIspitRepository izlazakNaIspitRepository;
+    @Autowired
+    private VisokoSkolskaUstanovaRepository visokoSkolskaUstanovaRepository;
+    @Autowired
+    private SrednjaSkolaRepository srednjaSkolaRepository;
 
     @Override
     public void run(String... args) throws Exception {
