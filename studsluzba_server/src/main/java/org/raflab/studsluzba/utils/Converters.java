@@ -3,10 +3,12 @@ package org.raflab.studsluzba.utils;
 import org.raflab.studsluzba.controllers.request.NastavnikRequest;
 import org.raflab.studsluzba.controllers.request.StudentIndeksRequest;
 import org.raflab.studsluzba.controllers.request.StudentPodaciRequest;
+import org.raflab.studsluzba.controllers.request.StudijskiProgramRequest;
 import org.raflab.studsluzba.controllers.response.NastavnikResponse;
 import org.raflab.studsluzba.model.entity.Nastavnik;
 import org.raflab.studsluzba.model.entity.StudentIndeks;
 import org.raflab.studsluzba.model.entity.StudentPodaci;
+import org.raflab.studsluzba.model.entity.StudijskiProgram;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,5 +89,18 @@ public class Converters {
         studentIndeks.setAktivan(studentIndeksRequest.isAktivan());
         studentIndeks.setVaziOd(studentIndeksRequest.getVaziOd());
         return studentIndeks;
+    }
+
+    public static StudijskiProgram toStudijskiProgram(StudijskiProgramRequest studijskiProgramRequest) {
+        StudijskiProgram studijskiProgram = new StudijskiProgram();
+        studijskiProgram.setNaziv(studijskiProgramRequest.getNaziv());
+        studijskiProgram.setOznaka(studijskiProgramRequest.getOznaka());
+        studijskiProgram.setZvanje(studijskiProgramRequest.getZvanje());
+        studijskiProgram.setGodinaAkreditacije(studijskiProgramRequest.getGodinaAkreditacije());
+        studijskiProgram.setTrajanjeGodina(studijskiProgramRequest.getTrajanjeGodina());
+        studijskiProgram.setUkupnoEspb(studijskiProgramRequest.getUkupnoEspb());
+        studijskiProgram.setVrstaStudija(studijskiProgramRequest.getVrstaStudija());
+        studijskiProgram.setTrajanjeSemestara(studijskiProgramRequest.getTrajanjeSemestara());
+        return studijskiProgram;
     }
 }

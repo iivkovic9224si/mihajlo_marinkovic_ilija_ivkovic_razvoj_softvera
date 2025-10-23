@@ -3,6 +3,8 @@ package org.raflab.studsluzba.repositories;
 
 import java.util.List;
 
+import org.raflab.studsluzba.controllers.response.PredmetResponse;
+import org.raflab.studsluzba.model.entity.Predmet;
 import org.raflab.studsluzba.model.entity.StudijskiProgram;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -20,4 +22,10 @@ public interface StudijskiProgramRepository extends CrudRepository<StudijskiProg
 
 	@Query("select sp from StudijskiProgram sp where sp.oznaka = :oznaka order by sp.godinaAkreditacije desc")
 	List<StudijskiProgram> findByOznaka(@Param("oznaka") String oznaka);
+
+	// spisak predmeta na studijskom programu
+	@Query("select new org.raflab.studsluzba.controllers.response.PredmetResponse(p.sifra, p.naziv, p.opis, p.espb, p.obavezan) " +
+			"from Predmet p where p.studProgram = :studProgram")
+	List<PredmetResponse> findPredmetByStudProgram(StudijskiProgram studProgram);
+
 }
