@@ -2,7 +2,7 @@ package org.raflab.studsluzba.repositories;
 
 import java.util.List;
 
-import org.raflab.studsluzba.model.Nastavnik;
+import org.raflab.studsluzba.model.entity.Nastavnik;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

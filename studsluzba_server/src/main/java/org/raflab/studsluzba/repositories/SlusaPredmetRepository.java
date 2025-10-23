@@ -2,8 +2,8 @@ package org.raflab.studsluzba.repositories;
 
 import java.util.List;
 
-import org.raflab.studsluzba.model.SlusaPredmet;
-import org.raflab.studsluzba.model.StudentIndeks;
+import org.raflab.studsluzba.model.entity.SlusaPredmet;
+import org.raflab.studsluzba.model.entity.StudentIndeks;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

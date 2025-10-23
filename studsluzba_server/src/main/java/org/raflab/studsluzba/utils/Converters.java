@@ -4,9 +4,9 @@ import org.raflab.studsluzba.controllers.request.NastavnikRequest;
 import org.raflab.studsluzba.controllers.request.StudentIndeksRequest;
 import org.raflab.studsluzba.controllers.request.StudentPodaciRequest;
 import org.raflab.studsluzba.controllers.response.NastavnikResponse;
-import org.raflab.studsluzba.model.Nastavnik;
-import org.raflab.studsluzba.model.StudentIndeks;
-import org.raflab.studsluzba.model.StudentPodaci;
+import org.raflab.studsluzba.model.entity.Nastavnik;
+import org.raflab.studsluzba.model.entity.StudentIndeks;
+import org.raflab.studsluzba.model.entity.StudentPodaci;
 
 import java.util.ArrayList;
 import java.util.List;

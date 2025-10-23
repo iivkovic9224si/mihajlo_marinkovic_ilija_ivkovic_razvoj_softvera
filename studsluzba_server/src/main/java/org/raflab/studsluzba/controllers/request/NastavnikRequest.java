@@ -2,7 +2,7 @@ package org.raflab.studsluzba.controllers.request;
 
 import lombok.Data;
 import lombok.NonNull;
-import org.raflab.studsluzba.model.NastavnikZvanje;
+import org.raflab.studsluzba.model.entity.NastavnikZvanje;
 
 import java.time.LocalDate;
 import java.util.Set;

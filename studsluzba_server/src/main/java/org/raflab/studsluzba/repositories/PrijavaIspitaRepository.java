@@ -1,6 +1,6 @@
 package org.raflab.studsluzba.repositories;
 
-import org.raflab.studsluzba.model.*;
+import org.raflab.studsluzba.model.entity.*;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

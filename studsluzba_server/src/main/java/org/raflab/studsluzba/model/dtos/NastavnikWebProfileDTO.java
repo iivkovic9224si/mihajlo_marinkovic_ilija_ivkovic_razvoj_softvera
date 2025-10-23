@@ -3,8 +3,8 @@ package org.raflab.studsluzba.model.dtos;
 import java.util.List;
 import java.util.Map;
 
-import org.raflab.studsluzba.model.Predmet;
-import org.raflab.studsluzba.model.StudentIndeks;
+import org.raflab.studsluzba.model.entity.Predmet;
+import org.raflab.studsluzba.model.entity.StudentIndeks;
 
 /*
  * entitet koji se vraca kada se nastavnik uloguje na veb servis

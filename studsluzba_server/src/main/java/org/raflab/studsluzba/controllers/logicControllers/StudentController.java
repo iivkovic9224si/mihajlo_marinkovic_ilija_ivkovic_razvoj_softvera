@@ -1,12 +1,12 @@
-package org.raflab.studsluzba.controllers;
+package org.raflab.studsluzba.controllers.logicControllers;
 
 import org.raflab.studsluzba.controllers.request.StudentIndeksRequest;
 import org.raflab.studsluzba.controllers.request.StudentPodaciRequest;
 import org.raflab.studsluzba.controllers.response.StudentIndeksResponse;
 import org.raflab.studsluzba.controllers.response.StudentPodaciResponse;
-import org.raflab.studsluzba.model.StudentIndeks;
-import org.raflab.studsluzba.model.StudentPodaci;
-import org.raflab.studsluzba.model.StudijskiProgram;
+import org.raflab.studsluzba.model.entity.StudentIndeks;
+import org.raflab.studsluzba.model.entity.StudentPodaci;
+import org.raflab.studsluzba.model.entity.StudijskiProgram;
 import org.raflab.studsluzba.model.dtos.StudentDTO;
 import org.raflab.studsluzba.model.dtos.StudentProfileDTO;
 import org.raflab.studsluzba.model.dtos.StudentWebProfileDTO;
@@ -82,19 +82,19 @@ public class StudentController {
 	}
     
     @PostMapping(path="/saveindeks")
-   	public Long saveIndeks(@RequestBody StudentIndeksRequest request) {
-		StudentIndeks studentIndeks = Converters.toStudentIndeks(request);
+   	public Long saveIndeks(@RequestBody StudentIndeksRequest studentIndeksRequest) {
+		StudentIndeks studentIndeks = Converters.toStudentIndeks(studentIndeksRequest);
 
-		int nextBroj = studentIndeksService.findBroj(request.getGodina(), request.getStudProgramOznaka());
+		int nextBroj = studentIndeksService.findBroj(studentIndeksRequest.getGodina(), studentIndeksRequest.getStudProgramOznaka());
 		studentIndeks.setBroj(nextBroj);
 
-		Optional<StudentPodaci> studentPodaci = studentPodaciRepository.findById(request.getStudentId());
+		Optional<StudentPodaci> studentPodaci = studentPodaciRepository.findById(studentIndeksRequest.getStudentId());
 		if(studentPodaci.isEmpty()) return null;		//TODO - throw error if not exist
 		studentIndeks.setStudent(studentPodaci.get());
 
-		List<StudijskiProgram> studijskiProgrami = studijskiProgramRepository.findByOznaka(request.getStudProgramOznaka());
+		List<StudijskiProgram> studijskiProgrami = studijskiProgramRepository.findByOznaka(studentIndeksRequest.getStudProgramOznaka());
 		if (studijskiProgrami.isEmpty()) {
-            throw new RuntimeException("No StudijskiProgram found with oznaka: " + request.getStudProgramOznaka());
+            throw new RuntimeException("No StudijskiProgram found with oznaka: " + studentIndeksRequest.getStudProgramOznaka());
 		}
 		studentIndeks.setStudijskiProgram(studijskiProgrami.get(0));
 

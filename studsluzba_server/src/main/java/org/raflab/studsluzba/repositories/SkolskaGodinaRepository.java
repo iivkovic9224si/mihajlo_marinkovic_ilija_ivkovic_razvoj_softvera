@@ -1,6 +1,6 @@
 package org.raflab.studsluzba.repositories;
 
-import org.raflab.studsluzba.model.SkolskaGodina;
+import org.raflab.studsluzba.model.entity.SkolskaGodina;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

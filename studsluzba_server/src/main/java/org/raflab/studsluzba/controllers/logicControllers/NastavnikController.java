@@ -1,8 +1,8 @@
-package org.raflab.studsluzba.controllers;
+package org.raflab.studsluzba.controllers.logicControllers;
 
 import org.raflab.studsluzba.controllers.request.NastavnikRequest;
 import org.raflab.studsluzba.controllers.response.NastavnikResponse;
-import org.raflab.studsluzba.model.Nastavnik;
+import org.raflab.studsluzba.model.entity.Nastavnik;
 import org.raflab.studsluzba.services.NastavnikService;
 import org.raflab.studsluzba.utils.Converters;
 import org.springframework.beans.factory.annotation.Autowired;

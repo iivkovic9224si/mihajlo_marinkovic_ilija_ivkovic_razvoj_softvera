@@ -3,9 +3,9 @@ package org.raflab.studsluzba.model.dtos;
 import java.util.List;
 
 import lombok.Data;
-import org.raflab.studsluzba.model.Predmet;
-import org.raflab.studsluzba.model.SlusaPredmet;
-import org.raflab.studsluzba.model.StudentIndeks;
+import org.raflab.studsluzba.model.entity.Predmet;
+import org.raflab.studsluzba.model.entity.SlusaPredmet;
+import org.raflab.studsluzba.model.entity.StudentIndeks;
 
 /*
  * objekat ove kalse sadrzi sve podatke o studentu koji

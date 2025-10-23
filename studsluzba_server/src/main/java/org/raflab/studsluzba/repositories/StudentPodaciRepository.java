@@ -4,8 +4,8 @@ package org.raflab.studsluzba.repositories;
 
 import java.util.List;
 
-import org.raflab.studsluzba.model.StudentIndeks;
-import org.raflab.studsluzba.model.StudentPodaci;
+import org.raflab.studsluzba.model.entity.StudentIndeks;
+import org.raflab.studsluzba.model.entity.StudentPodaci;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

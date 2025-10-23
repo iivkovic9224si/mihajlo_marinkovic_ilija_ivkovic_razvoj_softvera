@@ -1,8 +1,8 @@
 package org.raflab.studsluzba.controllers.response;
 
 import lombok.Data;
-import org.raflab.studsluzba.model.StudentPodaci;
-import org.raflab.studsluzba.model.StudijskiProgram;
+import org.raflab.studsluzba.model.entity.StudentPodaci;
+import org.raflab.studsluzba.model.entity.StudijskiProgram;
 
 import java.time.LocalDate;
 

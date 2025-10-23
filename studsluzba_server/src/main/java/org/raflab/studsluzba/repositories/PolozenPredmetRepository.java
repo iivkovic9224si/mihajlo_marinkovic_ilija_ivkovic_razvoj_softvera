@@ -1,12 +1,11 @@
 package org.raflab.studsluzba.repositories;
 
-import org.raflab.studsluzba.model.PolozenPredmet;
-import org.raflab.studsluzba.model.Predmet;
+import org.raflab.studsluzba.model.entity.PolozenPredmet;
+import org.raflab.studsluzba.model.entity.Predmet;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Repository

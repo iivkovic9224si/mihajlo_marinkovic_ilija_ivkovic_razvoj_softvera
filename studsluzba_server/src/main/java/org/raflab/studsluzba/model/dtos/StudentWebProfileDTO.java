@@ -3,8 +3,8 @@ package org.raflab.studsluzba.model.dtos;
 import java.util.List;
 
 import lombok.Data;
-import org.raflab.studsluzba.model.SlusaPredmet;
-import org.raflab.studsluzba.model.StudentIndeks;
+import org.raflab.studsluzba.model.entity.SlusaPredmet;
+import org.raflab.studsluzba.model.entity.StudentIndeks;
 
 @Data
 public class StudentWebProfileDTO {

@@ -1,7 +1,8 @@
 package org.raflab.studsluzba.repositories;
 
-import org.raflab.studsluzba.model.Ispit;
+import org.raflab.studsluzba.model.entity.Ispit;
 import org.raflab.studsluzba.model.dtos.RezultatiIspitaDTO;
+import org.raflab.studsluzba.model.entity.IzlazakNaIspit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface IzlazakNaIspitRepository extends JpaRepository<org.raflab.studsluzba.model.IzlazakNaIspit, Long> {
+public interface IzlazakNaIspitRepository extends JpaRepository<IzlazakNaIspit, Long> {
 
     //prosečna ocena na ispitu
     @Query("select AVG(i.ocena) from IzlazakNaIspit i where i.prijavaIspita.ispit = :ispit")

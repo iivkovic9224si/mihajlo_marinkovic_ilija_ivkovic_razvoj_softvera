@@ -3,8 +3,8 @@ package org.raflab.studsluzba.repositories;
 import java.util.List;
 
 
-import org.raflab.studsluzba.model.DrziPredmet;
-import org.raflab.studsluzba.model.Predmet;
+import org.raflab.studsluzba.model.entity.DrziPredmet;
+import org.raflab.studsluzba.model.entity.Predmet;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

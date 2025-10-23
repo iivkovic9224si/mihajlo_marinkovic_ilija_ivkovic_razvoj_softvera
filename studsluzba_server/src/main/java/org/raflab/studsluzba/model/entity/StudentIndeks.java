@@ -1,4 +1,4 @@
-package org.raflab.studsluzba.model;
+package org.raflab.studsluzba.model.entity;
 
 import java.time.LocalDate;
 import java.util.List;

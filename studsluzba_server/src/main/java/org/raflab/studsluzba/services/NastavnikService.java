@@ -1,6 +1,6 @@
 package org.raflab.studsluzba.services;
 
-import org.raflab.studsluzba.model.Nastavnik;
+import org.raflab.studsluzba.model.entity.Nastavnik;
 import org.raflab.studsluzba.repositories.NastavnikRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
