@@ -13,7 +13,7 @@ public class StudijskiTokAktivnosti {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Enumerated(EnumType.STRING)
-    private TipStudijskeAktivnosti tip;
+    private VrstaStudijskeAktivnosti tip;
     private Integer godina;
     private LocalDate datum;
     private String napomena;
