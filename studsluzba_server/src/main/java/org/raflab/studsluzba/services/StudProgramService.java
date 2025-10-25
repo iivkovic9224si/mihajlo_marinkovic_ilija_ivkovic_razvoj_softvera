@@ -65,7 +65,6 @@ public class StudProgramService {
         }
     }
 
-
     //nalazi predmete po oznaci studPrograma
     public List<PredmetResponse> findPredmetByStudProgram(StudijskiProgram studijskiProgram) {
         List<StudijskiProgram> spList = studijskiProgramRepository.findByOznaka(studijskiProgram.getOznaka());

@@ -1,9 +1,6 @@
 package org.raflab.studsluzba.utils;
 
-import org.raflab.studsluzba.controllers.request.NastavnikRequest;
-import org.raflab.studsluzba.controllers.request.StudentIndeksRequest;
-import org.raflab.studsluzba.controllers.request.StudentPodaciRequest;
-import org.raflab.studsluzba.controllers.request.StudijskiProgramRequest;
+import org.raflab.studsluzba.controllers.request.*;
 import org.raflab.studsluzba.controllers.response.NastavnikResponse;
 import org.raflab.studsluzba.controllers.response.StudijskiProgramResponse;
 import org.raflab.studsluzba.model.entity.Nastavnik;
@@ -96,16 +93,29 @@ public class Converters {
         return studentIndeks;
     }
 
-    public static StudijskiProgram toStudijskiProgram(StudijskiProgramRequest studijskiProgramRequest) {
+    public static StudijskiProgram toStudijskiProgram(StudijskiProgramRequest request) {
         StudijskiProgram studijskiProgram = new StudijskiProgram();
-        studijskiProgram.setNaziv(studijskiProgramRequest.getNaziv());
-        studijskiProgram.setOznaka(studijskiProgramRequest.getOznaka());
-        studijskiProgram.setZvanje(studijskiProgramRequest.getZvanje());
-        studijskiProgram.setGodinaAkreditacije(studijskiProgramRequest.getGodinaAkreditacije());
-        studijskiProgram.setTrajanjeGodina(studijskiProgramRequest.getTrajanjeGodina());
-        studijskiProgram.setUkupnoEspb(studijskiProgramRequest.getUkupnoEspb());
-        studijskiProgram.setVrstaStudija(studijskiProgramRequest.getVrstaStudija());
-        studijskiProgram.setTrajanjeSemestara(studijskiProgramRequest.getTrajanjeSemestara());
+        studijskiProgram.setNaziv(request.getNaziv());
+        studijskiProgram.setOznaka(request.getOznaka());
+        studijskiProgram.setZvanje(request.getZvanje());
+        studijskiProgram.setGodinaAkreditacije(request.getGodinaAkreditacije());
+        studijskiProgram.setTrajanjeGodina(request.getTrajanjeGodina());
+        studijskiProgram.setUkupnoEspb(request.getUkupnoEspb());
+        studijskiProgram.setVrstaStudija(request.getVrstaStudija());
+        studijskiProgram.setTrajanjeSemestara(request.getTrajanjeSemestara());
+        return studijskiProgram;
+    }
+
+    public static StudijskiProgram toStudijskiProgram(StudijskiProgramNewRequest studijskiProgramNewRequest) {
+        StudijskiProgram studijskiProgram = new StudijskiProgram();
+        studijskiProgram.setNaziv(studijskiProgramNewRequest.getNaziv());
+        studijskiProgram.setOznaka(studijskiProgramNewRequest.getOznaka());
+        studijskiProgram.setZvanje(studijskiProgramNewRequest.getZvanje());
+        studijskiProgram.setGodinaAkreditacije(studijskiProgramNewRequest.getGodinaAkreditacije());
+        studijskiProgram.setTrajanjeGodina(studijskiProgramNewRequest.getTrajanjeGodina());
+        studijskiProgram.setUkupnoEspb(studijskiProgramNewRequest.getUkupnoEspb());
+        studijskiProgram.setVrstaStudija(studijskiProgramNewRequest.getVrstaStudija());
+        studijskiProgram.setTrajanjeSemestara(studijskiProgramNewRequest.getTrajanjeSemestara());
         return studijskiProgram;
     }
 
@@ -122,4 +132,6 @@ public class Converters {
         });
         return studijskiProgramResponses;
     }
+
+
 }

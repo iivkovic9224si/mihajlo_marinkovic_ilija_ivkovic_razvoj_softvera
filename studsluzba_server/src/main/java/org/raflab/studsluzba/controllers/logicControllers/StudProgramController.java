@@ -1,10 +1,9 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
+import org.raflab.studsluzba.controllers.request.StudijskiProgramNewRequest;
 import org.raflab.studsluzba.controllers.request.StudijskiProgramRequest;
 import org.raflab.studsluzba.controllers.response.PredmetResponse;
 import org.raflab.studsluzba.controllers.response.StudijskiProgramResponse;
-import org.raflab.studsluzba.model.entity.Nastavnik;
-import org.raflab.studsluzba.model.entity.Predmet;
 import org.raflab.studsluzba.model.entity.StudijskiProgram;
 import org.raflab.studsluzba.services.StudProgramService;
 import org.raflab.studsluzba.utils.Converters;
@@ -33,8 +32,8 @@ public class StudProgramController {
 
     //dodaje studProgram
     @PostMapping(path= "/add")
-    public Long add(@RequestBody @Valid StudijskiProgramRequest studijskiProgramRequest) {
-        StudijskiProgram studijskiProgram=studProgramService.save(Converters.toStudijskiProgram(studijskiProgramRequest));
+    public Long add(@RequestBody @Valid StudijskiProgramNewRequest studijskiProgramNewRequest) {
+        StudijskiProgram studijskiProgram=studProgramService.save(Converters.toStudijskiProgram(studijskiProgramNewRequest));
         return studijskiProgram.getId();
     }
 
@@ -42,8 +41,8 @@ public class StudProgramController {
     @PostMapping(path= "/update/{id}")
     public StudijskiProgramResponse update(
             @PathVariable Long id,
-            @RequestBody @Valid StudijskiProgramRequest studijskiProgramRequest) {
-        StudijskiProgram updatedProgram = Converters.toStudijskiProgram(studijskiProgramRequest);
+            @RequestBody @Valid StudijskiProgramNewRequest studijskiProgramNewRequest) {
+        StudijskiProgram updatedProgram = Converters.toStudijskiProgram(studijskiProgramNewRequest);
         updatedProgram.setId(id);
 
         StudijskiProgram savedProgram = studProgramService.update(updatedProgram);
@@ -67,10 +66,12 @@ public class StudProgramController {
     public void deleteById(@PathVariable Long id) {
         studProgramService.deleteStudijskiProgram(id);
     }
+
     @GetMapping(path="/oznake")
     public List<String> findAllOznake() {
         return  new ArrayList<>(studProgramService.findAllOznake());
     }
+    //
     @GetMapping(path="/all/sorted")
     public List<StudijskiProgramResponse> getAllSortedByGodinaDesc() {
         return new ArrayList<>(studProgramService.getAllSortedByGodinaDesc());

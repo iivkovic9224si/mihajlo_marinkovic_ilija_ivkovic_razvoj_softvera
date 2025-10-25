@@ -14,7 +14,6 @@ public class StudijskiProgramResponse {
     private String naziv;
     @NotNull
     private Integer godinaAkreditacije;
-    @NotNull
     private String zvanje;
     @NotNull
     private Integer trajanjeGodina;
