@@ -69,7 +69,7 @@ public class StudProgramController {
 
     @GetMapping(path="/oznake")
     public List<String> findAllOznake() {
-        return  new ArrayList<>(studProgramService.findAllOznake());
+        return new ArrayList<>(studProgramService.findAllOznake());
     }
     //
     @GetMapping(path="/all/sorted")
