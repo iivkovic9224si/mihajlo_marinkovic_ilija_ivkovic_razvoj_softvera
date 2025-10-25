@@ -1,10 +1,8 @@
 package org.raflab.studsluzba.utils;
 
-import org.raflab.studsluzba.controllers.request.NastavnikRequest;
-import org.raflab.studsluzba.controllers.request.StudentIndeksRequest;
-import org.raflab.studsluzba.controllers.request.StudentPodaciRequest;
-import org.raflab.studsluzba.controllers.request.StudijskiProgramRequest;
+import org.raflab.studsluzba.controllers.request.*;
 import org.raflab.studsluzba.controllers.response.NastavnikResponse;
+import org.raflab.studsluzba.controllers.response.StudijskiProgramResponse;
 import org.raflab.studsluzba.model.entity.Nastavnik;
 import org.raflab.studsluzba.model.entity.StudentIndeks;
 import org.raflab.studsluzba.model.entity.StudentPodaci;
@@ -48,6 +46,8 @@ public class Converters {
         return response;
     }
 
+
+
     public static List<NastavnikResponse> toNastavnikResponseList(Iterable<Nastavnik> nastavnikIterable) {
         List<NastavnikResponse> nastavnikResponses = new ArrayList<>();
 
@@ -56,6 +56,8 @@ public class Converters {
         });
         return nastavnikResponses;
     }
+
+
 
     public static StudentPodaci toStudentPodaci(StudentPodaciRequest request) {
         StudentPodaci studentPodaci = new StudentPodaci();
@@ -91,16 +93,45 @@ public class Converters {
         return studentIndeks;
     }
 
-    public static StudijskiProgram toStudijskiProgram(StudijskiProgramRequest studijskiProgramRequest) {
+    public static StudijskiProgram toStudijskiProgram(StudijskiProgramRequest request) {
         StudijskiProgram studijskiProgram = new StudijskiProgram();
-        studijskiProgram.setNaziv(studijskiProgramRequest.getNaziv());
-        studijskiProgram.setOznaka(studijskiProgramRequest.getOznaka());
-        studijskiProgram.setZvanje(studijskiProgramRequest.getZvanje());
-        studijskiProgram.setGodinaAkreditacije(studijskiProgramRequest.getGodinaAkreditacije());
-        studijskiProgram.setTrajanjeGodina(studijskiProgramRequest.getTrajanjeGodina());
-        studijskiProgram.setUkupnoEspb(studijskiProgramRequest.getUkupnoEspb());
-        studijskiProgram.setVrstaStudija(studijskiProgramRequest.getVrstaStudija());
-        studijskiProgram.setTrajanjeSemestara(studijskiProgramRequest.getTrajanjeSemestara());
+        studijskiProgram.setNaziv(request.getNaziv());
+        studijskiProgram.setOznaka(request.getOznaka());
+        studijskiProgram.setZvanje(request.getZvanje());
+        studijskiProgram.setGodinaAkreditacije(request.getGodinaAkreditacije());
+        studijskiProgram.setTrajanjeGodina(request.getTrajanjeGodina());
+        studijskiProgram.setUkupnoEspb(request.getUkupnoEspb());
+        studijskiProgram.setVrstaStudija(request.getVrstaStudija());
+        studijskiProgram.setTrajanjeSemestara(request.getTrajanjeSemestara());
         return studijskiProgram;
     }
+
+    public static StudijskiProgram toStudijskiProgram(StudijskiProgramNewRequest studijskiProgramNewRequest) {
+        StudijskiProgram studijskiProgram = new StudijskiProgram();
+        studijskiProgram.setNaziv(studijskiProgramNewRequest.getNaziv());
+        studijskiProgram.setOznaka(studijskiProgramNewRequest.getOznaka());
+        studijskiProgram.setZvanje(studijskiProgramNewRequest.getZvanje());
+        studijskiProgram.setGodinaAkreditacije(studijskiProgramNewRequest.getGodinaAkreditacije());
+        studijskiProgram.setTrajanjeGodina(studijskiProgramNewRequest.getTrajanjeGodina());
+        studijskiProgram.setUkupnoEspb(studijskiProgramNewRequest.getUkupnoEspb());
+        studijskiProgram.setVrstaStudija(studijskiProgramNewRequest.getVrstaStudija());
+        studijskiProgram.setTrajanjeSemestara(studijskiProgramNewRequest.getTrajanjeSemestara());
+        return studijskiProgram;
+    }
+
+    public static StudijskiProgramResponse toStudijskiProgramResponse(StudijskiProgram studijskiProgram){
+        StudijskiProgramResponse studijskiProgramResponse=new StudijskiProgramResponse(studijskiProgram.getOznaka(), studijskiProgram.getNaziv(), studijskiProgram.getGodinaAkreditacije(), studijskiProgram.getZvanje(), studijskiProgram.getTrajanjeGodina(), studijskiProgram.getTrajanjeSemestara(), studijskiProgram.getVrstaStudija(), studijskiProgram.getUkupnoEspb());
+        return studijskiProgramResponse;
+    }
+
+    public static List<StudijskiProgramResponse> toStudijskiProgramResponseList(List<StudijskiProgram> studijskiProgramList) {
+        List<StudijskiProgramResponse> studijskiProgramResponses = new ArrayList<>();
+
+        studijskiProgramList.forEach((studijskiProgram) -> {
+            studijskiProgramResponses.add(toStudijskiProgramResponse(studijskiProgram));
+        });
+        return studijskiProgramResponses;
+    }
+
+
 }
