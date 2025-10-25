@@ -53,27 +53,29 @@ public class EntityMappers {
             return null;
         }
 
-        StudentPodaciResponse response = new StudentPodaciResponse();
-        response.setId(sp.getId());
-        response.setIme(sp.getIme());
-        response.setPrezime(sp.getPrezime());
-        response.setSrednjeIme(sp.getSrednjeIme());
-        response.setJmbg(sp.getJmbg());
-        response.setDatumRodjenja(sp.getDatumRodjenja());
-        response.setMestoRodjenja(sp.getMestoRodjenja());
-        response.setMestoPrebivalista(sp.getMestoPrebivalista());
-        response.setDrzavaRodjenja(sp.getDrzavaRodjenja());
-        response.setDrzavljanstvo(sp.getDrzavljanstvo());
-        response.setNacionalnost(sp.getNacionalnost());
-        response.setPol(sp.getPol());
-        response.setAdresa(sp.getAdresa());
-        response.setBrojTelefonaMobilni(sp.getBrojTelefonaMobilni());
-        response.setBrojTelefonaFiksni(sp.getBrojTelefonaFiksni());
-        response.setEmail(sp.getEmail());
-        response.setBrojLicneKarte(sp.getBrojLicneKarte());
-        response.setLicnuKartuIzdao(sp.getLicnuKartuIzdao());
-        response.setMestoStanovanja(sp.getMestoStanovanja());
-        response.setAdresaStanovanja(sp.getAdresaStanovanja());
+        StudentPodaciResponse response = new StudentPodaciResponse(
+                sp.getId(),
+                sp.getIme(),
+                sp.getPrezime(),
+                sp.getSrednjeIme(),
+                sp.getJmbg(),
+                sp.getDatumRodjenja(),
+                sp.getMestoRodjenja(),
+                sp.getMestoPrebivalista(),
+                sp.getDrzavaRodjenja(),
+                sp.getDrzavljanstvo(),
+                sp.getNacionalnost(),
+                sp.getPol(),
+                sp.getAdresa(),
+                sp.getBrojTelefonaMobilni(),
+                sp.getBrojTelefonaFiksni(),
+                sp.getEmail(),
+                sp.getBrojLicneKarte(),
+                sp.getLicnuKartuIzdao(),
+                sp.getMestoStanovanja(),
+                sp.getAdresaStanovanja()
+        );
+
 
         return response;
     }

@@ -1,11 +1,19 @@
 package org.raflab.studsluzba.services;
 
+import org.raflab.studsluzba.controllers.response.PredmetResponse;
+import org.raflab.studsluzba.controllers.response.StudentPodaciResponse;
 import org.raflab.studsluzba.model.entity.StudentIndeks;
+import org.raflab.studsluzba.model.entity.StudentPodaci;
+import org.raflab.studsluzba.repositories.PolozenPredmetRepository;
 import org.raflab.studsluzba.repositories.StudentIndeksRepository;
+import org.raflab.studsluzba.repositories.StudentPodaciRepository;
+import org.raflab.studsluzba.repositories.StudijskiTokAktivnostiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,6 +22,12 @@ public class StudentIndeksService {
     
     @Autowired
     private StudentIndeksRepository studentIndeksRepository;
+    @Autowired
+    private PolozenPredmetRepository polozenPredmetRepository;
+    @Autowired
+    private StudijskiTokAktivnostiRepository studijskiTokAktivnostiRepository;
+    @Autowired
+    private StudentPodaciRepository studentPodaciRepository;
 
     @Transactional(readOnly = true)
     public int findBroj(int godina, String studProgramOznaka) {
@@ -42,5 +56,21 @@ public class StudentIndeksService {
 
     public StudentIndeks findByStudentIdAndAktivan(Long studentPodaciId) {
         return studentIndeksRepository.findAktivanStudentIndeksiByStudentPodaciId(studentPodaciId);
+    }
+
+    public List<PredmetResponse> findPolozeniPredmetiByStudentIndeks(StudentIndeks studentIndeks) {
+        return polozenPredmetRepository.findPolozeniPredmetiByStudentIndeks(studentIndeks);
+    }
+
+    public List<Integer> getUpisaneGodineByStudentIndeks(StudentIndeks studentIndeks) {
+        return studijskiTokAktivnostiRepository.getUpisaneGodineByStudentIndeks(studentIndeks);
+    }
+
+    public List<Integer> getObnovljeneGodineByStudentIndeks(StudentIndeks studentIndeks) {
+        return studijskiTokAktivnostiRepository.getObnovljeneGodineByStudentIndeks(studentIndeks);
+    }
+
+    public Page<StudentPodaciResponse> getStudentPodaciByImeandorPrezime(String ime, String prezime, Pageable pageable) {
+        return studentPodaciRepository.findStudentByImeandorPrezime(ime, prezime, pageable);
     }
 }
