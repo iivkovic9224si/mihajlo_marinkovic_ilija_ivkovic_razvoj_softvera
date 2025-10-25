@@ -1,10 +1,12 @@
 package org.raflab.studsluzba.model.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Data
@@ -27,4 +29,13 @@ public class VisokoSkolskaUstanova {
     @JsonIgnore
     @OneToMany(mappedBy = "priznatoOdInstitucije")
     private List<PolozenPredmet> polozenPredmet;
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        VisokoSkolskaUstanova that = (VisokoSkolskaUstanova) o;
+        return Objects.equals(naziv, that.naziv) && vrsta == that.vrsta;
+    }
 }
+
+

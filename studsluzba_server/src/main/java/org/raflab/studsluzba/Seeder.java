@@ -58,6 +58,7 @@ public class Seeder implements CommandLineRunner {
             return;
         }
 
+        // ----------- Studijski programi -----------
         List<StudijskiProgram> spList = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
             StudijskiProgram sp = new StudijskiProgram();
@@ -72,6 +73,7 @@ public class Seeder implements CommandLineRunner {
             spList.add(studijskiProgramRepository.save(sp));
         }
 
+        // ----------- Predmeti -----------
         List<Predmet> predmetList = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
             Predmet p = new Predmet();
@@ -84,6 +86,7 @@ public class Seeder implements CommandLineRunner {
             predmetList.add(predmetRepository.save(p));
         }
 
+        // ----------- Nastavnici -----------
         List<Nastavnik> nastavnikList = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
             Nastavnik n = new Nastavnik();
@@ -99,7 +102,7 @@ public class Seeder implements CommandLineRunner {
             nastavnikList.add(nastavnikRepository.save(n));
         }
 
-        List<NastavnikZvanje> zvanjeList = new ArrayList<>();
+        // ----------- Nastavničko zvanje -----------
         for (int i = 1; i <= 5; i++) {
             NastavnikZvanje nz = new NastavnikZvanje();
             nz.setDatumIzbora(LocalDate.of(2020 + i, i, i));
@@ -108,9 +111,10 @@ public class Seeder implements CommandLineRunner {
             nz.setZvanje("Zvanje " + i);
             nz.setAktivno(i % 2 == 0);
             nz.setNastavnik(nastavnikList.get(i - 1));
-            zvanjeList.add(nastavnikZvanjeRepository.save(nz));
+            nastavnikZvanjeRepository.save(nz);
         }
 
+        // ----------- StudentPodaci -----------
         List<StudentPodaci> studentPodaciList = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
             StudentPodaci s = new StudentPodaci();
@@ -131,7 +135,7 @@ public class Seeder implements CommandLineRunner {
             studentPodaciList.add(studentPodaciRepository.save(s));
         }
 
-        List<StudentIndeks> indeksList = new ArrayList<>();
+        // ----------- StudentIndeks -----------
         for (int i = 1; i <= 5; i++) {
             StudentIndeks si = new StudentIndeks();
             si.setBroj(i);
@@ -143,30 +147,48 @@ public class Seeder implements CommandLineRunner {
             si.setStudent(studentPodaciList.get(i - 1));
             si.setStudijskiProgram(spList.get(i - 1));
             si.setOstvarenoEspb(0);
-            indeksList.add(studentIndeksRepository.save(si));
+            studentIndeksRepository.save(si);
         }
 
-        List<DrziPredmet> drziPredmetList = new ArrayList<>();
-        for (int i = 1; i <= 5; i++) {
+        // ----------- DrziPredmet & SlusaPredmet -----------
+        for (int i = 0; i < 5; i++) {
             DrziPredmet dp = new DrziPredmet();
-            dp.setNastavnik(nastavnikList.get(i - 1));
-            dp.setPredmet(predmetList.get(i - 1));
-            drziPredmetList.add(drziPredmetRepository.save(dp));
-        }
+            dp.setNastavnik(nastavnikList.get(i));
+            dp.setPredmet(predmetList.get(i));
+            drziPredmetRepository.save(dp);
 
-        List<SlusaPredmet> slusaPredmetList = new ArrayList<>();
-        for (int i = 1; i <= 5; i++) {
             SlusaPredmet sl = new SlusaPredmet();
-            sl.setStudentIndeks(indeksList.get(i - 1));
-            sl.setDrziPredmet(drziPredmetList.get(i - 1));
-            slusaPredmetList.add(slusaPredmetRepository.save(sl));
+            sl.setDrziPredmet(dp);
+            sl.setStudentIndeks(studentIndeksRepository.findAll().get(i));
+            slusaPredmetRepository.save(sl);
         }
 
-        for (int i = 1; i <= 5; i++) {
+        // ----------- Grupe -----------
+        for (int i = 0; i < 5; i++) {
             Grupa g = new Grupa();
-            g.setStudijskiProgram(spList.get(i - 1));
-            g.setPredmeti(Collections.singletonList(predmetList.get(i - 1)));
+            g.setStudijskiProgram(spList.get(i));
+            g.setPredmeti(Collections.singletonList(predmetList.get(i)));
             grupaRepository.save(g);
         }
+
+        // ----------- VisokoSkolskeUstanove (7 primera) -----------
+        List<VisokoSkolskaUstanova> vsuList = new ArrayList<>();
+
+        vsuList.add(new VisokoSkolskaUstanova() {{
+            setNaziv("Univerzitet Beograd");
+            setVrsta(VrstaVisokoSkolskihUstanova.UNIVERZITET);
+        }});
+        vsuList.add(new VisokoSkolskaUstanova() {{
+            setNaziv("Univerzitet Novi Sad");
+            setVrsta(VrstaVisokoSkolskihUstanova.UNIVERZITET);
+        }});
+        vsuList.add(new VisokoSkolskaUstanova() {{
+            setNaziv("Visoka Tehnička Škola Niš");
+            setVrsta(VrstaVisokoSkolskihUstanova.VISOKA_TEHNICKA);
+        }});
+        vsuList.add(new VisokoSkolskaUstanova() {{
+            setNaziv("Visoka Ekonomksa Škola Subotica");
+            setVrsta(VrstaVisokoSkolskihUstanova.VISOKA_POSLOVNA);
+        }});
     }
 }

@@ -3,16 +3,15 @@ package org.raflab.studsluzba.utils;
 import org.raflab.studsluzba.controllers.request.*;
 import org.raflab.studsluzba.controllers.response.NastavnikResponse;
 import org.raflab.studsluzba.controllers.response.StudijskiProgramResponse;
-import org.raflab.studsluzba.model.entity.Nastavnik;
-import org.raflab.studsluzba.model.entity.StudentIndeks;
-import org.raflab.studsluzba.model.entity.StudentPodaci;
-import org.raflab.studsluzba.model.entity.StudijskiProgram;
+import org.raflab.studsluzba.controllers.response.VisokoSkolskaUstanovaResponse;
+import org.raflab.studsluzba.model.entity.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Converters {
 
+    //-------------------------NASTAVNIK-------------------------
     public static Nastavnik toNastavnik(NastavnikRequest nastavnikRequest) {
         Nastavnik nastavnik = new Nastavnik();
         nastavnik.setIme(nastavnikRequest.getIme());
@@ -45,9 +44,6 @@ public class Converters {
         response.setJmbg(nastavnik.getJmbg());
         return response;
     }
-
-
-
     public static List<NastavnikResponse> toNastavnikResponseList(Iterable<Nastavnik> nastavnikIterable) {
         List<NastavnikResponse> nastavnikResponses = new ArrayList<>();
 
@@ -56,9 +52,7 @@ public class Converters {
         });
         return nastavnikResponses;
     }
-
-
-
+    //-------------------------STUDENT I STUDENT INDEX-------------------------
     public static StudentPodaci toStudentPodaci(StudentPodaciRequest request) {
         StudentPodaci studentPodaci = new StudentPodaci();
         studentPodaci.setIme(request.getIme());
@@ -93,6 +87,7 @@ public class Converters {
         return studentIndeks;
     }
 
+    //-------------------------STUDIJSKI PROGRAM-------------------------
     public static StudijskiProgram toStudijskiProgram(StudijskiProgramRequest request) {
         StudijskiProgram studijskiProgram = new StudijskiProgram();
         studijskiProgram.setNaziv(request.getNaziv());
@@ -132,6 +127,25 @@ public class Converters {
         });
         return studijskiProgramResponses;
     }
+    //-------------------------VISOKOSKOLSKEUSTANOVE-------------------------
+    public static VisokoSkolskaUstanova toVisokoSkolskaUstanova(VisokoSkolskaUstanovaRequest  visokoSkolskaUstanovaRequest) {
+        VisokoSkolskaUstanova visokoSkolskaUstanova=new VisokoSkolskaUstanova();
+        visokoSkolskaUstanova.setNaziv(visokoSkolskaUstanovaRequest.getNaziv());
+        visokoSkolskaUstanova.setVrsta(visokoSkolskaUstanovaRequest.getVrsta());
 
+        return visokoSkolskaUstanova;
+    }
+
+    public static VisokoSkolskaUstanovaResponse toVisokoSkolskaUstanovaResponse(VisokoSkolskaUstanova visokoSkolskaUstanova) {
+        return new VisokoSkolskaUstanovaResponse(visokoSkolskaUstanova.getNaziv(), visokoSkolskaUstanova.getVrsta().name());
+    }
+
+    public static List<VisokoSkolskaUstanovaResponse> toVisokoSkolskaUstanovaResponseList(List<VisokoSkolskaUstanova> vsuList) {
+        List<VisokoSkolskaUstanovaResponse> responseList = new ArrayList<>();
+        for (VisokoSkolskaUstanova vsu : vsuList) {
+            responseList.add(toVisokoSkolskaUstanovaResponse(vsu));
+        }
+        return responseList;
+    }
 
 }
