@@ -4,11 +4,12 @@ import org.raflab.studsluzba.controllers.request.*;
 import org.raflab.studsluzba.controllers.response.NastavnikResponse;
 import org.raflab.studsluzba.controllers.response.StudentIndeksResponse;
 import org.raflab.studsluzba.controllers.response.StudijskiProgramResponse;
-import org.raflab.studsluzba.model.entity.Nastavnik;
-import org.raflab.studsluzba.model.entity.StudentIndeks;
-import org.raflab.studsluzba.model.entity.StudentPodaci;
-import org.raflab.studsluzba.model.entity.StudijskiProgram;
+import org.raflab.studsluzba.controllers.response.StudijskiTokAktivnostiResponse;
+import org.raflab.studsluzba.model.entity.*;
+import org.raflab.studsluzba.repositories.StudentIndeksRepository;
 
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -157,6 +158,69 @@ public class Converters {
         List<StudentIndeksResponse> resList = new ArrayList<>();
         if (siList != null) {
             siList.forEach(si -> resList.add(toStudentIndeksResponse(si)));
+        }
+        return resList;
+    }
+
+    public static StudijskiTokAktivnosti toStudijskiTokAktivnosti(StudijskiTokAktivnostiRequest req, StudentIndeksRepository studentIndeksRepository) {
+        if(req == null) return null;
+
+        VrstaStudijskeAktivnosti tip;
+        try {
+            tip = VrstaStudijskeAktivnosti.valueOf(req.getTip());
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Nepoznat tip studijskog toka: " + req.getTip());
+        }
+
+        StudentIndeks studentIndeks = studentIndeksRepository
+                .findByGodinaAndBrojAndStudProgramOznakaAndAktivan(
+                        req.getIndeksGodina(),
+                        req.getIndeksBroj(),
+                        req.getIndeksStudProgramOznaka(),
+                        req.isIndeksAktivan()
+                ).orElseThrow(() -> new RuntimeException(
+                        "StudentIndeks ne postoji: " + req.getIndeksBroj() + "/" + req.getIndeksGodina()
+                ));
+
+        return new StudijskiTokAktivnosti(
+                tip,
+                req.getGodina(),
+                req.getDatum(),
+                req.getNapomena(),
+                studentIndeks
+        );
+    }
+
+
+    public static StudijskiTokAktivnostiResponse toStudijskiTokAktivnostiResponse(StudijskiTokAktivnosti si) {
+        if(si == null) return null;
+        return new StudijskiTokAktivnostiResponse(
+                si.getTip().name(),
+                si.getGodina(),
+                si.getDatum(),
+                si.getNapomena(),
+                toStudentIndeksResponse(si.getStudentIndeks())
+        );
+    }
+
+    public static List<StudijskiTokAktivnosti> toStudijskiTokAktivnostiList(
+            List<StudijskiTokAktivnostiRequest> siList,
+            StudentIndeksRepository studentIndeksRepository) {
+
+        List<StudijskiTokAktivnosti> resList = new ArrayList<>();
+        if (siList != null) {
+            siList.forEach(si -> {
+                resList.add(toStudijskiTokAktivnosti(si, studentIndeksRepository));
+            });
+        }
+        return resList;
+    }
+
+
+    public static List<StudijskiTokAktivnostiResponse> toStudijskiTokAktivnostiResponseList(List<StudijskiTokAktivnosti> siList) {
+        List<StudijskiTokAktivnostiResponse> resList = new ArrayList<>();
+        if (siList != null) {
+            siList.forEach(si -> resList.add(toStudijskiTokAktivnostiResponse(si)));
         }
         return resList;
     }
