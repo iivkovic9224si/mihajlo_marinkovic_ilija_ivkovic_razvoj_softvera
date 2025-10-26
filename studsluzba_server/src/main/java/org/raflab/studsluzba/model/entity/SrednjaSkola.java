@@ -17,7 +17,6 @@ public class SrednjaSkola {
     @Enumerated(EnumType.STRING)
     private VrstaSrednjeSkole vrstaSrednjeSkole;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "srednjaSkola")
     private List<StudentPodaci> studentPodaci;
 }

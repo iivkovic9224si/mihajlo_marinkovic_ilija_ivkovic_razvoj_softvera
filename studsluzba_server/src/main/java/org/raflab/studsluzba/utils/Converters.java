@@ -1,10 +1,7 @@
 package org.raflab.studsluzba.utils;
 
 import org.raflab.studsluzba.controllers.request.*;
-import org.raflab.studsluzba.controllers.response.NastavnikResponse;
-import org.raflab.studsluzba.controllers.response.PredmetResponse;
-import org.raflab.studsluzba.controllers.response.StudijskiProgramResponse;
-import org.raflab.studsluzba.controllers.response.VisokoSkolskaUstanovaResponse;
+import org.raflab.studsluzba.controllers.response.*;
 import org.raflab.studsluzba.model.entity.*;
 
 import java.util.ArrayList;
@@ -195,5 +192,27 @@ public class Converters {
         }
         return responseList;
     }
+
+    //-------------------------SREDNJA SKOLA-------------------------
+    public static SrednjaSkola toSrednjaSkola(SrednjaSkolaRequest request) {
+        SrednjaSkola srednjaSkola = new SrednjaSkola();
+        srednjaSkola.setNaziv(request.getNaziv());
+        srednjaSkola.setVrstaSrednjeSkole(request.getVrstaSrednjeSkole());
+        return srednjaSkola;
+    }
+
+    public static SrednjaSkolaResponse toSrednjaSkolaResponse(SrednjaSkola srednjaSkola) {
+        return new SrednjaSkolaResponse(
+                srednjaSkola.getNaziv(),
+                srednjaSkola.getVrstaSrednjeSkole()
+        );
+    }
+
+    public static List<SrednjaSkolaResponse> toSrednjaSkolaResponseList(Iterable<SrednjaSkola> skole) {
+        List<SrednjaSkolaResponse> responseList = new ArrayList<>();
+        skole.forEach(s -> responseList.add(toSrednjaSkolaResponse(s)));
+        return responseList;
+    }
+
 
 }
