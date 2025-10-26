@@ -2,6 +2,7 @@ package org.raflab.studsluzba.utils;
 
 import org.raflab.studsluzba.controllers.request.*;
 import org.raflab.studsluzba.controllers.response.NastavnikResponse;
+import org.raflab.studsluzba.controllers.response.StudentIndeksResponse;
 import org.raflab.studsluzba.controllers.response.StudijskiProgramResponse;
 import org.raflab.studsluzba.model.entity.Nastavnik;
 import org.raflab.studsluzba.model.entity.StudentIndeks;
@@ -133,5 +134,30 @@ public class Converters {
         return studijskiProgramResponses;
     }
 
+    public static StudentIndeksResponse toStudentIndeksResponse(StudentIndeks si) {
+        if (si == null) return null;
 
+        return new StudentIndeksResponse(
+                si.getId(),
+                si.getBroj(),
+                si.getGodina(),
+                si.getStudProgramOznaka(),
+                si.getNacinFinansiranja(),
+                si.isAktivan(),
+                si.getVaziOd(),
+                si.getStudent(),
+                toStudijskiProgramResponse(si.getStudijskiProgram()),
+                si.getOstvarenoEspb()
+        );
+    }
+
+
+
+    public static List<StudentIndeksResponse> toStudentIndeksResponseList(List<StudentIndeks> siList) {
+        List<StudentIndeksResponse> resList = new ArrayList<>();
+        if (siList != null) {
+            siList.forEach(si -> resList.add(toStudentIndeksResponse(si)));
+        }
+        return resList;
+    }
 }

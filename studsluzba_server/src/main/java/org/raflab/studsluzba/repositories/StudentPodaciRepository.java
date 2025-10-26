@@ -38,4 +38,6 @@ public interface StudentPodaciRepository extends JpaRepository<StudentPodaci, Lo
 			"where (:ime is null or lower(sp.ime) like :ime) " +
 			"and (:prezime is null or lower(sp.prezime) like :prezime)")
 	Page<StudentPodaciResponse> findStudentByImeandorPrezime(String ime, String prezime, Pageable pageable);
+
+
 }

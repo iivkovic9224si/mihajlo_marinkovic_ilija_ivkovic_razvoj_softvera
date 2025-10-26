@@ -43,7 +43,7 @@ public class EntityMappers {
         response.setAktivan(si.isAktivan());
         response.setVaziOd(si.getVaziOd());
         response.setOstvarenoEspb(si.getOstvarenoEspb());
-        response.setStudijskiProgram(si.getStudijskiProgram());
+        //response.setStudijskiProgramResponse(si.getStudijskiProgram());
         response.setStudent(si.getStudent());
         return response;
     }

@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static org.raflab.studsluzba.utils.Converters.toStudentIndeksResponseList;
+
 @CrossOrigin
 @RestController
 @RequestMapping(path="/api/student")
@@ -129,7 +131,7 @@ public class StudentController {
     	    	
     }
 
-	//Ispisi Student Indeks prema id-u iz tabele Student Podaci
+	//Ispisi Student Indeks redove prema id-u iz tabele Student Podaci
     @GetMapping(path="/indeksi/{idStudentPodaci}")
     public List<StudentIndeksResponse> getIndeksiForStudentPodaciId(@PathVariable Long idStudentPodaci){
         return studentIndeksRepository.findStudentIndeksiForStudentPodaciId(idStudentPodaci)
@@ -244,9 +246,68 @@ public class StudentController {
 		return studentIndeksService.getObnovljeneGodineByStudentIndeks(studentIndeks);
 	}
 
+	//selekcija studenata na osnovu imena i/ili prezimena (može samo ime, ili samo prezime ili oba da se unesu)
 	@GetMapping(path = "/imeandorprezime")
 	public Page<StudentPodaciResponse> getStudentByImeandorPrezime(@RequestParam(required = false) String ime, @RequestParam(required = false) String prezime, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) {
 		Pageable pageable = PageRequest.of(page, size, Sort.by("ime").ascending());
 		return studentIndeksService.getStudentPodaciByImeandorPrezime(ime, prezime, pageable);
+	}
+
+	//Dodaj novog studenta
+	@PostMapping(path = "/dodajstudenta")
+	public Long addStudent(@RequestBody @Valid StudentPodaciRequest studentPodaciRequest) {
+		StudentPodaci studentPodaci = Converters.toStudentPodaci(studentPodaciRequest);
+		StudentPodaci savedStudent = studentPodaciRepository.save(studentPodaci);
+		return savedStudent.getId();
+	}
+
+	//Update postojeceg studenta
+	@PutMapping(path = "/updateujStudenta/{id}")
+	public Long updateStudent(@PathVariable Long id, @RequestBody @Valid StudentPodaciRequest studentPodaciRequest) {
+		StudentPodaci studentPodaci = studentPodaciRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Student sa datim ID ne postoji."));
+
+		studentPodaci.setIme(studentPodaciRequest.getIme());
+		studentPodaci.setPrezime(studentPodaciRequest.getPrezime());
+		studentPodaci.setSrednjeIme(studentPodaciRequest.getSrednjeIme());
+		studentPodaci.setJmbg(studentPodaciRequest.getJmbg());
+		studentPodaci.setDatumRodjenja(studentPodaciRequest.getDatumRodjenja());
+		studentPodaci.setMestoRodjenja(studentPodaciRequest.getMestoRodjenja());
+		studentPodaci.setMestoPrebivalista(studentPodaciRequest.getMestoPrebivalista());
+		studentPodaci.setDrzavaRodjenja(studentPodaciRequest.getDrzavaRodjenja());
+		studentPodaci.setDrzavljanstvo(studentPodaciRequest.getDrzavljanstvo());
+		studentPodaci.setNacionalnost(studentPodaciRequest.getNacionalnost());
+		studentPodaci.setPol(studentPodaciRequest.getPol());
+		studentPodaci.setAdresa(studentPodaciRequest.getAdresa());
+		studentPodaci.setBrojTelefonaMobilni(studentPodaciRequest.getBrojTelefonaMobilni());
+		studentPodaci.setBrojTelefonaFiksni(studentPodaciRequest.getBrojTelefonaFiksni());
+		studentPodaci.setEmail(studentPodaciRequest.getEmail());
+		studentPodaci.setBrojLicneKarte(studentPodaciRequest.getBrojLicneKarte());
+		studentPodaci.setLicnuKartuIzdao(studentPodaciRequest.getLicnuKartuIzdao());
+		studentPodaci.setMestoStanovanja(studentPodaciRequest.getMestoStanovanja());
+		studentPodaci.setAdresaStanovanja(studentPodaciRequest.getAdresaStanovanja());
+
+		StudentPodaci savedStudent = studentPodaciRepository.save(studentPodaci);
+		return savedStudent.getId();
+	}
+
+	// Update postojeceg reda u tabeli Student Indeks
+	@PutMapping(path="/updateindeks/{id}")
+	public Long updateIndeks(@PathVariable Long id, @RequestBody StudentIndeksRequest request) {
+		StudentIndeks studentIndeks = studentIndeksRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("StudentIndeks sa ID " + id + " ne postoji"));
+
+		studentIndeks.setGodina(request.getGodina());
+		studentIndeks.setAktivan(request.isAktivan());
+		studentIndeks.setNacinFinansiranja(request.getNacinFinansiranja());
+		studentIndeks.setVaziOd(request.getVaziOd());
+
+		StudentIndeks saved = studentIndeksRepository.save(studentIndeks);
+		return saved.getId();
+	}
+
+	@GetMapping(path = "/studentindeksall")
+	public Iterable<StudentIndeksResponse> getAllStudentIndeks(){
+		return toStudentIndeksResponseList(studentIndeksRepository.findAll());
 	}
 }

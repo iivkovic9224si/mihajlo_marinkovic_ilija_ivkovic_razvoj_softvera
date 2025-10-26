@@ -8,6 +8,7 @@ import java.time.LocalDate;
 @Data
 public class StudentPodaciRequest {
 
+    Long id;
     @NotNull
     private String ime;	  // not null
     @NotNull
