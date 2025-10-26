@@ -18,25 +18,19 @@ public class SrednjaSkolaController {
     @Autowired
     private SrednjaSkolaService srednjaSkolaService;
 
-    //-------------------------CREATE-------------------------
     @PostMapping("/save")
     public SrednjaSkolaResponse save(@RequestBody SrednjaSkolaRequest request) {
         return srednjaSkolaService.save(request);
     }
 
-    //-------------------------READ ALL-------------------------
     @GetMapping("/all")
     public List<SrednjaSkolaResponse> findAll() {
         return srednjaSkolaService.findAll();
     }
-
-    //-------------------------READ BY ID-------------------------
     @GetMapping("/findById/{id}")
     public Optional<SrednjaSkolaResponse> findById(@PathVariable Long id) {
         return Optional.ofNullable(srednjaSkolaService.findById(id));
     }
-
-    //-------------------------READ BY NAZIV + VRSTA-------------------------
     @GetMapping("/findByNazivAndVrsta")
     public SrednjaSkolaResponse findByNazivAndVrsta(
             @RequestParam String naziv,
@@ -44,8 +38,6 @@ public class SrednjaSkolaController {
     ) {
         return srednjaSkolaService.findByNazivAndVrsta(naziv, vrsta);
     }
-
-    //-------------------------UPDATE PO STAROM NAZIVU I VRSTI-------------------------
     @PostMapping("/update")
     public SrednjaSkolaResponse update(
             @RequestParam String stariNaziv,
@@ -54,10 +46,6 @@ public class SrednjaSkolaController {
     {
         return srednjaSkolaService.update(stariNaziv, staraVrsta, noviPodaci);
     }
-
-
-
-    //-------------------------DELETE-------------------------
     @GetMapping("/delete/{id}")
     public void delete(@PathVariable Long id) {
         srednjaSkolaService.delete(id);

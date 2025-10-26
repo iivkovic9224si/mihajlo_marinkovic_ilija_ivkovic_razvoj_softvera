@@ -190,5 +190,13 @@ public class Seeder implements CommandLineRunner {
             setNaziv("Visoka Ekonomksa Škola Subotica");
             setVrsta(VrstaVisokoSkolskihUstanova.VISOKA_POSLOVNA);
         }});
+
+        int trenutnaGodina = LocalDate.now().getYear();
+        for (int godina = 2016; godina <= trenutnaGodina; godina++) {
+            SkolskaGodina sg = new SkolskaGodina();
+            sg.setGodina(godina + "/" + (godina + 1));
+            sg.setAktivna(godina == trenutnaGodina); // samo tekuća godina je aktivna
+            skolskaGodinaRepository.save(sg);
+        }
     }
 }
