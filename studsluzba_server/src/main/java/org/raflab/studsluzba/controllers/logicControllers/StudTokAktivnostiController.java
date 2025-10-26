@@ -1,0 +1,46 @@
+package org.raflab.studsluzba.controllers.logicControllers;
+
+import lombok.RequiredArgsConstructor;
+import org.raflab.studsluzba.controllers.request.StudijskiTokAktivnostiRequest;
+import org.raflab.studsluzba.controllers.response.StudijskiTokAktivnostiResponse;
+import org.raflab.studsluzba.model.entity.StudijskiTokAktivnosti;
+import org.raflab.studsluzba.repositories.StudentIndeksRepository;
+import org.raflab.studsluzba.services.StudijskiTokAktivnostiService;
+import org.raflab.studsluzba.utils.Converters;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/studijski-tok")
+@RequiredArgsConstructor
+public class StudTokAktivnostiController {
+    private final StudijskiTokAktivnostiService service;
+    private final StudentIndeksRepository studentIndeksRepository;
+
+    @PostMapping(path = "/save")
+    public StudijskiTokAktivnostiResponse save(@RequestBody StudijskiTokAktivnostiRequest request) {
+        StudijskiTokAktivnosti entity = Converters.toStudijskiTokAktivnosti(request, studentIndeksRepository);
+        StudijskiTokAktivnosti saved = service.save(entity);
+        return Converters.toStudijskiTokAktivnostiResponse(saved);
+    }
+
+    @GetMapping(path = "/all")
+    public List<StudijskiTokAktivnostiResponse> findAll() {
+        return service.findAll();
+    }
+
+    @GetMapping(path = "/{id}")
+    public Optional<StudijskiTokAktivnostiResponse> findById(@PathVariable Long id) {
+        return service.findById(id);
+    }
+
+    @PutMapping(path = "/update/{id}")
+    public StudijskiTokAktivnostiResponse update(@PathVariable Long id, @RequestBody StudijskiTokAktivnostiRequest request) {
+        StudijskiTokAktivnosti entity = Converters.toStudijskiTokAktivnosti(request, studentIndeksRepository);
+        entity.setId(id);
+        StudijskiTokAktivnosti updated = service.update(entity);
+        return Converters.toStudijskiTokAktivnostiResponse(updated);
+    }
+}

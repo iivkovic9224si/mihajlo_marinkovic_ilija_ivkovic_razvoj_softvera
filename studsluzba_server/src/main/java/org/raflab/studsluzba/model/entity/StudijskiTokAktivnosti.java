@@ -1,5 +1,6 @@
 package org.raflab.studsluzba.model.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -23,4 +24,12 @@ public class StudijskiTokAktivnosti {
 
     @ManyToOne
     private StudentIndeks studentIndeks;
+
+    public StudijskiTokAktivnosti(VrstaStudijskeAktivnosti tip, Integer godina, LocalDate datum, String napomena, StudentIndeks studentIndeks) {
+        this.tip = tip;
+        this.godina = godina;
+        this.datum = datum;
+        this.napomena = napomena;
+        this.studentIndeks = studentIndeks;
+    }
 }
