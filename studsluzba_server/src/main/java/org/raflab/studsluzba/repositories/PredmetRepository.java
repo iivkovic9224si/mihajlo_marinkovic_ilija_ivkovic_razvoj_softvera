@@ -1,6 +1,7 @@
 package org.raflab.studsluzba.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.raflab.studsluzba.model.entity.Predmet;
 import org.raflab.studsluzba.model.entity.StudijskiProgram;
@@ -18,6 +19,8 @@ public interface PredmetRepository extends CrudRepository<Predmet, Long> {
 
 	List<Predmet> findByIdIn(List<Long> ids);
 	List<Predmet> findByNazivIn(List<String> nazivi);
+
+    Optional<Predmet> findBySifra(String sifra);
 
 
 }

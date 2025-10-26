@@ -1,11 +1,12 @@
 package org.raflab.studsluzba.utils;
 
 import org.raflab.studsluzba.controllers.request.*;
+import org.raflab.studsluzba.controllers.response.*;
+import org.raflab.studsluzba.model.entity.*;
 import org.raflab.studsluzba.controllers.response.NastavnikResponse;
 import org.raflab.studsluzba.controllers.response.StudentIndeksResponse;
 import org.raflab.studsluzba.controllers.response.StudijskiProgramResponse;
 import org.raflab.studsluzba.controllers.response.StudijskiTokAktivnostiResponse;
-import org.raflab.studsluzba.model.entity.*;
 import org.raflab.studsluzba.repositories.StudentIndeksRepository;
 
 import javax.validation.constraints.NotNull;
@@ -15,6 +16,7 @@ import java.util.List;
 
 public class Converters {
 
+    //-------------------------NASTAVNIK-------------------------
     public static Nastavnik toNastavnik(NastavnikRequest nastavnikRequest) {
         Nastavnik nastavnik = new Nastavnik();
         nastavnik.setIme(nastavnikRequest.getIme());
@@ -47,9 +49,6 @@ public class Converters {
         response.setJmbg(nastavnik.getJmbg());
         return response;
     }
-
-
-
     public static List<NastavnikResponse> toNastavnikResponseList(Iterable<Nastavnik> nastavnikIterable) {
         List<NastavnikResponse> nastavnikResponses = new ArrayList<>();
 
@@ -58,9 +57,7 @@ public class Converters {
         });
         return nastavnikResponses;
     }
-
-
-
+    //-------------------------STUDENT I STUDENT INDEX-------------------------
     public static StudentPodaci toStudentPodaci(StudentPodaciRequest request) {
         StudentPodaci studentPodaci = new StudentPodaci();
         studentPodaci.setIme(request.getIme());
@@ -95,6 +92,7 @@ public class Converters {
         return studentIndeks;
     }
 
+    //-------------------------STUDIJSKI PROGRAM-------------------------
     public static StudijskiProgram toStudijskiProgram(StudijskiProgramRequest request) {
         StudijskiProgram studijskiProgram = new StudijskiProgram();
         studijskiProgram.setNaziv(request.getNaziv());
@@ -106,6 +104,19 @@ public class Converters {
         studijskiProgram.setVrstaStudija(request.getVrstaStudija());
         studijskiProgram.setTrajanjeSemestara(request.getTrajanjeSemestara());
         return studijskiProgram;
+    }
+
+    public static StudijskiProgramRequest toStudijskiProgramRequest(StudijskiProgram studijskiProgram) {
+        StudijskiProgramRequest request = new StudijskiProgramRequest();
+        request.setNaziv(studijskiProgram.getNaziv());
+        request.setOznaka(studijskiProgram.getOznaka());
+        request.setZvanje(studijskiProgram.getZvanje());
+        request.setGodinaAkreditacije(studijskiProgram.getGodinaAkreditacije());
+        request.setTrajanjeGodina(studijskiProgram.getTrajanjeGodina());
+        request.setUkupnoEspb(studijskiProgram.getUkupnoEspb());
+        request.setVrstaStudija(studijskiProgram.getVrstaStudija());
+        request.setTrajanjeSemestara(studijskiProgram.getTrajanjeSemestara());
+        return request;
     }
 
     public static StudijskiProgram toStudijskiProgram(StudijskiProgramNewRequest studijskiProgramNewRequest) {
@@ -134,6 +145,105 @@ public class Converters {
         });
         return studijskiProgramResponses;
     }
+    //-------------------------VISOKOSKOLSKEUSTANOVE-------------------------
+    public static VisokoSkolskaUstanova toVisokoSkolskaUstanova(VisokoSkolskaUstanovaRequest  visokoSkolskaUstanovaRequest) {
+        VisokoSkolskaUstanova visokoSkolskaUstanova=new VisokoSkolskaUstanova();
+        visokoSkolskaUstanova.setNaziv(visokoSkolskaUstanovaRequest.getNaziv());
+        visokoSkolskaUstanova.setVrsta(visokoSkolskaUstanovaRequest.getVrsta());
+
+        return visokoSkolskaUstanova;
+    }
+
+    public static VisokoSkolskaUstanovaResponse toVisokoSkolskaUstanovaResponse(VisokoSkolskaUstanova visokoSkolskaUstanova) {
+        return new VisokoSkolskaUstanovaResponse(visokoSkolskaUstanova.getNaziv(), visokoSkolskaUstanova.getVrsta().name());
+    }
+
+    public static List<VisokoSkolskaUstanovaResponse> toVisokoSkolskaUstanovaResponseList(List<VisokoSkolskaUstanova> vsuList) {
+        List<VisokoSkolskaUstanovaResponse> responseList = new ArrayList<>();
+        for (VisokoSkolskaUstanova vsu : vsuList) {
+            responseList.add(toVisokoSkolskaUstanovaResponse(vsu));
+        }
+        return responseList;
+    }
+    //-------------------------PREDMET-------------------------
+    public static Predmet toPredmet(PredmetRequest request, StudijskiProgram studProgram) {
+        Predmet predmet = new Predmet();
+        predmet.setSifra(request.getSifra());
+        predmet.setNaziv(request.getNaziv());
+        predmet.setOpis(request.getOpis());
+        predmet.setEspb(request.getEspb());
+        predmet.setObavezan(request.isObavezan());
+        // Postavi postojeći entitet StudijskiProgram
+        predmet.setStudProgram(studProgram);
+        return predmet;
+    }
+
+
+    public static PredmetResponse toPredmetResponse(Predmet predmet) {
+        return new PredmetResponse(
+                predmet.getSifra(),
+                predmet.getNaziv(),
+                predmet.getOpis(),
+                predmet.getEspb(),
+                predmet.getStudProgram().getOznaka(), // SAMO oznaka kao String
+                predmet.isObavezan()
+        );
+    }
+
+
+
+    public static List<PredmetResponse> toPredmetResponseList(List<Predmet> predmetList) {
+        List<PredmetResponse> responseList = new ArrayList<>();
+        for (Predmet predmet : predmetList) {
+            responseList.add(toPredmetResponse(predmet));
+        }
+        return responseList;
+    }
+
+    //-------------------------SREDNJA SKOLA-------------------------
+    public static SrednjaSkola toSrednjaSkola(SrednjaSkolaRequest request) {
+        SrednjaSkola srednjaSkola = new SrednjaSkola();
+        srednjaSkola.setNaziv(request.getNaziv());
+        srednjaSkola.setVrstaSrednjeSkole(request.getVrstaSrednjeSkole());
+        return srednjaSkola;
+    }
+
+    public static SrednjaSkolaResponse toSrednjaSkolaResponse(SrednjaSkola srednjaSkola) {
+        return new SrednjaSkolaResponse(
+                srednjaSkola.getNaziv(),
+                srednjaSkola.getVrstaSrednjeSkole()
+        );
+    }
+
+    public static List<SrednjaSkolaResponse> toSrednjaSkolaResponseList(Iterable<SrednjaSkola> skole) {
+        List<SrednjaSkolaResponse> responseList = new ArrayList<>();
+        skole.forEach(s -> responseList.add(toSrednjaSkolaResponse(s)));
+        return responseList;
+    }
+
+    //-------------------------SKOLSKA GODINA-------------------------
+    public static SkolskaGodina toSkolskaGodina(SkolskaGodinaRequest request) {
+        SkolskaGodina godina = new SkolskaGodina();
+        godina.setGodina(request.getGodina());
+        godina.setAktivna(request.isAktivna());
+        return godina;
+    }
+
+    public static SkolskaGodinaResponse toSkolskaGodinaResponse(SkolskaGodina godina) {
+        SkolskaGodinaResponse response = new SkolskaGodinaResponse();
+        response.setGodina(godina.getGodina());
+        response.setAktivna(godina.isAktivna());
+        return response;
+    }
+
+    public static List<SkolskaGodinaResponse> toSkolskaGodinaResponseList(List<SkolskaGodina> godinaList) {
+        List<SkolskaGodinaResponse> responseList = new ArrayList<>();
+        for (SkolskaGodina g : godinaList) {
+            responseList.add(toSkolskaGodinaResponse(g));
+        }
+        return responseList;
+    }
+
 
     public static StudentIndeksResponse toStudentIndeksResponse(StudentIndeks si) {
         if (si == null) return null;
