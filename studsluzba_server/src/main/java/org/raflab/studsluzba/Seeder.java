@@ -171,7 +171,7 @@ public class Seeder implements CommandLineRunner {
             grupaRepository.save(g);
         }
 
-        // ----------- VisokoSkolskeUstanove (7 primera) -----------
+        // ----------- VisokoSkolskeUstanove (primera) -----------
         List<VisokoSkolskaUstanova> vsuList = new ArrayList<>();
 
         vsuList.add(new VisokoSkolskaUstanova() {{

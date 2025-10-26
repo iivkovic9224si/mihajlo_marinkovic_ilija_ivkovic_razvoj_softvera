@@ -19,7 +19,7 @@ public class VisokoSkolskaUstanovaService {
 
     private final VisokoSkolskaUstanovaRepository visokoSkolskaUstanovaRepository;
 
-    //pravi novi
+    //pravi nove VisokoSkolskeUstanove
     @Transactional
     public VisokoSkolskaUstanovaResponse save(VisokoSkolskaUstanovaRequest request) {
         // Proveri da li već postoji škola sa istim nazivom
@@ -27,7 +27,6 @@ public class VisokoSkolskaUstanovaService {
         if (existing.isPresent()) {
             throw new IllegalArgumentException("Visokoškolska ustanova sa ovim nazivom već postoji!");
         }
-
         VisokoSkolskaUstanova entity = Converters.toVisokoSkolskaUstanova(request);
         VisokoSkolskaUstanova saved = visokoSkolskaUstanovaRepository.save(entity);
         return Converters.toVisokoSkolskaUstanovaResponse(saved);
@@ -38,9 +37,9 @@ public class VisokoSkolskaUstanovaService {
         return Converters.toVisokoSkolskaUstanovaResponseList(list);
     }
 
-    public Optional<VisokoSkolskaUstanovaResponse> findByID(Long id) {
+    public VisokoSkolskaUstanovaResponse findByID(Long id) {
         return visokoSkolskaUstanovaRepository.findById(id)
-                .map(Converters::toVisokoSkolskaUstanovaResponse);
+                .map(Converters::toVisokoSkolskaUstanovaResponse).orElse(null);
     }
 
     @Transactional

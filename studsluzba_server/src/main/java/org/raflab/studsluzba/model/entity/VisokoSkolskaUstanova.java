@@ -19,14 +19,12 @@ public class VisokoSkolskaUstanova {
     @Enumerated(EnumType.STRING)
     private VrstaVisokoSkolskihUstanova vrsta;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "visokoSkolskaUstanova")
     private List<StudentPodaci> studentPodaci;
 
     @ManyToMany
     private List<Nastavnik>  nastavnik;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "priznatoOdInstitucije")
     private List<PolozenPredmet> polozenPredmet;
 

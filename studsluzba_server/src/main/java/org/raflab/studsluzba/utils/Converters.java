@@ -2,6 +2,7 @@ package org.raflab.studsluzba.utils;
 
 import org.raflab.studsluzba.controllers.request.*;
 import org.raflab.studsluzba.controllers.response.NastavnikResponse;
+import org.raflab.studsluzba.controllers.response.PredmetResponse;
 import org.raflab.studsluzba.controllers.response.StudijskiProgramResponse;
 import org.raflab.studsluzba.controllers.response.VisokoSkolskaUstanovaResponse;
 import org.raflab.studsluzba.model.entity.*;
@@ -101,6 +102,19 @@ public class Converters {
         return studijskiProgram;
     }
 
+    public static StudijskiProgramRequest toStudijskiProgramRequest(StudijskiProgram studijskiProgram) {
+        StudijskiProgramRequest request = new StudijskiProgramRequest();
+        request.setNaziv(studijskiProgram.getNaziv());
+        request.setOznaka(studijskiProgram.getOznaka());
+        request.setZvanje(studijskiProgram.getZvanje());
+        request.setGodinaAkreditacije(studijskiProgram.getGodinaAkreditacije());
+        request.setTrajanjeGodina(studijskiProgram.getTrajanjeGodina());
+        request.setUkupnoEspb(studijskiProgram.getUkupnoEspb());
+        request.setVrstaStudija(studijskiProgram.getVrstaStudija());
+        request.setTrajanjeSemestara(studijskiProgram.getTrajanjeSemestara());
+        return request;
+    }
+
     public static StudijskiProgram toStudijskiProgram(StudijskiProgramNewRequest studijskiProgramNewRequest) {
         StudijskiProgram studijskiProgram = new StudijskiProgram();
         studijskiProgram.setNaziv(studijskiProgramNewRequest.getNaziv());
@@ -144,6 +158,40 @@ public class Converters {
         List<VisokoSkolskaUstanovaResponse> responseList = new ArrayList<>();
         for (VisokoSkolskaUstanova vsu : vsuList) {
             responseList.add(toVisokoSkolskaUstanovaResponse(vsu));
+        }
+        return responseList;
+    }
+    //-------------------------PREDMET-------------------------
+    public static Predmet toPredmet(PredmetRequest request, StudijskiProgram studProgram) {
+        Predmet predmet = new Predmet();
+        predmet.setSifra(request.getSifra());
+        predmet.setNaziv(request.getNaziv());
+        predmet.setOpis(request.getOpis());
+        predmet.setEspb(request.getEspb());
+        predmet.setObavezan(request.isObavezan());
+        // Postavi postojeći entitet StudijskiProgram
+        predmet.setStudProgram(studProgram);
+        return predmet;
+    }
+
+
+    public static PredmetResponse toPredmetResponse(Predmet predmet) {
+        return new PredmetResponse(
+                predmet.getSifra(),
+                predmet.getNaziv(),
+                predmet.getOpis(),
+                predmet.getEspb(),
+                predmet.getStudProgram().getOznaka(), // SAMO oznaka kao String
+                predmet.isObavezan()
+        );
+    }
+
+
+
+    public static List<PredmetResponse> toPredmetResponseList(List<Predmet> predmetList) {
+        List<PredmetResponse> responseList = new ArrayList<>();
+        for (Predmet predmet : predmetList) {
+            responseList.add(toPredmetResponse(predmet));
         }
         return responseList;
     }

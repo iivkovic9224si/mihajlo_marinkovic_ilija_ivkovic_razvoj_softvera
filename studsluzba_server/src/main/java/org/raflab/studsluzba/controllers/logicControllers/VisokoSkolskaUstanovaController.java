@@ -33,7 +33,7 @@ public class VisokoSkolskaUstanovaController {
 
     @GetMapping("/findById/{id}")
     public Optional<VisokoSkolskaUstanovaResponse> findByID(@PathVariable Long id) {
-        return visokoSkolskaUstanovaService.findByID(id);
+        return Optional.ofNullable(visokoSkolskaUstanovaService.findByID(id));
     }
 
     //-------------------------UPDATE PO STAROM NAZIVU I VRSTI-------------------------
