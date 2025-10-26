@@ -25,6 +25,9 @@ public class StudijskiTokAktivnosti {
     @ManyToOne
     private StudentIndeks studentIndeks;
 
+    public StudijskiTokAktivnosti() {
+    }
+
     public StudijskiTokAktivnosti(VrstaStudijskeAktivnosti tip, Integer godina, LocalDate datum, String napomena, StudentIndeks studentIndeks) {
         this.tip = tip;
         this.godina = godina;

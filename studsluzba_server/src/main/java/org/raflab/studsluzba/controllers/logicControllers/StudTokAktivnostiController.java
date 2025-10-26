@@ -16,31 +16,31 @@ import java.util.Optional;
 @RequestMapping("/api/studijski-tok")
 @RequiredArgsConstructor
 public class StudTokAktivnostiController {
-    private final StudijskiTokAktivnostiService service;
+    private final StudijskiTokAktivnostiService studijskiTokAktivnostiService;
     private final StudentIndeksRepository studentIndeksRepository;
 
     @PostMapping(path = "/save")
     public StudijskiTokAktivnostiResponse save(@RequestBody StudijskiTokAktivnostiRequest request) {
         StudijskiTokAktivnosti entity = Converters.toStudijskiTokAktivnosti(request, studentIndeksRepository);
-        StudijskiTokAktivnosti saved = service.save(entity);
+        StudijskiTokAktivnosti saved = studijskiTokAktivnostiService.save(entity);
         return Converters.toStudijskiTokAktivnostiResponse(saved);
     }
 
     @GetMapping(path = "/all")
     public List<StudijskiTokAktivnostiResponse> findAll() {
-        return service.findAll();
+        return studijskiTokAktivnostiService.findAll();
     }
 
     @GetMapping(path = "/{id}")
     public Optional<StudijskiTokAktivnostiResponse> findById(@PathVariable Long id) {
-        return service.findById(id);
+        return studijskiTokAktivnostiService.findById(id);
     }
 
     @PutMapping(path = "/update/{id}")
     public StudijskiTokAktivnostiResponse update(@PathVariable Long id, @RequestBody StudijskiTokAktivnostiRequest request) {
         StudijskiTokAktivnosti entity = Converters.toStudijskiTokAktivnosti(request, studentIndeksRepository);
         entity.setId(id);
-        StudijskiTokAktivnosti updated = service.update(entity);
+        StudijskiTokAktivnosti updated = studijskiTokAktivnostiService.update(entity);
         return Converters.toStudijskiTokAktivnostiResponse(updated);
     }
 }

@@ -14,9 +14,9 @@ public class StudijskiTokAktivnostiRequest {
     private String tip;
     @NotNull
     private Integer godina;
-    @NotNull
     private LocalDate datum;
     private String napomena;
+
     @NotNull
     private int indeksGodina;
     @NotNull
