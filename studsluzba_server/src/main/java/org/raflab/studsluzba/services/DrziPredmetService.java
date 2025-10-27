@@ -1,85 +1,118 @@
 package org.raflab.studsluzba.services;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.DrziPredmetNewRequest;
 import org.raflab.studsluzba.controllers.request.DrziPredmetRequest;
+import org.raflab.studsluzba.controllers.response.DrziPredmetResponse;
+import org.raflab.studsluzba.controllers.response.PredmetResponse;
 import org.raflab.studsluzba.model.entity.DrziPredmet;
 import org.raflab.studsluzba.model.entity.Nastavnik;
 import org.raflab.studsluzba.model.entity.Predmet;
+import org.raflab.studsluzba.model.entity.SkolskaGodina;
 import org.raflab.studsluzba.repositories.DrziPredmetRepository;
 import org.raflab.studsluzba.repositories.NastavnikRepository;
 import org.raflab.studsluzba.repositories.PredmetRepository;
+import org.raflab.studsluzba.repositories.SkolskaGodinaRepository;
+import org.raflab.studsluzba.utils.Converters;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class DrziPredmetService {
 
-    final DrziPredmetRepository drziPredmetRepository;
-    final PredmetRepository predmetRepository;
-    final NastavnikRepository nastavnikRepository;
+    private final DrziPredmetRepository drziPredmetRepository;
+    private final PredmetRepository predmetRepository;
+    private final NastavnikRepository nastavnikRepository;
+    private final SkolskaGodinaRepository skolskaGodinaRepository;
 
+    //----------------------CREATE----------------------
     @Transactional
-    public void saveDrziPredmet(DrziPredmetRequest request) {
+    public DrziPredmetResponse save(DrziPredmetRequest request) {
+        Nastavnik nastavnik = nastavnikRepository.findByEmail(request.getNastavnikEmail())
+                .orElseThrow(() -> new RuntimeException("Nastavnik nije pronadjen: " + request.getNastavnikEmail()));
 
-        List<DrziPredmetNewRequest> drziPredmetList = request.getDrziPredmet();
-        List<DrziPredmetNewRequest> newDrziPredmetList = request.getNewDrziPredmet();
+        Predmet predmet = predmetRepository.findBySifra(request.getPredmetSifra())
+                .orElseThrow(() -> new RuntimeException("Predmet nije pronadjen: " + request.getPredmetSifra()));
 
-        // izvuci sve predmete iz baze po predmetId
-        Map<Long, Predmet> predmetMap = predmetRepository.findByIdIn(
-                drziPredmetList.stream().map(DrziPredmetNewRequest::getPredmetId).collect(Collectors.toList())
-        ).stream().collect(Collectors.toMap(Predmet::getId, Function.identity()));
+        SkolskaGodina godina = skolskaGodinaRepository.findOneByGodina(request.getSkolskaGodinaNaziv())
+                .orElseThrow(() -> new RuntimeException("Skolska godina nije pronadjena: " + request.getSkolskaGodinaNaziv()));
 
-        // izvuci sve predmete iz baze po predmetNaziv za nove unose
-        Map<String, Predmet> newPredmetMap = predmetRepository.findByNazivIn(
-                newDrziPredmetList.stream().map(DrziPredmetNewRequest::getPredmetNaziv).collect(Collectors.toList())
-        ).stream().collect(Collectors.toMap(Predmet::getNaziv, Function.identity()));
+        DrziPredmet drziPredmet = Converters.toDrziPredmet(request, nastavnik, predmet, godina);
 
-        // izvuci sve nastavnike iz baze po email
-        List<String> allEmails = Stream.concat(
-                drziPredmetList.stream().map(DrziPredmetNewRequest::getEmailNastavnik),
-                newDrziPredmetList.stream().map(DrziPredmetNewRequest::getEmailNastavnik)
-        ).distinct().collect(Collectors.toList());
+        DrziPredmet saved = drziPredmetRepository.save(drziPredmet);
 
-        Map<String, Nastavnik> nastavnikMap = nastavnikRepository.findByEmailIn(allEmails)
-                .stream().collect(Collectors.toMap(Nastavnik::getEmail, Function.identity()));
+        return Converters.toDrziPredmetResponse(saved);
+    }
 
-        // kreiranje liste DrziPredmet objekata za cuvanje
-        List<DrziPredmet> drziPredmetEntities = new ArrayList<>();
+    //----------------------READ----------------------
+    @Transactional(readOnly = true)
+    public List<DrziPredmetResponse> findAll() {
+        return Converters.toDrziPredmetResponseList(drziPredmetRepository.findAll());
+    }
 
-        for (DrziPredmetNewRequest drziPredmetRequest : drziPredmetList) {
-            Predmet predmet = predmetMap.get(drziPredmetRequest.getPredmetId());
-            Nastavnik nastavnik = nastavnikMap.get(drziPredmetRequest.getEmailNastavnik());
+    @Transactional(readOnly = true)
+    public DrziPredmetResponse findById(Long id) {
+        DrziPredmet dp = drziPredmetRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("DrziPredmet ne postoji: " + id));
+        return Converters.toDrziPredmetResponse(dp);
+    }
 
-            if (predmet != null && nastavnik != null) {
-                DrziPredmet drziPredmet = new DrziPredmet();
-                drziPredmet.setPredmet(predmet);
-                drziPredmet.setNastavnik(nastavnik);
-                drziPredmetEntities.add(drziPredmet);
-            }
+    @Transactional(readOnly = true)
+    public List<DrziPredmetResponse> findByNastavnikEmail(String nastavnikEmail) {
+        Iterable<DrziPredmet> all = drziPredmetRepository.findAll();
+        List<DrziPredmet> list = new ArrayList<>();
+        all.forEach(list::add); // Iterable -> List
+
+        return list.stream()
+                .filter(dp -> dp.getNastavnik() != null && dp.getNastavnik().getEmail().equals(nastavnikEmail))
+                .map(Converters::toDrziPredmetResponse)
+                .collect(Collectors.toList());
+    }
+
+
+
+    @Transactional(readOnly = true)
+    public List<PredmetResponse> getPredmetiZaNastavnikaUAktivnojGodini(String nastavnikEmail) {
+        return Converters.toPredmetResponseList(drziPredmetRepository.getPredmetiZaNastavnikaUAktivnojSkolskojGodini(nastavnikEmail));
+    }
+
+    //----------------------UPDATE----------------------
+    @Transactional
+    public DrziPredmetResponse update(Long id, DrziPredmetRequest request) {
+        DrziPredmet drziPredmet = drziPredmetRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("DrziPredmet ne postoji: " + id));
+
+        if (request.getNastavnikEmail() != null) {
+            Nastavnik nastavnik = nastavnikRepository.findByEmail(request.getNastavnikEmail())
+                    .orElseThrow(() -> new RuntimeException("Nastavnik nije pronadjen: " + request.getNastavnikEmail()));
+            drziPredmet.setNastavnik(nastavnik);
         }
 
-        for (DrziPredmetNewRequest newDrziPredmetRequest : newDrziPredmetList) {
-            Predmet predmet = newPredmetMap.get(newDrziPredmetRequest.getPredmetNaziv());
-            Nastavnik nastavnik = nastavnikMap.get(newDrziPredmetRequest.getEmailNastavnik());
-
-            if (predmet != null && nastavnik != null) {
-                DrziPredmet drziPredmet = new DrziPredmet();
-                drziPredmet.setPredmet(predmet);
-                drziPredmet.setNastavnik(nastavnik);
-                drziPredmetEntities.add(drziPredmet);
-            }
+        if (request.getPredmetSifra() != null) {
+            Predmet predmet = predmetRepository.findBySifra(request.getPredmetSifra())
+                    .orElseThrow(() -> new RuntimeException("Predmet nije pronadjen: " + request.getPredmetSifra()));
+            drziPredmet.setPredmet(predmet);
         }
-        System.out.println("BROJ DrziPredmet za cuvanje: " + drziPredmetEntities.size());
 
-        drziPredmetRepository.saveAll(drziPredmetEntities);
+        if (request.getSkolskaGodinaNaziv() != null) {
+            SkolskaGodina godina = skolskaGodinaRepository.findOneByGodina(request.getSkolskaGodinaNaziv())
+                    .orElseThrow(() -> new RuntimeException("Skolska godina nije pronadjena: " + request.getSkolskaGodinaNaziv()));
+            drziPredmet.setSkolskaGodina(godina);
+        }
+
+        DrziPredmet updated = drziPredmetRepository.save(drziPredmet);
+        return Converters.toDrziPredmetResponse(updated);
+    }
+
+    //----------------------DELETE----------------------
+    @Transactional
+    public void deleteById(Long id) {
+        DrziPredmet drziPredmet = drziPredmetRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("DrziPredmet ne postoji: " + id));
+        drziPredmetRepository.delete(drziPredmet);
     }
 }

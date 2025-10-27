@@ -1,6 +1,7 @@
 package org.raflab.studsluzba.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.raflab.studsluzba.model.entity.Nastavnik;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,6 +17,7 @@ public interface NastavnikRepository extends JpaRepository<Nastavnik, Long> {	//
 	List<Nastavnik> findByImeAndPrezime(String ime, String prezime);
 
 	List<Nastavnik> findByEmailIn(List<String> emails);
+    Optional<Nastavnik> findByEmail(String email);
 	
 }
 

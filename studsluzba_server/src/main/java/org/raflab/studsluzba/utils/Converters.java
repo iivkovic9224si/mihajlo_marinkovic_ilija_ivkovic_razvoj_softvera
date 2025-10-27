@@ -334,4 +334,33 @@ public class Converters {
         }
         return resList;
     }
+
+    //-------------------------DRZI PREDMET-------------------------
+    public static DrziPredmet toDrziPredmet(DrziPredmetRequest request,
+                                            Nastavnik nastavnik,
+                                            Predmet predmet,
+                                            SkolskaGodina skolskaGodina) {
+        DrziPredmet dp = new DrziPredmet();
+        dp.setNastavnik(nastavnik);
+        dp.setPredmet(predmet);
+        dp.setSkolskaGodina(skolskaGodina);
+        return dp;
+    }
+
+    public static DrziPredmetResponse toDrziPredmetResponse(DrziPredmet dp) {
+        return new DrziPredmetResponse(
+                dp.getNastavnik() != null ? dp.getNastavnik().getEmail() : null,
+                dp.getPredmet() != null ? dp.getPredmet().getSifra() : null,
+                dp.getSkolskaGodina() != null ? dp.getSkolskaGodina().getGodina() : null
+        );
+    }
+
+
+
+    public static List<DrziPredmetResponse> toDrziPredmetResponseList(Iterable<DrziPredmet> dpList) {
+        List<DrziPredmetResponse> responses = new ArrayList<>();
+        dpList.forEach(dp -> responses.add(toDrziPredmetResponse(dp)));
+        return responses;
+    }
 }
+
