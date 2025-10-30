@@ -23,4 +23,5 @@ public interface PredmetRepository extends CrudRepository<Predmet, Long> {
     Optional<Predmet> findBySifra(String sifra);
 
 
+    List<Predmet> findByStudProgram(StudijskiProgram sp);
 }

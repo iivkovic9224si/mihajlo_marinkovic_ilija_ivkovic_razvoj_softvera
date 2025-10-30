@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.raflab.studsluzba.model.entity.DrziPredmet;
 import org.raflab.studsluzba.model.entity.Predmet;
+import org.raflab.studsluzba.model.entity.SkolskaGodina;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -21,4 +22,5 @@ public interface DrziPredmetRepository extends CrudRepository<DrziPredmet, Long>
 			+ "and dp.predmet.id = :idPredmet")
 	DrziPredmet getDrziPredmetNastavnikPredmet(Long idPredmet, Long idNastavnik);
 
+    List<DrziPredmet> findByPredmetAndSkolskaGodina(Predmet predmet, SkolskaGodina aktuelnaGodina);
 }
