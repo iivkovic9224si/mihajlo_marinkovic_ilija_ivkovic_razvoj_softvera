@@ -7,10 +7,9 @@ import org.raflab.studsluzba.model.entity.Predmet;
 import org.raflab.studsluzba.model.entity.StudijskiProgram;
 import org.raflab.studsluzba.repositories.PredmetRepository;
 import org.raflab.studsluzba.repositories.StudijskiProgramRepository;
-import org.raflab.studsluzba.utils.Converters;
+import org.raflab.studsluzba.utils.converters.PredmetConverter;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,9 +31,9 @@ public class PredmetService {
             );
         }
 
-        Predmet predmet = Converters.toPredmet(request, studProgram);
+        Predmet predmet = PredmetConverter.toPredmet(request, studProgram);
         Predmet saved = predmetRepository.save(predmet);
-        return Converters.toPredmetResponse(saved);
+        return PredmetConverter.toPredmetResponse(saved);
     }
 
     // FIND ALL
@@ -43,7 +42,7 @@ public class PredmetService {
         if(predmeti.isEmpty()) {
             throw new IllegalArgumentException("Trenutno nema predmeta u bazi.");
         }
-        return Converters.toPredmetResponseList(predmeti);
+        return PredmetConverter.toPredmetResponseList(predmeti);
     }
 
     // FIND BY ID
@@ -52,7 +51,7 @@ public class PredmetService {
             throw new IllegalArgumentException("ID predmeta ne sme biti null.");
         }
         return predmetRepository.findById(id)
-                .map(Converters::toPredmetResponse)
+                .map(PredmetConverter::toPredmetResponse)
                 .orElseThrow(() -> new IllegalArgumentException("Predmet sa ID " + id + " ne postoji."));
     }
 
@@ -84,7 +83,7 @@ public class PredmetService {
         predmet.setStudProgram(studProgram);
 
         Predmet updated = predmetRepository.save(predmet);
-        return Converters.toPredmetResponse(updated);
+        return PredmetConverter.toPredmetResponse(updated);
     }
 
     // DELETE
@@ -109,7 +108,7 @@ public class PredmetService {
             throw new IllegalArgumentException("Nema predmeta za godinu akreditacije " + godinaAkreditacije);
         }
 
-        return Converters.toPredmetResponseList(predmeti);
+        return PredmetConverter.toPredmetResponseList(predmeti);
     }
 
     // FIND BY STUDPROGRAM AND OBAVEZAN
@@ -132,6 +131,6 @@ public class PredmetService {
             );
         }
 
-        return Converters.toPredmetResponseList(predmeti);
+        return PredmetConverter.toPredmetResponseList(predmeti);
     }
 }

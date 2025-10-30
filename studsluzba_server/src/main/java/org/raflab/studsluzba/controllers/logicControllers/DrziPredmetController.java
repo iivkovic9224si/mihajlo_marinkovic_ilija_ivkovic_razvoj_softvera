@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.raflab.studsluzba.controllers.request.DrziPredmetRequest;
 import org.raflab.studsluzba.controllers.response.DrziPredmetResponse;
 import org.raflab.studsluzba.controllers.response.PredmetResponse;
-import org.raflab.studsluzba.model.entity.Predmet;
 import org.raflab.studsluzba.services.DrziPredmetService;
-import org.raflab.studsluzba.utils.Converters;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

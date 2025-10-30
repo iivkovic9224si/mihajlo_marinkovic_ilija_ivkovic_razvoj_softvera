@@ -6,7 +6,7 @@ import org.raflab.studsluzba.controllers.response.SrednjaSkolaResponse;
 import org.raflab.studsluzba.model.entity.SrednjaSkola;
 import org.raflab.studsluzba.model.entity.VrstaSrednjeSkole;
 import org.raflab.studsluzba.repositories.SrednjaSkolaRepository;
-import org.raflab.studsluzba.utils.Converters;
+import org.raflab.studsluzba.utils.converters.SrednjaSkolaConverter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,21 +27,21 @@ public class SrednjaSkolaService {
             throw new IllegalArgumentException("Srednja škola sa nazivom '" + request.getNaziv() +
                     "' i vrstom '" + request.getVrstaSrednjeSkole() + "' već postoji!");
         }
-        SrednjaSkola skola = Converters.toSrednjaSkola(request);
+        SrednjaSkola skola = SrednjaSkolaConverter.toSrednjaSkola(request);
         SrednjaSkola saved = srednjaSkolaRepository.save(skola);
-        return Converters.toSrednjaSkolaResponse(saved);
+        return SrednjaSkolaConverter.toSrednjaSkolaResponse(saved);
     }
 
     // ----------------- READ ALL -----------------
     public List<SrednjaSkolaResponse> findAll() {
-        return Converters.toSrednjaSkolaResponseList(srednjaSkolaRepository.findAll());
+        return SrednjaSkolaConverter.toSrednjaSkolaResponseList(srednjaSkolaRepository.findAll());
     }
 
     // ----------------- READ BY ID -----------------
     public SrednjaSkolaResponse findById(Long id) {
         SrednjaSkola skola = srednjaSkolaRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Srednja škola sa ID " + id + " ne postoji!"));
-        return Converters.toSrednjaSkolaResponse(skola);
+        return SrednjaSkolaConverter.toSrednjaSkolaResponse(skola);
     }
 
     // ----------------- READ BY NAZIV + VRSTA -----------------
@@ -49,7 +49,7 @@ public class SrednjaSkolaService {
         SrednjaSkola skola = srednjaSkolaRepository.findByNazivAndVrstaSrednjeSkole(naziv, vrsta)
                 .orElseThrow(() -> new IllegalArgumentException("Srednja škola sa nazivom '" + naziv +
                         "' i vrstom '" + vrsta + "' ne postoji!"));
-        return Converters.toSrednjaSkolaResponse(skola);
+        return SrednjaSkolaConverter.toSrednjaSkolaResponse(skola);
     }
 
     // ----------------- UPDATE -----------------
@@ -64,7 +64,7 @@ public class SrednjaSkolaService {
         skola.setVrstaSrednjeSkole(noviPodaci.getVrstaSrednjeSkole());
 
         SrednjaSkola updated = srednjaSkolaRepository.save(skola);
-        return Converters.toSrednjaSkolaResponse(updated);
+        return SrednjaSkolaConverter.toSrednjaSkolaResponse(updated);
     }
 
 

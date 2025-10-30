@@ -12,7 +12,8 @@ import org.raflab.studsluzba.repositories.DrziPredmetRepository;
 import org.raflab.studsluzba.repositories.NastavnikRepository;
 import org.raflab.studsluzba.repositories.PredmetRepository;
 import org.raflab.studsluzba.repositories.SkolskaGodinaRepository;
-import org.raflab.studsluzba.utils.Converters;
+import org.raflab.studsluzba.utils.converters.DrziPredmetConverter;
+import org.raflab.studsluzba.utils.converters.PredmetConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,24 +42,24 @@ public class DrziPredmetService {
         SkolskaGodina godina = skolskaGodinaRepository.findOneByGodina(request.getSkolskaGodinaNaziv())
                 .orElseThrow(() -> new RuntimeException("Skolska godina nije pronadjena: " + request.getSkolskaGodinaNaziv()));
 
-        DrziPredmet drziPredmet = Converters.toDrziPredmet(request, nastavnik, predmet, godina);
+        DrziPredmet drziPredmet = DrziPredmetConverter.toDrziPredmet(request, nastavnik, predmet, godina);
 
         DrziPredmet saved = drziPredmetRepository.save(drziPredmet);
 
-        return Converters.toDrziPredmetResponse(saved);
+        return DrziPredmetConverter.toDrziPredmetResponse(saved);
     }
 
     //----------------------READ----------------------
     @Transactional(readOnly = true)
     public List<DrziPredmetResponse> findAll() {
-        return Converters.toDrziPredmetResponseList(drziPredmetRepository.findAll());
+        return DrziPredmetConverter.toDrziPredmetResponseList(drziPredmetRepository.findAll());
     }
 
     @Transactional(readOnly = true)
     public DrziPredmetResponse findById(Long id) {
         DrziPredmet dp = drziPredmetRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("DrziPredmet ne postoji: " + id));
-        return Converters.toDrziPredmetResponse(dp);
+        return DrziPredmetConverter.toDrziPredmetResponse(dp);
     }
 
     @Transactional(readOnly = true)
@@ -69,7 +70,7 @@ public class DrziPredmetService {
 
         return list.stream()
                 .filter(dp -> dp.getNastavnik() != null && dp.getNastavnik().getEmail().equals(nastavnikEmail))
-                .map(Converters::toDrziPredmetResponse)
+                .map(DrziPredmetConverter::toDrziPredmetResponse)
                 .collect(Collectors.toList());
     }
 
@@ -77,7 +78,7 @@ public class DrziPredmetService {
 
     @Transactional(readOnly = true)
     public List<PredmetResponse> getPredmetiZaNastavnikaUAktivnojGodini(String nastavnikEmail) {
-        return Converters.toPredmetResponseList(drziPredmetRepository.getPredmetiZaNastavnikaUAktivnojSkolskojGodini(nastavnikEmail));
+        return PredmetConverter.toPredmetResponseList(drziPredmetRepository.getPredmetiZaNastavnikaUAktivnojSkolskojGodini(nastavnikEmail));
     }
 
     //----------------------UPDATE----------------------
@@ -105,7 +106,7 @@ public class DrziPredmetService {
         }
 
         DrziPredmet updated = drziPredmetRepository.save(drziPredmet);
-        return Converters.toDrziPredmetResponse(updated);
+        return DrziPredmetConverter.toDrziPredmetResponse(updated);
     }
 
     //----------------------DELETE----------------------

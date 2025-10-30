@@ -4,7 +4,7 @@ import org.raflab.studsluzba.controllers.request.NastavnikRequest;
 import org.raflab.studsluzba.controllers.response.NastavnikResponse;
 import org.raflab.studsluzba.model.entity.Nastavnik;
 import org.raflab.studsluzba.services.NastavnikService;
-import org.raflab.studsluzba.utils.Converters;
+import org.raflab.studsluzba.utils.converters.NastavnikConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,13 +22,13 @@ public class NastavnikController {
 	
 	@PostMapping(path = "/add")
 	public Long addNewNastavnik(@RequestBody @Valid NastavnikRequest nastavnikRequest) {
-		Nastavnik nastavnik = nastavnikService.save(Converters.toNastavnik(nastavnikRequest));
+		Nastavnik nastavnik = nastavnikService.save(NastavnikConverter.toNastavnik(nastavnikRequest));
 		return nastavnik.getId();
 	}
 	
 	@GetMapping(path = "/all")
 	public List<NastavnikResponse> getAllNastavnik() {
-		return Converters.toNastavnikResponseList(nastavnikService.findAll());
+		return NastavnikConverter.toNastavnikResponseList(nastavnikService.findAll());
 	}
 
 	@GetMapping(path = "/{id}")
@@ -36,7 +36,7 @@ public class NastavnikController {
 	{
 		Optional<Nastavnik> rez = nastavnikService.findById(id);
 
-		return rez.map(Converters::toNastavnikResponse).orElse(null);
+		return rez.map(NastavnikConverter::toNastavnikResponse).orElse(null);
 	}
 	
 	@GetMapping(path = "/search")
@@ -44,7 +44,7 @@ public class NastavnikController {
 			@RequestParam(required = false) String ime,
 			@RequestParam(required = false) String prezime){
 
-        return Converters.toNastavnikResponseList(nastavnikService.findByImeAndPrezime(ime, prezime));
+        return NastavnikConverter.toNastavnikResponseList(nastavnikService.findByImeAndPrezime(ime, prezime));
 	}
 	
 }
