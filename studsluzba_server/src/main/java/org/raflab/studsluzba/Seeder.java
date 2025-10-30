@@ -171,25 +171,64 @@ public class Seeder implements CommandLineRunner {
             grupaRepository.save(g);
         }
 
-        // ----------- VisokoSkolskeUstanove (primera) -----------
-        List<VisokoSkolskaUstanova> vsuList = new ArrayList<>();
+        if(visokoSkolskaUstanovaRepository.count() == 0) {
+            String[] naziviVSU = {
+                    "Univerzitet Beograd",
+                    "Univerzitet Novi Sad",
+                    "Univerzitet Niš",
+                    "Visoka Tehnička Škola Subotica",
+                    "Visoka Ekonomksa Škola Subotica",
+                    "Visoka Tehnička Škola Beograd",
+                    "Visoka Poslovna Škola Novi Sad"
+            };
+            VrstaVisokoSkolskihUstanova[] vrste = {
+                    VrstaVisokoSkolskihUstanova.UNIVERZITET,
+                    VrstaVisokoSkolskihUstanova.UNIVERZITET,
+                    VrstaVisokoSkolskihUstanova.UNIVERZITET,
+                    VrstaVisokoSkolskihUstanova.VISOKA_TEHNICKA,
+                    VrstaVisokoSkolskihUstanova.VISOKA_POSLOVNA,
+                    VrstaVisokoSkolskihUstanova.VISOKA_TEHNICKA,
+                    VrstaVisokoSkolskihUstanova.VISOKA_POSLOVNA
+            };
 
-        vsuList.add(new VisokoSkolskaUstanova() {{
-            setNaziv("Univerzitet Beograd");
-            setVrsta(VrstaVisokoSkolskihUstanova.UNIVERZITET);
-        }});
-        vsuList.add(new VisokoSkolskaUstanova() {{
-            setNaziv("Univerzitet Novi Sad");
-            setVrsta(VrstaVisokoSkolskihUstanova.UNIVERZITET);
-        }});
-        vsuList.add(new VisokoSkolskaUstanova() {{
-            setNaziv("Visoka Tehnička Škola Niš");
-            setVrsta(VrstaVisokoSkolskihUstanova.VISOKA_TEHNICKA);
-        }});
-        vsuList.add(new VisokoSkolskaUstanova() {{
-            setNaziv("Visoka Ekonomksa Škola Subotica");
-            setVrsta(VrstaVisokoSkolskihUstanova.VISOKA_POSLOVNA);
-        }});
+            for(int i=0; i<7; i++) {
+                VisokoSkolskaUstanova vsu = new VisokoSkolskaUstanova();
+                vsu.setSifra("VS" + (i+1));
+                vsu.setNaziv(naziviVSU[i]);
+                vsu.setVrsta(vrste[i]);
+                visokoSkolskaUstanovaRepository.save(vsu);
+            }
+        }
+
+        // ----------- Srednje škole -----------
+        if(srednjaSkolaRepository.count() == 0) {
+            String[] naziviSS = {
+                    "Gimnazija Nikola Tesla",
+                    "Tehnička škola Beograd",
+                    "Ekonomska škola Novi Sad",
+                    "Medicinska škola Niš",
+                    "Umetnička škola Subotica",
+                    "Poljoprivredna škola Sombor",
+                    "Mašinska škola Kragujevac"
+            };
+            VrstaSrednjeSkole[] vrsteSS = {
+                    VrstaSrednjeSkole.GIMNAZIJA,
+                    VrstaSrednjeSkole.STRUCNA,
+                    VrstaSrednjeSkole.STRUCNA,
+                    VrstaSrednjeSkole.STRUCNA,
+                    VrstaSrednjeSkole.UMETNICKA,
+                    VrstaSrednjeSkole.ZANATSKA,
+                    VrstaSrednjeSkole.ZANATSKA
+            };
+
+            for(int i=0; i<7; i++) {
+                SrednjaSkola skola = new SrednjaSkola();
+                skola.setSifra("SS" + (i+1)); // <-- ovde je ispravljeno
+                skola.setNaziv(naziviSS[i]);
+                skola.setVrstaSrednjeSkole(vrsteSS[i]);
+                srednjaSkolaRepository.save(skola);
+            }
+        }
 
         int trenutnaGodina = LocalDate.now().getYear();
         for (int godina = 2016; godina <= trenutnaGodina; godina++) {

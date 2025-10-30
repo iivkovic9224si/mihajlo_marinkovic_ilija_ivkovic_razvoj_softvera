@@ -4,13 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.raflab.studsluzba.controllers.request.SrednjaSkolaRequest;
 import org.raflab.studsluzba.controllers.response.SrednjaSkolaResponse;
 import org.raflab.studsluzba.model.entity.SrednjaSkola;
-import org.raflab.studsluzba.model.entity.VrstaSrednjeSkole;
 import org.raflab.studsluzba.repositories.SrednjaSkolaRepository;
 import org.raflab.studsluzba.utils.converters.SrednjaSkolaConverter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,13 +18,14 @@ public class SrednjaSkolaService {
 
     // ----------------- CREATE -----------------
     public SrednjaSkolaResponse save(SrednjaSkolaRequest request) {
-        Optional<SrednjaSkola> existing = srednjaSkolaRepository.findByNazivAndVrstaSrednjeSkole(
-                request.getNaziv(), request.getVrstaSrednjeSkole()
-        );
-        if (existing.isPresent()) {
-            throw new IllegalArgumentException("Srednja škola sa nazivom '" + request.getNaziv() +
-                    "' i vrstom '" + request.getVrstaSrednjeSkole() + "' već postoji!");
+        if (request.getSifra() == null || request.getSifra().isBlank()) {
+            throw new IllegalArgumentException("Šifra škole je obavezna i ne sme biti prazna!");
         }
+
+        if (srednjaSkolaRepository.findBySifra(request.getSifra()).isPresent()) {
+            throw new IllegalArgumentException("Srednja škola sa šifrom '" + request.getSifra() + "' već postoji!");
+        }
+
         SrednjaSkola skola = SrednjaSkolaConverter.toSrednjaSkola(request);
         SrednjaSkola saved = srednjaSkolaRepository.save(skola);
         return SrednjaSkolaConverter.toSrednjaSkolaResponse(saved);
@@ -37,42 +36,49 @@ public class SrednjaSkolaService {
         return SrednjaSkolaConverter.toSrednjaSkolaResponseList(srednjaSkolaRepository.findAll());
     }
 
-    // ----------------- READ BY ID -----------------
-    public SrednjaSkolaResponse findById(Long id) {
-        SrednjaSkola skola = srednjaSkolaRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Srednja škola sa ID " + id + " ne postoji!"));
-        return SrednjaSkolaConverter.toSrednjaSkolaResponse(skola);
-    }
+    // ----------------- READ BY SIFRA -----------------
+    public SrednjaSkolaResponse findBySifra(String sifra) {
+        if (sifra == null || sifra.isBlank()) {
+            throw new IllegalArgumentException("Šifra škole ne sme biti prazna!");
+        }
 
-    // ----------------- READ BY NAZIV + VRSTA -----------------
-    public SrednjaSkolaResponse findByNazivAndVrsta(String naziv, VrstaSrednjeSkole vrsta) {
-        SrednjaSkola skola = srednjaSkolaRepository.findByNazivAndVrstaSrednjeSkole(naziv, vrsta)
-                .orElseThrow(() -> new IllegalArgumentException("Srednja škola sa nazivom '" + naziv +
-                        "' i vrstom '" + vrsta + "' ne postoji!"));
+        SrednjaSkola skola = srednjaSkolaRepository.findBySifra(sifra)
+                .orElseThrow(() -> new IllegalArgumentException("Srednja škola sa šifrom '" + sifra + "' ne postoji!"));
         return SrednjaSkolaConverter.toSrednjaSkolaResponse(skola);
     }
 
     // ----------------- UPDATE -----------------
-    public SrednjaSkolaResponse update(String stariNaziv, VrstaSrednjeSkole staraVrsta, SrednjaSkolaRequest noviPodaci) {
-        SrednjaSkola skola = srednjaSkolaRepository.findByNazivAndVrstaSrednjeSkole(
-                stariNaziv, staraVrsta
-        ).orElseThrow(() -> new IllegalArgumentException("Srednja škola sa nazivom '" + stariNaziv +
-                "' i vrstom '" + staraVrsta + "' ne postoji!"));
+    public SrednjaSkolaResponse update(String sifra, SrednjaSkolaRequest noviPodaci) {
+        if (sifra == null || sifra.isBlank()) {
+            throw new IllegalArgumentException("Šifra škole ne sme biti prazna!");
+        }
 
-        // Update polja na nova
+        SrednjaSkola skola = srednjaSkolaRepository.findBySifra(sifra)
+                .orElseThrow(() -> new IllegalArgumentException("Srednja škola sa šifrom '" + sifra + "' ne postoji!"));
+
+        // Update samo dozvoljenih polja
         skola.setNaziv(noviPodaci.getNaziv());
         skola.setVrstaSrednjeSkole(noviPodaci.getVrstaSrednjeSkole());
+        skola.setSifra(noviPodaci.getSifra() != null ? noviPodaci.getSifra() : sifra);
+
+        // Ako menjamo šifru, proveri da nova ne postoji već u bazi
+        if (!sifra.equals(skola.getSifra()) && srednjaSkolaRepository.findBySifra(skola.getSifra()).isPresent()) {
+            throw new IllegalArgumentException("Nova šifra '" + skola.getSifra() + "' već postoji!");
+        }
 
         SrednjaSkola updated = srednjaSkolaRepository.save(skola);
         return SrednjaSkolaConverter.toSrednjaSkolaResponse(updated);
     }
 
-
     // ----------------- DELETE -----------------
-    public void delete(Long id) {
-        if (!srednjaSkolaRepository.existsById(id)) {
-            throw new IllegalArgumentException("Srednja škola sa ID " + id + " ne postoji!");
+    public void delete(String sifra) {
+        if (sifra == null || sifra.isBlank()) {
+            throw new IllegalArgumentException("Šifra škole ne sme biti prazna!");
         }
-        srednjaSkolaRepository.deleteById(id);
+
+        SrednjaSkola skola = srednjaSkolaRepository.findBySifra(sifra)
+                .orElseThrow(() -> new IllegalArgumentException("Srednja škola sa šifrom '" + sifra + "' ne postoji!"));
+
+        srednjaSkolaRepository.delete(skola);
     }
 }

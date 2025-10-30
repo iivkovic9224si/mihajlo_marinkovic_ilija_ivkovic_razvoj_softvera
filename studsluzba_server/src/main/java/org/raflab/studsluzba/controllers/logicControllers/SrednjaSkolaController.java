@@ -2,13 +2,11 @@ package org.raflab.studsluzba.controllers.logicControllers;
 
 import org.raflab.studsluzba.controllers.request.SrednjaSkolaRequest;
 import org.raflab.studsluzba.controllers.response.SrednjaSkolaResponse;
-import org.raflab.studsluzba.model.entity.VrstaSrednjeSkole;
 import org.raflab.studsluzba.services.SrednjaSkolaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -27,27 +25,22 @@ public class SrednjaSkolaController {
     public List<SrednjaSkolaResponse> findAll() {
         return srednjaSkolaService.findAll();
     }
-    @GetMapping("/findById/{id}")
-    public Optional<SrednjaSkolaResponse> findById(@PathVariable Long id) {
-        return Optional.ofNullable(srednjaSkolaService.findById(id));
+
+    @GetMapping("/findBySifra/{sifra}")
+    public SrednjaSkolaResponse findBySifra(@PathVariable String sifra) {
+        return srednjaSkolaService.findBySifra(sifra);
     }
-    @GetMapping("/findByNazivAndVrsta")
-    public SrednjaSkolaResponse findByNazivAndVrsta(
-            @RequestParam String naziv,
-            @RequestParam VrstaSrednjeSkole vrsta
-    ) {
-        return srednjaSkolaService.findByNazivAndVrsta(naziv, vrsta);
-    }
-    @PostMapping("/update")
+
+    @PostMapping("/update/{sifra}")
     public SrednjaSkolaResponse update(
-            @RequestParam String stariNaziv,
-            @RequestParam VrstaSrednjeSkole staraVrsta,
-            @RequestBody SrednjaSkolaRequest noviPodaci)
-    {
-        return srednjaSkolaService.update(stariNaziv, staraVrsta, noviPodaci);
+            @PathVariable String sifra,
+            @RequestBody SrednjaSkolaRequest noviPodaci
+    ) {
+        return srednjaSkolaService.update(sifra, noviPodaci);
     }
-    @GetMapping("/delete/{id}")
-    public void delete(@PathVariable Long id) {
-        srednjaSkolaService.delete(id);
+
+    @GetMapping("/delete/{sifra}")
+    public void delete(@PathVariable String sifra) {
+        srednjaSkolaService.delete(sifra);
     }
 }

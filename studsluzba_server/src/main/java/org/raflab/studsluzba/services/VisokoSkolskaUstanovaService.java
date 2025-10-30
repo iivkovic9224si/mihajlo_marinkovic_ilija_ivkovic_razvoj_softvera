@@ -4,72 +4,86 @@ import lombok.RequiredArgsConstructor;
 import org.raflab.studsluzba.controllers.request.VisokoSkolskaUstanovaRequest;
 import org.raflab.studsluzba.controllers.response.VisokoSkolskaUstanovaResponse;
 import org.raflab.studsluzba.model.entity.VisokoSkolskaUstanova;
-import org.raflab.studsluzba.model.entity.VrstaVisokoSkolskihUstanova;
 import org.raflab.studsluzba.repositories.VisokoSkolskaUstanovaRepository;
 import org.raflab.studsluzba.utils.converters.VisokoSkolskaUstanovaConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class VisokoSkolskaUstanovaService {
 
-    private final VisokoSkolskaUstanovaRepository visokoSkolskaUstanovaRepository;
+    private final VisokoSkolskaUstanovaRepository repository;
 
-    //pravi nove VisokoSkolskeUstanove
+    // ----------------- CREATE -----------------
     @Transactional
     public VisokoSkolskaUstanovaResponse save(VisokoSkolskaUstanovaRequest request) {
-        // Proveri da li već postoji škola sa istim nazivom
-        Optional<VisokoSkolskaUstanova> existing = visokoSkolskaUstanovaRepository.findByNaziv(request.getNaziv());
-        if (existing.isPresent()) {
-            throw new IllegalArgumentException("Visokoškolska ustanova sa ovim nazivom već postoji!");
+        if(request.getSifra() == null || request.getSifra().isBlank()) {
+            throw new IllegalArgumentException("Šifra ustanove je obavezna i ne sme biti prazna!");
         }
-        VisokoSkolskaUstanova entity = VisokoSkolskaUstanovaConverter.toVisokoSkolskaUstanova(request);
-        VisokoSkolskaUstanova saved = visokoSkolskaUstanovaRepository.save(entity);
+
+        if(repository.findBySifra(request.getSifra()).isPresent()) {
+            throw new IllegalArgumentException("Ustanova sa šifrom '" + request.getSifra() + "' već postoji!");
+        }
+
+        VisokoSkolskaUstanova ustanova = VisokoSkolskaUstanovaConverter.toVisokoSkolskaUstanova(request);
+        VisokoSkolskaUstanova saved = repository.save(ustanova);
         return VisokoSkolskaUstanovaConverter.toVisokoSkolskaUstanovaResponse(saved);
     }
-    //nalazi sve visokoSkolskeUstanove
+
+    // ----------------- READ ALL -----------------
     public List<VisokoSkolskaUstanovaResponse> findAll() {
-        List<VisokoSkolskaUstanova> list = (List<VisokoSkolskaUstanova>) visokoSkolskaUstanovaRepository.findAll();
-        return VisokoSkolskaUstanovaConverter.toVisokoSkolskaUstanovaResponseList(list);
+        return VisokoSkolskaUstanovaConverter.toVisokoSkolskaUstanovaResponseList((List<VisokoSkolskaUstanova>) repository.findAll());
     }
 
-    public VisokoSkolskaUstanovaResponse findByID(Long id) {
-        return visokoSkolskaUstanovaRepository.findById(id)
-                .map(VisokoSkolskaUstanovaConverter::toVisokoSkolskaUstanovaResponse).orElse(null);
-    }
-
-    @Transactional
-    public VisokoSkolskaUstanovaResponse update(
-            String stariNaziv, VrstaVisokoSkolskihUstanova staraVrsta,
-            VisokoSkolskaUstanovaRequest noviPodaci) {
-
-        List<VisokoSkolskaUstanova> visokoSkolskaUstanovaList = visokoSkolskaUstanovaRepository.findByNazivContainingIgnoreCaseAndVrsta(stariNaziv, staraVrsta);
-        if (visokoSkolskaUstanovaList.isEmpty()) {
-            throw new IllegalArgumentException("Visokoškolska ustanova sa starim nazivom i vrstom ne postoji!");
-        }
-        VisokoSkolskaUstanova visokoSkolskaUstanova = visokoSkolskaUstanovaList.get(0);
-        List<VisokoSkolskaUstanova> duplicates = visokoSkolskaUstanovaRepository.findByNazivContainingIgnoreCaseAndVrsta(noviPodaci.getNaziv(), noviPodaci.getVrsta());
-        boolean duplicateExists = duplicates.stream().anyMatch(e -> !e.equals(visokoSkolskaUstanova)); // ignorisi sebe
-        if (duplicateExists) {
-            throw new IllegalArgumentException("Već postoji visokoškolska ustanova sa novim nazivom i vrstom!");
+    // ----------------- READ BY SIFRA -----------------
+    public VisokoSkolskaUstanovaResponse findBySifra(String sifra) {
+        if(sifra == null || sifra.isBlank()) {
+            throw new IllegalArgumentException("Šifra ustanove ne sme biti prazna!");
         }
 
-        visokoSkolskaUstanova.setNaziv(noviPodaci.getNaziv());
-        visokoSkolskaUstanova.setVrsta(noviPodaci.getVrsta());
-        VisokoSkolskaUstanova newVisokoSkolskaUstanova = visokoSkolskaUstanovaRepository.save(visokoSkolskaUstanova);
-        return VisokoSkolskaUstanovaConverter.toVisokoSkolskaUstanovaResponse(newVisokoSkolskaUstanova);
+        VisokoSkolskaUstanova ustanova = repository.findBySifra(sifra)
+                .orElseThrow(() -> new IllegalArgumentException("Ustanova sa šifrom '" + sifra + "' ne postoji!"));
+
+        return VisokoSkolskaUstanovaConverter.toVisokoSkolskaUstanovaResponse(ustanova);
     }
 
-
-    //brise sa tim id-jem
+    // ----------------- UPDATE -----------------
     @Transactional
-    public void delete(Long id) {
-        VisokoSkolskaUstanova existing = visokoSkolskaUstanovaRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Visokoškolska ustanova sa ID " + id + " ne postoji!"));
-        visokoSkolskaUstanovaRepository.delete(existing);
+    public VisokoSkolskaUstanovaResponse update(String sifra, VisokoSkolskaUstanovaRequest noviPodaci) {
+        if(sifra == null || sifra.isBlank()) {
+            throw new IllegalArgumentException("Šifra ustanove ne sme biti prazna!");
+        }
+
+        VisokoSkolskaUstanova ustanova = repository.findBySifra(sifra)
+                .orElseThrow(() -> new IllegalArgumentException("Ustanova sa šifrom '" + sifra + "' ne postoji!"));
+
+        // Update polja
+        ustanova.setNaziv(noviPodaci.getNaziv());
+        ustanova.setVrsta(noviPodaci.getVrsta());
+        ustanova.setSifra(noviPodaci.getSifra() != null ? noviPodaci.getSifra() : sifra);
+
+        // Ako menjamo šifru, proveri da nova ne postoji
+        if(!sifra.equals(ustanova.getSifra()) && repository.findBySifra(ustanova.getSifra()).isPresent()) {
+            throw new IllegalArgumentException("Nova šifra '" + ustanova.getSifra() + "' već postoji!");
+        }
+
+        VisokoSkolskaUstanova updated = repository.save(ustanova);
+        return VisokoSkolskaUstanovaConverter.toVisokoSkolskaUstanovaResponse(updated);
+    }
+
+    // ----------------- DELETE -----------------
+    @Transactional
+    public void delete(String sifra) {
+        if(sifra == null || sifra.isBlank()) {
+            throw new IllegalArgumentException("Šifra ustanove ne sme biti prazna!");
+        }
+
+        VisokoSkolskaUstanova ustanova = repository.findBySifra(sifra)
+                .orElseThrow(() -> new IllegalArgumentException("Ustanova sa šifrom '" + sifra + "' ne postoji!"));
+
+        repository.delete(ustanova);
     }
 }
-

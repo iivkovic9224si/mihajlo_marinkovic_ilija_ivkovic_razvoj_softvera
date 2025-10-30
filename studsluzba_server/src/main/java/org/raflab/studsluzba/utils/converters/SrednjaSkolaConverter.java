@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SrednjaSkolaConverter {
+
     public static SrednjaSkola toSrednjaSkola(SrednjaSkolaRequest request) {
         SrednjaSkola srednjaSkola = new SrednjaSkola();
+        srednjaSkola.setSifra(request.getSifra());
         srednjaSkola.setNaziv(request.getNaziv());
         srednjaSkola.setVrstaSrednjeSkole(request.getVrstaSrednjeSkole());
         return srednjaSkola;
@@ -17,6 +19,7 @@ public class SrednjaSkolaConverter {
 
     public static SrednjaSkolaResponse toSrednjaSkolaResponse(SrednjaSkola srednjaSkola) {
         return new SrednjaSkolaResponse(
+                srednjaSkola.getSifra(),
                 srednjaSkola.getNaziv(),
                 srednjaSkola.getVrstaSrednjeSkole()
         );

@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class SrednjaSkolaRequest {
     @NotNull
+    private String sifra;
     private String naziv;
-    @NotNull
     private VrstaSrednjeSkole vrstaSrednjeSkole;
 }

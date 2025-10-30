@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class VisokoSkolskaUstanovaResponse {
     @NotNull
+    private String sifra;
     private String naziv;
-    @NotNull
-    private String vrsta;
+    private VrstaVisokoSkolskihUstanova vrsta;
 }

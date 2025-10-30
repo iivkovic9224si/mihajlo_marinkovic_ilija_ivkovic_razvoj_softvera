@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class SrednjaSkolaResponse {
     @NotNull
+    private String sifra;
     private String naziv;
-    @NotNull
     private VrstaSrednjeSkole vrstaSrednjeSkole;
 }

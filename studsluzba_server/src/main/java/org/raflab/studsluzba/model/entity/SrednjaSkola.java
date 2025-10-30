@@ -12,6 +12,7 @@ public class SrednjaSkola {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
+    private String sifra;
     private String naziv;
 
     @Enumerated(EnumType.STRING)

@@ -8,22 +8,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VisokoSkolskaUstanovaConverter {
-    public static VisokoSkolskaUstanova toVisokoSkolskaUstanova(VisokoSkolskaUstanovaRequest visokoSkolskaUstanovaRequest) {
-        VisokoSkolskaUstanova visokoSkolskaUstanova=new VisokoSkolskaUstanova();
-        visokoSkolskaUstanova.setNaziv(visokoSkolskaUstanovaRequest.getNaziv());
-        visokoSkolskaUstanova.setVrsta(visokoSkolskaUstanovaRequest.getVrsta());
 
-        return visokoSkolskaUstanova;
+    public static VisokoSkolskaUstanova toVisokoSkolskaUstanova(VisokoSkolskaUstanovaRequest request) {
+        VisokoSkolskaUstanova ustanova = new VisokoSkolskaUstanova();
+        ustanova.setSifra(request.getSifra());
+        ustanova.setNaziv(request.getNaziv());
+        ustanova.setVrsta(request.getVrsta());
+        return ustanova;
     }
 
-    public static VisokoSkolskaUstanovaResponse toVisokoSkolskaUstanovaResponse(VisokoSkolskaUstanova visokoSkolskaUstanova) {
-        return new VisokoSkolskaUstanovaResponse(visokoSkolskaUstanova.getNaziv(), visokoSkolskaUstanova.getVrsta().name());
+    public static VisokoSkolskaUstanovaResponse toVisokoSkolskaUstanovaResponse(VisokoSkolskaUstanova ustanova) {
+        return new VisokoSkolskaUstanovaResponse(
+                ustanova.getSifra(),
+                ustanova.getNaziv(),
+                ustanova.getVrsta()
+        );
     }
 
-    public static List<VisokoSkolskaUstanovaResponse> toVisokoSkolskaUstanovaResponseList(List<VisokoSkolskaUstanova> vsuList) {
+    public static List<VisokoSkolskaUstanovaResponse> toVisokoSkolskaUstanovaResponseList(List<VisokoSkolskaUstanova> lista) {
         List<VisokoSkolskaUstanovaResponse> responseList = new ArrayList<>();
-        for (VisokoSkolskaUstanova vsu : vsuList) {
-            responseList.add(toVisokoSkolskaUstanovaResponse(vsu));
+        for (VisokoSkolskaUstanova u : lista) {
+            responseList.add(toVisokoSkolskaUstanovaResponse(u));
         }
         return responseList;
     }

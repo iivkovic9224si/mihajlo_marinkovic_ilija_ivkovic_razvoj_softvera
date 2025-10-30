@@ -14,6 +14,7 @@ public class VisokoSkolskaUstanova {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private long id;
+    private String sifra;
     private String naziv;
 
     @Enumerated(EnumType.STRING)

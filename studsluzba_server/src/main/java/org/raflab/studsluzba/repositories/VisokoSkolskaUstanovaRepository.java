@@ -10,8 +10,8 @@ import java.util.Optional;
 
 @Repository
 public interface VisokoSkolskaUstanovaRepository extends CrudRepository<VisokoSkolskaUstanova, Long> {
-    Optional<VisokoSkolskaUstanova> findByNaziv(String naziv);
 
     List<VisokoSkolskaUstanova> findByNazivContainingIgnoreCaseAndVrsta(String naziv, VrstaVisokoSkolskihUstanova vrsta);
+    Optional<VisokoSkolskaUstanova> findBySifra(String sifra);
 
 }
