@@ -1,12 +1,8 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
-import lombok.RequiredArgsConstructor;
 import org.raflab.studsluzba.controllers.request.PredmetRequest;
 import org.raflab.studsluzba.controllers.response.PredmetResponse;
-import org.raflab.studsluzba.model.entity.Predmet;
-import org.raflab.studsluzba.model.entity.StudijskiProgram;
 import org.raflab.studsluzba.services.PredmetService;
-import org.raflab.studsluzba.utils.Converters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

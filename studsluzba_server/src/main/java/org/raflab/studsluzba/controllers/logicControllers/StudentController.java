@@ -11,15 +11,14 @@ import org.raflab.studsluzba.model.entity.StudijskiProgram;
 import org.raflab.studsluzba.model.dtos.StudentDTO;
 import org.raflab.studsluzba.model.dtos.StudentProfileDTO;
 import org.raflab.studsluzba.model.dtos.StudentWebProfileDTO;
-import org.raflab.studsluzba.repositories.PolozenPredmetRepository;
 import org.raflab.studsluzba.repositories.StudentIndeksRepository;
 import org.raflab.studsluzba.repositories.StudentPodaciRepository;
 import org.raflab.studsluzba.repositories.StudijskiProgramRepository;
 import org.raflab.studsluzba.services.StudentIndeksService;
 import org.raflab.studsluzba.services.StudentProfileService;
-import org.raflab.studsluzba.utils.Converters;
 import org.raflab.studsluzba.utils.EntityMappers;
 import org.raflab.studsluzba.utils.ParseUtils;
+import org.raflab.studsluzba.utils.converters.StudentIndexAktivnostController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -32,8 +31,6 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static org.raflab.studsluzba.utils.Converters.toStudentIndeksResponseList;
 
 @CrossOrigin
 @RestController
@@ -61,7 +58,7 @@ public class StudentController {
     @PostMapping(path="/add")
    	public Long addNewStudentPodaci(@RequestBody StudentPodaciRequest studentPodaci) {
     	
-   	    StudentPodaci sp = studentPodaciRepository.save(Converters.toStudentPodaci(studentPodaci));
+   	    StudentPodaci sp = studentPodaciRepository.save(StudentIndexAktivnostController.toStudentPodaci(studentPodaci));
    	    
    	    return sp.getId();
  	}
@@ -93,7 +90,7 @@ public class StudentController {
 	//Dodaj novi red u tabelu Student Indeks
     @PostMapping(path="/saveindeks")
    	public Long saveIndeks(@RequestBody StudentIndeksRequest studentIndeksRequest) {
-		StudentIndeks studentIndeks = Converters.toStudentIndeks(studentIndeksRequest);
+		StudentIndeks studentIndeks = StudentIndexAktivnostController.toStudentIndeks(studentIndeksRequest);
 
 		int nextBroj = studentIndeksService.findBroj(studentIndeksRequest.getGodina(), studentIndeksRequest.getStudProgramOznaka());
 		studentIndeks.setBroj(nextBroj);
@@ -256,7 +253,7 @@ public class StudentController {
 	//Dodaj novog studenta
 	@PostMapping(path = "/dodajstudenta")
 	public Long addStudent(@RequestBody @Valid StudentPodaciRequest studentPodaciRequest) {
-		StudentPodaci studentPodaci = Converters.toStudentPodaci(studentPodaciRequest);
+		StudentPodaci studentPodaci = StudentIndexAktivnostController.toStudentPodaci(studentPodaciRequest);
 		StudentPodaci savedStudent = studentPodaciRepository.save(studentPodaci);
 		return savedStudent.getId();
 	}
@@ -304,10 +301,5 @@ public class StudentController {
 
 		StudentIndeks saved = studentIndeksRepository.save(studentIndeks);
 		return saved.getId();
-	}
-
-	@GetMapping(path = "/studentindeksall")
-	public Iterable<StudentIndeksResponse> getAllStudentIndeks(){
-		return toStudentIndeksResponseList(studentIndeksRepository.findAll());
 	}
 }

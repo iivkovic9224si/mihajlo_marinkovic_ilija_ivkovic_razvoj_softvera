@@ -5,7 +5,7 @@ import org.raflab.studsluzba.controllers.request.SkolskaGodinaRequest;
 import org.raflab.studsluzba.controllers.response.SkolskaGodinaResponse;
 import org.raflab.studsluzba.model.entity.SkolskaGodina;
 import org.raflab.studsluzba.repositories.SkolskaGodinaRepository;
-import org.raflab.studsluzba.utils.Converters;
+import org.raflab.studsluzba.utils.converters.SkolskaGodinaConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,9 +27,9 @@ public class SkolskaGodinaService {
             skolskaGodinaRepository.deactivateAll();
         }
 
-        SkolskaGodina godina = Converters.toSkolskaGodina(skolskaGodinaRequest);
+        SkolskaGodina godina = SkolskaGodinaConverter.toSkolskaGodina(skolskaGodinaRequest);
         SkolskaGodina saved = skolskaGodinaRepository.save(godina);
-        return Converters.toSkolskaGodinaResponse(saved);
+        return SkolskaGodinaConverter.toSkolskaGodinaResponse(saved);
     }
 
     public List<SkolskaGodinaResponse> findAll() {
@@ -37,13 +37,13 @@ public class SkolskaGodinaService {
         if (godine.isEmpty()) {
             throw new IllegalArgumentException("Nema školskih godina u bazi.");
         }
-        return Converters.toSkolskaGodinaResponseList(godine);
+        return SkolskaGodinaConverter.toSkolskaGodinaResponseList(godine);
     }
 
     public SkolskaGodinaResponse findById(Long id) {
         SkolskaGodina godina = skolskaGodinaRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Školska godina sa ID " + id + " ne postoji."));
-        return Converters.toSkolskaGodinaResponse(godina);
+        return SkolskaGodinaConverter.toSkolskaGodinaResponse(godina);
     }
 
     @Transactional
@@ -69,10 +69,10 @@ public class SkolskaGodinaService {
             SkolskaGodina poslednja = sveGodine.get(0);
             poslednja.setAktivna(true);
             skolskaGodinaRepository.save(poslednja);
-            return Converters.toSkolskaGodinaResponse(poslednja);
+            return SkolskaGodinaConverter.toSkolskaGodinaResponse(poslednja);
         }
 
-        return Converters.toSkolskaGodinaResponse(godina);
+        return SkolskaGodinaConverter.toSkolskaGodinaResponse(godina);
     }
 
     public void delete(Long id) {
@@ -87,6 +87,6 @@ public class SkolskaGodinaService {
         if (aktivna == null) {
             throw new IllegalArgumentException("Trenutno nema aktivne školske godine.");
         }
-        return Converters.toSkolskaGodinaResponse(aktivna);
+        return SkolskaGodinaConverter.toSkolskaGodinaResponse(aktivna);
     }
 }

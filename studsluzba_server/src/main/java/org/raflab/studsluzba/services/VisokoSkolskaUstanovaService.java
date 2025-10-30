@@ -6,7 +6,7 @@ import org.raflab.studsluzba.controllers.response.VisokoSkolskaUstanovaResponse;
 import org.raflab.studsluzba.model.entity.VisokoSkolskaUstanova;
 import org.raflab.studsluzba.model.entity.VrstaVisokoSkolskihUstanova;
 import org.raflab.studsluzba.repositories.VisokoSkolskaUstanovaRepository;
-import org.raflab.studsluzba.utils.Converters;
+import org.raflab.studsluzba.utils.converters.VisokoSkolskaUstanovaConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,19 +27,19 @@ public class VisokoSkolskaUstanovaService {
         if (existing.isPresent()) {
             throw new IllegalArgumentException("Visokoškolska ustanova sa ovim nazivom već postoji!");
         }
-        VisokoSkolskaUstanova entity = Converters.toVisokoSkolskaUstanova(request);
+        VisokoSkolskaUstanova entity = VisokoSkolskaUstanovaConverter.toVisokoSkolskaUstanova(request);
         VisokoSkolskaUstanova saved = visokoSkolskaUstanovaRepository.save(entity);
-        return Converters.toVisokoSkolskaUstanovaResponse(saved);
+        return VisokoSkolskaUstanovaConverter.toVisokoSkolskaUstanovaResponse(saved);
     }
     //nalazi sve visokoSkolskeUstanove
     public List<VisokoSkolskaUstanovaResponse> findAll() {
         List<VisokoSkolskaUstanova> list = (List<VisokoSkolskaUstanova>) visokoSkolskaUstanovaRepository.findAll();
-        return Converters.toVisokoSkolskaUstanovaResponseList(list);
+        return VisokoSkolskaUstanovaConverter.toVisokoSkolskaUstanovaResponseList(list);
     }
 
     public VisokoSkolskaUstanovaResponse findByID(Long id) {
         return visokoSkolskaUstanovaRepository.findById(id)
-                .map(Converters::toVisokoSkolskaUstanovaResponse).orElse(null);
+                .map(VisokoSkolskaUstanovaConverter::toVisokoSkolskaUstanovaResponse).orElse(null);
     }
 
     @Transactional
@@ -61,7 +61,7 @@ public class VisokoSkolskaUstanovaService {
         visokoSkolskaUstanova.setNaziv(noviPodaci.getNaziv());
         visokoSkolskaUstanova.setVrsta(noviPodaci.getVrsta());
         VisokoSkolskaUstanova newVisokoSkolskaUstanova = visokoSkolskaUstanovaRepository.save(visokoSkolskaUstanova);
-        return Converters.toVisokoSkolskaUstanovaResponse(newVisokoSkolskaUstanova);
+        return VisokoSkolskaUstanovaConverter.toVisokoSkolskaUstanovaResponse(newVisokoSkolskaUstanova);
     }
 
 
