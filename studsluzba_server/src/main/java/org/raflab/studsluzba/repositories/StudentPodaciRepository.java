@@ -35,5 +35,5 @@ public interface StudentPodaciRepository extends JpaRepository<StudentPodaci, Lo
 			"and (:prezime is null or lower(sp.prezime) like :prezime)")
 	Page<StudentPodaci> findStudentByImeandorPrezime(String ime, String prezime, Pageable pageable);
 
-
+	StudentPodaci getStudentPodaciByJmbg(String jmbg);
 }

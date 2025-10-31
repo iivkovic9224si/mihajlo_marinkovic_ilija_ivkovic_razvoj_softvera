@@ -1,7 +1,6 @@
 package org.raflab.studsluzba.utils.converters;
 
 import org.raflab.studsluzba.model.dtos.RezultatiIspitaDTO;
-import org.springframework.stereotype.Component;
 
 public class IspitConverter {
     public static RezultatiIspitaDTO toRezultatiIspitaDTO(Object[] row){
