@@ -28,8 +28,8 @@ public interface StudijskiProgramRepository extends CrudRepository<StudijskiProg
     StudijskiProgram findByOznakaSingle(@Param("oznaka") String oznaka);
 
 	// spisak predmeta na studijskom programu
-	@Query("select new org.raflab.studsluzba.controllers.response.PredmetResponse(p.sifra, p.naziv, p.opis, p.espb, p.obavezan) " +
+	@Query("select p " +
 			"from Predmet p where p.studProgram = :studProgram")
-	List<PredmetResponse> findPredmetByStudProgram(StudijskiProgram studProgram);
+	List<Predmet> findPredmetByStudProgram(StudijskiProgram studProgram);
 
 }
