@@ -1,7 +1,10 @@
 package org.raflab.studsluzba.services;
 
+import org.raflab.studsluzba.controllers.request.NastavnikRequest;
+import org.raflab.studsluzba.controllers.response.NastavnikResponse;
 import org.raflab.studsluzba.model.entity.Nastavnik;
 import org.raflab.studsluzba.repositories.NastavnikRepository;
+import org.raflab.studsluzba.utils.converters.NastavnikConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,19 +17,19 @@ public class NastavnikService {
     @Autowired
     NastavnikRepository nastavnikRepository;
 
-    public Nastavnik save(Nastavnik nastavnik) {
-        return nastavnikRepository.save(nastavnik);
+    public Nastavnik save(NastavnikRequest nastavnikRequest) {
+        return nastavnikRepository.save(NastavnikConverter.toNastavnik(nastavnikRequest));
     }
 
-    public Iterable<Nastavnik> findAll() {
-        return nastavnikRepository.findAll();
+    public Iterable<NastavnikResponse> findAll() {
+        return NastavnikConverter.toNastavnikResponseList(nastavnikRepository.findAll());
     }
 
-    public Optional<Nastavnik> findById(Long id) {
-        return nastavnikRepository.findById(id);
+    public Optional<NastavnikResponse> findById(Long id) {
+        return nastavnikRepository.findById(id).map(NastavnikConverter::toNastavnikResponse);
     }
 
-    public List<Nastavnik> findByImeAndPrezime(String ime, String prezime) {
-        return nastavnikRepository.findByImeAndPrezime(ime, prezime);
+    public List<NastavnikResponse> findByImeAndPrezime(String ime, String prezime) {
+        return NastavnikConverter.toNastavnikResponseList(nastavnikRepository.findByImeAndPrezime(ime, prezime));
     }
 }

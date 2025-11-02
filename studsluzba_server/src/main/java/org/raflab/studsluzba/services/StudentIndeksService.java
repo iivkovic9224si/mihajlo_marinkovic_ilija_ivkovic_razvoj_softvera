@@ -8,6 +8,8 @@ import org.raflab.studsluzba.repositories.PolozenPredmetRepository;
 import org.raflab.studsluzba.repositories.StudentIndeksRepository;
 import org.raflab.studsluzba.repositories.StudentPodaciRepository;
 import org.raflab.studsluzba.repositories.StudijskiTokAktivnostiRepository;
+import org.raflab.studsluzba.utils.converters.PredmetConverter;
+import org.raflab.studsluzba.utils.converters.StudentPodaciConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -59,7 +61,7 @@ public class StudentIndeksService {
     }
 
     public List<PredmetResponse> findPolozeniPredmetiByStudentIndeks(StudentIndeks studentIndeks) {
-        return polozenPredmetRepository.findPolozeniPredmetiByStudentIndeks(studentIndeks);
+        return PredmetConverter.toPredmetResponseList(polozenPredmetRepository.findPolozeniPredmetiByStudentIndeks(studentIndeks));
     }
 
     public List<Integer> getUpisaneGodineByStudentIndeks(StudentIndeks studentIndeks) {
@@ -71,6 +73,6 @@ public class StudentIndeksService {
     }
 
     public Page<StudentPodaciResponse> getStudentPodaciByImeandorPrezime(String ime, String prezime, Pageable pageable) {
-        return studentPodaciRepository.findStudentByImeandorPrezime(ime, prezime, pageable);
+        return StudentPodaciConverter.toStudentPodaciResponse(studentPodaciRepository.findStudentByImeandorPrezime(ime, prezime, pageable));
     }
 }

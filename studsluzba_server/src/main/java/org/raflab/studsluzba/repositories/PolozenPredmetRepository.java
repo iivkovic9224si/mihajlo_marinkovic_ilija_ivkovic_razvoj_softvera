@@ -1,6 +1,5 @@
 package org.raflab.studsluzba.repositories;
 
-import org.raflab.studsluzba.controllers.response.PredmetResponse;
 import org.raflab.studsluzba.model.entity.PolozenPredmet;
 import org.raflab.studsluzba.model.entity.Predmet;
 import org.raflab.studsluzba.model.entity.StudentIndeks;
@@ -14,11 +13,11 @@ import java.util.List;
 public interface PolozenPredmetRepository extends JpaRepository<PolozenPredmet, Long> {
 
     // selekcija svih položenih ispita za broj indeksa studenta
-    @Query("select new org.raflab.studsluzba.controllers.response.PredmetResponse(" +
-            "p.predmet.sifra, p.predmet.naziv, p.predmet.opis, p.predmet.espb, p.predmet.obavezan) " +
+    @Query("select " +
+            "p.predmet.sifra, p.predmet.naziv, p.predmet.opis, p.predmet.espb, p.predmet.obavezan " +
             "from PolozenPredmet p " +
             "where p.studentIndeks = :studentIndeks and p.ocena >= 6")
-    List<PredmetResponse> findPolozeniPredmetiByStudentIndeks(StudentIndeks studentIndeks);
+    List<Predmet> findPolozeniPredmetiByStudentIndeks(StudentIndeks studentIndeks);
 
 
     //prosečna ocena studenata na predmetu za raspon godina (na primer zadaje se godine 2015-2018 i vraća se prosečna ocena svih studenata koji su položili predmet u tom periodu)

@@ -29,15 +29,11 @@ public interface StudentPodaciRepository extends JpaRepository<StudentPodaci, Lo
 	List<StudentIndeks> getNeaktivniIndeksi(Long studPodaciId);
 
 	//selekcija studenata na osnovu imena i/ili prezimena (može samo ime, ili samo prezime ili oba da se unesu)
-	@Query("select new org.raflab.studsluzba.controllers.response.StudentPodaciResponse(" +
-			"sp.id, sp.ime, sp.prezime, sp.srednjeIme, sp.jmbg, sp.datumRodjenja, sp.mestoRodjenja, " +
-			"sp.mestoPrebivalista, sp.drzavaRodjenja, sp.drzavljanstvo, sp.nacionalnost, sp.pol, sp.adresa, " +
-			"sp.brojTelefonaMobilni, sp.brojTelefonaFiksni, sp.email, sp.brojLicneKarte, sp.licnuKartuIzdao, " +
-			"sp.mestoStanovanja, sp.adresaStanovanja) " +
+	@Query("select sp " +
 			"from StudentPodaci sp " +
 			"where (:ime is null or lower(sp.ime) like :ime) " +
 			"and (:prezime is null or lower(sp.prezime) like :prezime)")
-	Page<StudentPodaciResponse> findStudentByImeandorPrezime(String ime, String prezime, Pageable pageable);
+	Page<StudentPodaci> findStudentByImeandorPrezime(String ime, String prezime, Pageable pageable);
 
-
+	StudentPodaci getStudentPodaciByJmbg(String jmbg);
 }

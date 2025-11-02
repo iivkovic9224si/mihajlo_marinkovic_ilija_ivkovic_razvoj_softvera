@@ -7,6 +7,7 @@ import org.raflab.studsluzba.controllers.response.PredmetResponse;
 import org.raflab.studsluzba.controllers.response.StudijskiProgramResponse;
 import org.raflab.studsluzba.model.entity.StudijskiProgram;
 import org.raflab.studsluzba.repositories.StudijskiProgramRepository;
+import org.raflab.studsluzba.utils.converters.PredmetConverter;
 import org.raflab.studsluzba.utils.converters.StudProgramConverter;
 import org.springframework.stereotype.Service;
 
@@ -82,7 +83,7 @@ public class StudProgramService {
         }
 
         StudijskiProgram sp = spList.get(0);
-        return studijskiProgramRepository.findPredmetByStudProgram(sp);
+        return PredmetConverter.toPredmetResponseList(studijskiProgramRepository.findPredmetByStudProgram(sp));
     }
 }
 
