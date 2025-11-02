@@ -22,13 +22,12 @@ public class IspitniRokConverter {
     }
 
     public static IspitniRokResponse toIspitniRokResponse(IspitniRok rok) {
-        IspitniRokResponse response = new IspitniRokResponse();
-        response.setId(rok.getId());
-        response.setPocetak(rok.getPocetak());
-        response.setKraj(rok.getKraj());
-        if(rok.getSkolskaGodina() != null) {
-            response.setGodina(rok.getSkolskaGodina().getGodina());
-        }
+        IspitniRokResponse response = new IspitniRokResponse(
+                rok.getId(),
+                rok.getPocetak(),
+                rok.getKraj(),
+                rok.getSkolskaGodina() != null ? rok.getSkolskaGodina().getGodina() : null
+        );
         return response;
     }
 

@@ -1,5 +1,8 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
+import lombok.RequiredArgsConstructor;
+import org.raflab.studsluzba.controllers.request.IspitRequest;
+import org.raflab.studsluzba.controllers.response.IspitResponse;
 import org.raflab.studsluzba.controllers.response.RezultatiIspitaResponse;
 import org.raflab.studsluzba.model.entity.Ispit;
 import org.raflab.studsluzba.services.IspitService;
@@ -12,24 +15,50 @@ import java.util.Optional;
 @CrossOrigin
 @RestController
 @RequestMapping(path = "/api/ispit")
+@RequiredArgsConstructor
 public class IspitController {
-    @Autowired
-    IspitService ispitService;
 
-    @GetMapping(path = "/rezultati/{id}")
-    public List<RezultatiIspitaResponse> rezultati(@PathVariable Long id) {
-        Optional<Ispit> ispit = ispitService.findById(id);
+    private final IspitService ispitService;
 
-        if(ispit.isEmpty()) {
-            return null;
-        }
-        return ispit.map(ispitService::getRezultatiSaIspita).orElse(null);
+    @PostMapping("/save")
+    public Optional<IspitResponse> save(@RequestBody IspitRequest request) {
+        return ispitService.save(request);
     }
 
-    @GetMapping(path = "/prosecnaOcena/{id}")
-    public Double prosecnaOcena(@PathVariable Long id) {
-        Optional<Ispit> ispit = ispitService.findById(id);
-
-        return ispit.map(ispitService::findProsecnaOcenaNaIspitu).orElse(null);
+    @GetMapping("/findAll")
+    public List<IspitResponse> findAll() {
+        return ispitService.findAll();
     }
+
+    @GetMapping("/findById/{id}")
+    public Optional<IspitResponse> findById(@PathVariable Long id) {
+        return ispitService.findById(id);
+    }
+
+    @PostMapping("/update")
+    public Optional<IspitResponse> update(@RequestBody IspitRequest request) {
+        return ispitService.update(request);
+    }
+
+    @GetMapping("/delete/{id}")
+    public void delete(@PathVariable Long id) {
+        ispitService.delete(id);
+    }
+
+//    @GetMapping(path = "/rezultati/{id}")
+//    public List<RezultatiIspitaResponse> rezultati(@PathVariable Long id) {
+//        Optional<IspitResponse> ispit = ispitService.findById(id);
+//
+//        if(ispit.isEmpty()) {
+//            return null;
+//        }
+//        return ispit.map(ispitService::getRezultatiSaIspita).orElse(null);
+//    }
+//
+//    @GetMapping(path = "/prosecnaOcena/{id}")
+//    public Double prosecnaOcena(@PathVariable Long id) {
+//        Optional<Ispit> ispit = ispitService.findById(id);
+//
+//        return ispit.map(ispitService::findProsecnaOcenaNaIspitu).orElse(null);
+//    }
 }
