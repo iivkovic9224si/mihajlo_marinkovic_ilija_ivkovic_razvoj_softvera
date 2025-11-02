@@ -57,6 +57,32 @@ public class Seeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+
+        boolean tabelePrazne =
+                studijskiProgramRepository.count() == 0 &&
+                        predmetRepository.count() == 0 &&
+                        nastavnikRepository.count() == 0 &&
+                        nastavnikZvanjeRepository.count() == 0 &&
+                        studentPodaciRepository.count() == 0 &&
+                        studentIndeksRepository.count() == 0 &&
+                        drziPredmetRepository.count() == 0 &&
+                        slusaPredmetRepository.count() == 0 &&
+                        grupaRepository.count() == 0 &&
+                        skolskaGodinaRepository.count() == 0 &&
+                        ostvareniPredispitniRepository.count() == 0 &&
+                        predispitneObavezeRepository.count() == 0 &&
+                        ispitniRokRepository.count() == 0 &&
+                        ispitRepository.count() == 0 &&
+                        prijavaIspitaRepository.count() == 0 &&
+                        studijskiTokAktivnostiRepository.count() == 0 &&
+                        polozenPredmetRepository.count() == 0 &&
+                        izlazakNaIspitRepository.count() == 0 &&
+                        visokoSkolskaUstanovaRepository.count() == 0 &&
+                        srednjaSkolaRepository.count() == 0;
+
+        if (!tabelePrazne) {
+        }
+
         List<StudijskiProgram> spList = new ArrayList<>();
         if (studijskiProgramRepository.count() == 0) {
 
@@ -280,13 +306,33 @@ public class Seeder implements CommandLineRunner {
             }
         }
 
+        // 1. Pronađi tekuću godinu
         int trenutnaGodina = LocalDate.now().getYear();
+        String nazivTekuceGodine = trenutnaGodina + "/" + (trenutnaGodina + 1);
+
+// 2. Poništi sve stare aktivne godine pre nego što postaviš novu
+        skolskaGodinaRepository.deactivateAll();
+
+// 3. Prođi kroz sve godine od 2016. do tekuće
         for (int godina = 2016; godina <= trenutnaGodina; godina++) {
-            SkolskaGodina sg = new SkolskaGodina();
-            sg.setGodina(godina + "/" + (godina + 1));
-            sg.setAktivna(godina == trenutnaGodina); // samo tekuća godina je aktivna
+            String nazivGodine = godina + "/" + (godina + 1);
+
+            Optional<SkolskaGodina> postojiGodina = skolskaGodinaRepository.findOneByGodina(nazivGodine);
+            SkolskaGodina sg;
+
+            if (postojiGodina.isPresent()) {
+                sg = postojiGodina.get();
+            } else {
+                sg = new SkolskaGodina();
+                sg.setGodina(nazivGodine);
+            }
+
+            // Postavi aktivno samo ako je tekuća godina
+            sg.setAktivna(nazivGodine.equals(nazivTekuceGodine));
             skolskaGodinaRepository.save(sg);
         }
+
+
         // ----------- DrziPredmet -----------
         if (drziPredmetRepository.count() == 0) {
 

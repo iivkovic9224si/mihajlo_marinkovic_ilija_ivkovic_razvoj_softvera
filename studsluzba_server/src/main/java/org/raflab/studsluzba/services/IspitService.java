@@ -1,9 +1,8 @@
 package org.raflab.studsluzba.services;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.model.dtos.RezultatiIspitaDTO;
+import org.raflab.studsluzba.controllers.response.RezultatiIspitaResponse;
 import org.raflab.studsluzba.model.entity.Ispit;
-import org.raflab.studsluzba.model.entity.Nastavnik;
 import org.raflab.studsluzba.repositories.IspitRepository;
 import org.raflab.studsluzba.repositories.IzlazakNaIspitRepository;
 import org.raflab.studsluzba.utils.converters.IspitConverter;
@@ -28,7 +27,7 @@ public class IspitService {
         return ispitRepository.findById(id);
     }
 
-    public List<RezultatiIspitaDTO> getRezultatiSaIspita(Ispit ispit) {
+    public List<RezultatiIspitaResponse> getRezultatiSaIspita(Ispit ispit) {
         List<Object[]> res = izlazakNaIspitRepository.getRezultatiIspitaRaw(ispit);
         return res.stream().map(IspitConverter::toRezultatiIspitaDTO).collect(Collectors.toList());
     }

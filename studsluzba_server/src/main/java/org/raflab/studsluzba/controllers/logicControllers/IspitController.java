@@ -1,6 +1,6 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
-import org.raflab.studsluzba.model.dtos.RezultatiIspitaDTO;
+import org.raflab.studsluzba.controllers.response.RezultatiIspitaResponse;
 import org.raflab.studsluzba.model.entity.Ispit;
 import org.raflab.studsluzba.services.IspitService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class IspitController {
     IspitService ispitService;
 
     @GetMapping(path = "/rezultati/{id}")
-    public List<RezultatiIspitaDTO> rezultati(@PathVariable Long id) {
+    public List<RezultatiIspitaResponse> rezultati(@PathVariable Long id) {
         Optional<Ispit> ispit = ispitService.findById(id);
 
         if(ispit.isEmpty()) {

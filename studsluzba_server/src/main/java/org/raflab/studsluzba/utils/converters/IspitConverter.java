@@ -1,10 +1,10 @@
 package org.raflab.studsluzba.utils.converters;
 
-import org.raflab.studsluzba.model.dtos.RezultatiIspitaDTO;
+import org.raflab.studsluzba.controllers.response.RezultatiIspitaResponse;
 
 public class IspitConverter {
-    public static RezultatiIspitaDTO toRezultatiIspitaDTO(Object[] row){
-        return new RezultatiIspitaDTO(
+    public static RezultatiIspitaResponse toRezultatiIspitaDTO(Object[] row){
+        return new RezultatiIspitaResponse(
                 (String) row[0],  // ime
                 (String) row[1],  // prezime
                 (String) row[2],  // studProgramOznaka

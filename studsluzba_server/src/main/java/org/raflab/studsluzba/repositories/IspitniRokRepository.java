@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface IspitniRokRepository extends CrudRepository<IspitniRok, Long> {
     List<IspitniRok> findBySkolskaGodina(SkolskaGodina aktivna);
+    
 }
