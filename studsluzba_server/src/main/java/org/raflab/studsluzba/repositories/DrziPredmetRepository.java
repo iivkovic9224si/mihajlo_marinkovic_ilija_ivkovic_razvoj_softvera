@@ -1,6 +1,7 @@
 package org.raflab.studsluzba.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 
 import org.raflab.studsluzba.model.entity.DrziPredmet;
@@ -23,4 +24,9 @@ public interface DrziPredmetRepository extends CrudRepository<DrziPredmet, Long>
 	DrziPredmet getDrziPredmetNastavnikPredmet(Long idPredmet, Long idNastavnik);
 
     List<DrziPredmet> findByPredmetAndSkolskaGodina(Predmet predmet, SkolskaGodina aktuelnaGodina);
-}
+
+    Optional<DrziPredmet> findBySkolskaGodinaGodinaAndNastavnikEmailAndPredmetSifra(
+            String godina,
+            String email,
+            String sifra
+    );}

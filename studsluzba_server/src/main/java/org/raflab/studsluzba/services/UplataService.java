@@ -25,8 +25,6 @@ public class UplataService {
     private static final String KURS_API_URL =
             "https://kurs.resenje.org/api/v1/currencies/eur/rates/today";
 
-
-
     public Uplata dodajUplatu(UplataRequest uplataRequest) {
         Uplata uplata = new Uplata();
         uplata.setDatumUplate(uplataRequest.getDatumUplate());
