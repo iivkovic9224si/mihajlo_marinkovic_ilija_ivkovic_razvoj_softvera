@@ -23,9 +23,11 @@ public class Nastavnik {
     private String brojTelefona;
     private String adresa;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "nastavnik")
-    private Set<NastavnikZvanje> zvanja;
+    @OneToMany
+    private List<NastavnikZvanje> zvanja;
+
+    @OneToMany
+    private List<DrziPredmet> drziPredmet;
 	 
     private LocalDate datumRodjenja;
     private Character pol;

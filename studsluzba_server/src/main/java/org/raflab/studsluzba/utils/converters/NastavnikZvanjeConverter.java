@@ -1,0 +1,33 @@
+// =====================
+// NastavnikZvanjeConverter.java
+// =====================
+package org.raflab.studsluzba.utils.converters;
+
+import org.raflab.studsluzba.controllers.request.NastavnikZvanjeRequest;
+import org.raflab.studsluzba.controllers.response.NastavnikZvanjeResponse;
+import org.raflab.studsluzba.model.entity.NastavnikZvanje;
+
+public class NastavnikZvanjeConverter {
+    public static NastavnikZvanje toNastavnikZvanje(NastavnikZvanjeRequest request) {
+        NastavnikZvanje nz = new NastavnikZvanje();
+        nz.setDatumIzbora(request.getDatumIzbora());
+        nz.setNaucnaOblast(request.getNaucnaOblast());
+        nz.setUzaNaucnaOblast(request.getUzaNaucnaOblast());
+        nz.setZvanje(request.getZvanje());
+        nz.setAktivno(request.isAktivno());
+        // nastavnik će se setovati u servisu po request.getNastavnikRequest()
+        return nz;
+    }
+
+    public static NastavnikZvanjeResponse toNastavnikZvanjeResponse(NastavnikZvanje nz) {
+        return new NastavnikZvanjeResponse(
+                nz.getId(),
+                nz.getDatumIzbora(),
+                nz.getNaucnaOblast(),
+                nz.getUzaNaucnaOblast(),
+                nz.getZvanje(),
+                nz.isAktivno(),
+                org.raflab.studsluzba.utils.converters.NastavnikConverter.toNastavnikResponse(nz.getNastavnik())
+        );
+    }
+}

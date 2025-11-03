@@ -81,6 +81,7 @@ public class Seeder implements CommandLineRunner {
                         srednjaSkolaRepository.count() == 0;
 
         if (!tabelePrazne) {
+            return;
         }
 
         List<StudijskiProgram> spList = new ArrayList<>();
