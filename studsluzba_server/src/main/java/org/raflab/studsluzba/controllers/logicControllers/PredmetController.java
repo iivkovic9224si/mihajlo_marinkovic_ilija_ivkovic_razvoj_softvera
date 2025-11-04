@@ -52,6 +52,15 @@ public class PredmetController {
                                                               @RequestParam boolean obavezan) {
         return predmetService.findByStudProgramAndObavezan(oznakaStudProgram, obavezan);
     }
+    @GetMapping("/prosecnaOcena/{sifraPredmeta}")
+    public Double getProsecnaOcena(
+            @PathVariable String sifraPredmeta,
+            @RequestParam int godinaOd,
+            @RequestParam int godinaDo
+    ) {
+        return predmetService.getProsecnaOcena(sifraPredmeta, godinaOd, godinaDo);
+    }
+
 
 
 }

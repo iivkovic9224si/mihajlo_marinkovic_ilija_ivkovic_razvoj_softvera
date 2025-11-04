@@ -825,17 +825,15 @@ public class Seeder implements CommandLineRunner {
                 prijavaIspitaRepository.save(prijava);
 
                 if(izlazi) {
-                    // Kreiramo IzlazakNaIspit
                     IzlazakNaIspit izlazak = new IzlazakNaIspit();
                     izlazak.setPrijavaIspita(prijava);
-
                     // Broj poena sa ispita + predispitni poeni
                     double poeniPredispitni = ostvareniPredispitniRepository.findBySlusaPredmet(sp)
                             .stream()
                             .mapToDouble(OstvareniPredispitni::getOstvareniPoeni)
                             .sum();
 
-                    // Generišemo poene sa ispita tako da ukupno bude realno između 51 i 100
+// Generišemo poene sa ispita tako da ukupno bude realno između 51 i 100
                     double maxPoeniIspit = 100.0 - poeniPredispitni;
                     if(maxPoeniIspit < 0) maxPoeniIspit = 0;
                     double poeniIspit = poeniPredispitni >= 100 ? 0 : 1 + random.nextDouble() * (maxPoeniIspit - 1);
@@ -843,7 +841,7 @@ public class Seeder implements CommandLineRunner {
                     izlazak.setBrojPredispitnihPoena(poeniPredispitni);
                     izlazak.setBrojPoenaSaIspita(poeniIspit);
 
-                    // Računanje ukupne ocene
+// Računanje ukupne ocene
                     double ukupniPoeni = poeniPredispitni + poeniIspit;
                     int ocena;
                     if(ukupniPoeni < 51) ocena = 5;
@@ -858,27 +856,33 @@ public class Seeder implements CommandLineRunner {
                     izlazak.setPonistava(false);
                     izlazakNaIspitRepository.save(izlazak);
 
-                    // Povezujemo izlazak sa prijavom
+// Povezujemo izlazak sa prijavom
                     prijava.setIzlazakNaIspita(izlazak);
                     prijavaIspitaRepository.save(prijava);
 
-                    // Kreiramo PolozenPredmet
-                    if(ocena >= 6) { // samo ako je student položio
+// Kreiramo PolozenPredmet samo ako je student položio
+                    if(ocena >= 6) {
                         PolozenPredmet polozen = new PolozenPredmet();
                         polozen.setStudentIndeks(sp.getStudentIndeks());
                         polozen.setPredmet(sp.getDrziPredmet().getPredmet());
                         polozen.setIzlazakIspita(izlazak);
-                        polozen.setDatum(LocalDate.now());
+
+                        // --- Postavljanje datuma polaganja ---
+                        LocalDate datumIspita = izabraniIspit.getDatumIspita();
+                        // Dodajemo random varijaciju +/- 0-2 dana, ali ne izlazi iz logike
+                        int randomOffset = random.nextInt(3); // 0,1,2
+                        LocalDate datumPolaganja = datumIspita.plusDays(randomOffset);
+                        polozen.setDatum(datumPolaganja);
+
                         polozen.setBrojPoena(ukupniPoeni);
                         polozen.setOcena(ocena);
                         polozen.setPriznato(false);
+
                         polozenPredmetRepository.save(polozen);
                     }
+
                 }
             }
         }
-
-
-
     }
 }
