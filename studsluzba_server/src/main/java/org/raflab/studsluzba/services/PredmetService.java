@@ -133,4 +133,18 @@ public class PredmetService {
 
         return PredmetConverter.toPredmetResponseList(predmeti);
     }
+
+    // FIND BY SIFRA
+    public PredmetResponse findBySifra(String sifra) {
+        if (sifra == null || sifra.isBlank()) {
+            throw new IllegalArgumentException("Šifra predmeta ne sme biti prazna.");
+        }
+
+        return predmetRepository.findBySifra(sifra)
+                .map(PredmetConverter::toPredmetResponse)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Predmet sa šifrom '" + sifra + "' ne postoji!"
+                ));
+    }
+
 }
