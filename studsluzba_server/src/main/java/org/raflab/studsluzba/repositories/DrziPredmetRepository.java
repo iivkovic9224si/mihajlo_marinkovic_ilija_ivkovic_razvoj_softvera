@@ -25,8 +25,6 @@ public interface DrziPredmetRepository extends CrudRepository<DrziPredmet, Long>
 
     List<DrziPredmet> findByPredmetAndSkolskaGodina(Predmet predmet, SkolskaGodina aktuelnaGodina);
 
-    Optional<DrziPredmet> findBySkolskaGodinaGodinaAndNastavnikEmailAndPredmetSifra(
-            String godina,
-            String email,
-            String sifra
-    );}
+    @Query("select dp from DrziPredmet dp where dp.nastavnik.email = :nastavnikMail and dp.predmet.sifra = :predmetSifra")
+    DrziPredmet getDrziPredmetByNastavnikMailAndPredmetSifra(String nastavnikMail, String predmetSifra);
+}
