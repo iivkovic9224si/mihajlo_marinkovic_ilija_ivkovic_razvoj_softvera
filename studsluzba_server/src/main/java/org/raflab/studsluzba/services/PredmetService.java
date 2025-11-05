@@ -5,6 +5,7 @@ import org.raflab.studsluzba.controllers.request.PredmetRequest;
 import org.raflab.studsluzba.controllers.response.PredmetResponse;
 import org.raflab.studsluzba.model.entity.Predmet;
 import org.raflab.studsluzba.model.entity.StudijskiProgram;
+import org.raflab.studsluzba.repositories.PolozenPredmetRepository;
 import org.raflab.studsluzba.repositories.PredmetRepository;
 import org.raflab.studsluzba.repositories.StudijskiProgramRepository;
 import org.raflab.studsluzba.utils.converters.PredmetConverter;
@@ -17,6 +18,7 @@ import java.util.List;
 public class PredmetService {
     final PredmetRepository predmetRepository;
     final StudijskiProgramRepository studijskiProgramRepository;
+    final PolozenPredmetRepository polozenPredmetRepository;
 
     // SAVE
     public PredmetResponse save(PredmetRequest request) {
@@ -133,4 +135,32 @@ public class PredmetService {
 
         return PredmetConverter.toPredmetResponseList(predmeti);
     }
+
+    // FIND BY SIFRA
+    public PredmetResponse findBySifra(String sifra) {
+        if (sifra == null || sifra.isBlank()) {
+            throw new IllegalArgumentException("Šifra predmeta ne sme biti prazna.");
+        }
+
+        return predmetRepository.findBySifra(sifra)
+                .map(PredmetConverter::toPredmetResponse)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Predmet sa šifrom '" + sifra + "' ne postoji!"
+                ));
+    }
+    public Double getProsecnaOcena(String sifraPredmeta, int godinaOd, int godinaDo) {
+        // Dohvati entitet Predmet
+        Predmet predmet = predmetRepository.findBySifra(sifraPredmeta)
+                .orElseThrow(() -> new IllegalArgumentException("Predmet sa šifrom '" + sifraPredmeta + "' ne postoji!"));
+
+        Double prosecna = polozenPredmetRepository.getProsecnaOcenaZaPredmetIzmedju(predmet, godinaOd, godinaDo);
+
+        if(prosecna == null) {
+            throw new IllegalArgumentException("Nema položenih studenata za predmet u datom periodu.");
+        }
+
+        return prosecna;
+    }
+
+
 }

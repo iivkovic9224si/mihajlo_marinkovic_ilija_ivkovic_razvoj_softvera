@@ -1,49 +1,74 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
+import lombok.RequiredArgsConstructor;
 import org.raflab.studsluzba.controllers.request.NastavnikRequest;
 import org.raflab.studsluzba.controllers.response.NastavnikResponse;
-import org.raflab.studsluzba.model.entity.Nastavnik;
+import org.raflab.studsluzba.controllers.response.NastavnikZvanjeResponse;
+import org.raflab.studsluzba.controllers.response.VisokoSkolskaUstanovaResponse;
+import org.raflab.studsluzba.controllers.response.DrziPredmetResponse;
 import org.raflab.studsluzba.services.NastavnikService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin
 @RestController
-@RequestMapping(path = "/api/nastavnik")
+@RequestMapping("/api/nastavnik")
+@RequiredArgsConstructor
 public class NastavnikController {
 
-	@Autowired
-	NastavnikService nastavnikService;
-	
-	@PostMapping(path = "/add")
-	public Long addNewNastavnik(@RequestBody @Valid NastavnikRequest nastavnikRequest) {
-		return nastavnikService.save(nastavnikRequest).getId();
-	}
-	
-	@GetMapping(path = "/all")
-	public List<NastavnikResponse> getAllNastavnik() {
-		Iterable<NastavnikResponse> iterable = nastavnikService.findAll();
-		List<NastavnikResponse> list = new ArrayList<>();
-		iterable.forEach(list::add);
-		return list;
-	}
+    private final NastavnikService nastavnikService;
 
-	@GetMapping(path = "/{id}")
-	public NastavnikResponse getNastavnikById(@PathVariable Long id) {
-		return nastavnikService.findById(id).orElse(null);
-	}
-	
-	@GetMapping(path = "/search")
-	public List<NastavnikResponse> search(
-			@RequestParam(required = false) String ime,
-			@RequestParam(required = false) String prezime){
+    @PostMapping("/save")
+    public NastavnikResponse save(@RequestBody @Valid NastavnikRequest request) {
+        return nastavnikService.save(request);
+    }
 
-        return nastavnikService.findByImeAndPrezime(ime, prezime);
-	}
-	
+    @GetMapping("/findAll")
+    public List<NastavnikResponse> findAll() {
+        return nastavnikService.findAll();
+    }
+
+    @GetMapping("/findById/{id}")
+    public NastavnikResponse findById(@PathVariable Long id) {
+        return nastavnikService.findById(id);
+    }
+
+    @GetMapping("/findByEmail/{email}")
+    public NastavnikResponse findByEmail(@PathVariable String email) {
+        return nastavnikService.findByEmail(email);
+    }
+
+    @PostMapping("/update")
+    public NastavnikResponse update(@RequestBody @Valid NastavnikRequest request) {
+        return nastavnikService.update(request);
+    }
+
+    @GetMapping("/delete")
+    public void delete(@RequestParam(required = false) Long id,
+                       @RequestParam(required = false) String email) {
+        nastavnikService.delete(id, email);
+    }
+
+    // DODATNI UPITI
+    @GetMapping("/zvanja/{email}")
+    public List<NastavnikZvanjeResponse> getZvanja(@PathVariable String email) {
+        return nastavnikService.getZvanja(email);
+    }
+
+    @GetMapping("/aktivnoZvanje/{email}")
+    public NastavnikZvanjeResponse getAktivnoZvanje(@PathVariable String email) {
+        return nastavnikService.getAktivnoZvanje(email);
+    }
+
+    @GetMapping("/ustanove/{email}")
+    public List<VisokoSkolskaUstanovaResponse> getUstanove(@PathVariable String email) {
+        return nastavnikService.getUstanove(email);
+    }
+
+    @GetMapping("/drziPredmete/{email}")
+    public List<DrziPredmetResponse> getDrziPredmete(@PathVariable String email) {
+        return nastavnikService.getDrziPredmete(email);
+    }
 }

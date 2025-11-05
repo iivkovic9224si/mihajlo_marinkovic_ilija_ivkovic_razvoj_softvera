@@ -57,6 +57,33 @@ public class Seeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+
+        boolean tabelePrazne =
+                studijskiProgramRepository.count() == 0 &&
+                        predmetRepository.count() == 0 &&
+                        nastavnikRepository.count() == 0 &&
+                        nastavnikZvanjeRepository.count() == 0 &&
+                        studentPodaciRepository.count() == 0 &&
+                        studentIndeksRepository.count() == 0 &&
+                        drziPredmetRepository.count() == 0 &&
+                        slusaPredmetRepository.count() == 0 &&
+                        grupaRepository.count() == 0 &&
+                        skolskaGodinaRepository.count() == 0 &&
+                        ostvareniPredispitniRepository.count() == 0 &&
+                        predispitneObavezeRepository.count() == 0 &&
+                        ispitniRokRepository.count() == 0 &&
+                        ispitRepository.count() == 0 &&
+                        prijavaIspitaRepository.count() == 0 &&
+                        studijskiTokAktivnostiRepository.count() == 0 &&
+                        polozenPredmetRepository.count() == 0 &&
+                        izlazakNaIspitRepository.count() == 0 &&
+                        visokoSkolskaUstanovaRepository.count() == 0 &&
+                        srednjaSkolaRepository.count() == 0;
+
+        if (!tabelePrazne) {
+            return;
+        }
+
         List<StudijskiProgram> spList = new ArrayList<>();
         if (studijskiProgramRepository.count() == 0) {
 
@@ -280,13 +307,33 @@ public class Seeder implements CommandLineRunner {
             }
         }
 
+        // 1. Pronađi tekuću godinu
         int trenutnaGodina = LocalDate.now().getYear();
+        String nazivTekuceGodine = trenutnaGodina + "/" + (trenutnaGodina + 1);
+
+// 2. Poništi sve stare aktivne godine pre nego što postaviš novu
+        skolskaGodinaRepository.deactivateAll();
+
+// 3. Prođi kroz sve godine od 2016. do tekuće
         for (int godina = 2016; godina <= trenutnaGodina; godina++) {
-            SkolskaGodina sg = new SkolskaGodina();
-            sg.setGodina(godina + "/" + (godina + 1));
-            sg.setAktivna(godina == trenutnaGodina); // samo tekuća godina je aktivna
+            String nazivGodine = godina + "/" + (godina + 1);
+
+            Optional<SkolskaGodina> postojiGodina = skolskaGodinaRepository.findOneByGodina(nazivGodine);
+            SkolskaGodina sg;
+
+            if (postojiGodina.isPresent()) {
+                sg = postojiGodina.get();
+            } else {
+                sg = new SkolskaGodina();
+                sg.setGodina(nazivGodine);
+            }
+
+            // Postavi aktivno samo ako je tekuća godina
+            sg.setAktivna(nazivGodine.equals(nazivTekuceGodine));
             skolskaGodinaRepository.save(sg);
         }
+
+
         // ----------- DrziPredmet -----------
         if (drziPredmetRepository.count() == 0) {
 
@@ -778,17 +825,15 @@ public class Seeder implements CommandLineRunner {
                 prijavaIspitaRepository.save(prijava);
 
                 if(izlazi) {
-                    // Kreiramo IzlazakNaIspit
                     IzlazakNaIspit izlazak = new IzlazakNaIspit();
                     izlazak.setPrijavaIspita(prijava);
-
                     // Broj poena sa ispita + predispitni poeni
                     double poeniPredispitni = ostvareniPredispitniRepository.findBySlusaPredmet(sp)
                             .stream()
                             .mapToDouble(OstvareniPredispitni::getOstvareniPoeni)
                             .sum();
 
-                    // Generišemo poene sa ispita tako da ukupno bude realno između 51 i 100
+// Generišemo poene sa ispita tako da ukupno bude realno između 51 i 100
                     double maxPoeniIspit = 100.0 - poeniPredispitni;
                     if(maxPoeniIspit < 0) maxPoeniIspit = 0;
                     double poeniIspit = poeniPredispitni >= 100 ? 0 : 1 + random.nextDouble() * (maxPoeniIspit - 1);
@@ -796,7 +841,7 @@ public class Seeder implements CommandLineRunner {
                     izlazak.setBrojPredispitnihPoena(poeniPredispitni);
                     izlazak.setBrojPoenaSaIspita(poeniIspit);
 
-                    // Računanje ukupne ocene
+// Računanje ukupne ocene
                     double ukupniPoeni = poeniPredispitni + poeniIspit;
                     int ocena;
                     if(ukupniPoeni < 51) ocena = 5;
@@ -811,27 +856,33 @@ public class Seeder implements CommandLineRunner {
                     izlazak.setPonistava(false);
                     izlazakNaIspitRepository.save(izlazak);
 
-                    // Povezujemo izlazak sa prijavom
+// Povezujemo izlazak sa prijavom
                     prijava.setIzlazakNaIspita(izlazak);
                     prijavaIspitaRepository.save(prijava);
 
-                    // Kreiramo PolozenPredmet
-                    if(ocena >= 6) { // samo ako je student položio
+// Kreiramo PolozenPredmet samo ako je student položio
+                    if(ocena >= 6) {
                         PolozenPredmet polozen = new PolozenPredmet();
                         polozen.setStudentIndeks(sp.getStudentIndeks());
                         polozen.setPredmet(sp.getDrziPredmet().getPredmet());
                         polozen.setIzlazakIspita(izlazak);
-                        polozen.setDatum(LocalDate.now());
+
+                        // --- Postavljanje datuma polaganja ---
+                        LocalDate datumIspita = izabraniIspit.getDatumIspita();
+                        // Dodajemo random varijaciju +/- 0-2 dana, ali ne izlazi iz logike
+                        int randomOffset = random.nextInt(3); // 0,1,2
+                        LocalDate datumPolaganja = datumIspita.plusDays(randomOffset);
+                        polozen.setDatum(datumPolaganja);
+
                         polozen.setBrojPoena(ukupniPoeni);
                         polozen.setOcena(ocena);
                         polozen.setPriznato(false);
+
                         polozenPredmetRepository.save(polozen);
                     }
+
                 }
             }
         }
-
-
-
     }
 }
