@@ -197,7 +197,11 @@ public class StudentController {
 
 	//selekcija svih položenih ispita za broj indeksa studenta
 	@PostMapping(path="/polozenipredmeti")
-	public List<PredmetResponse> polozeniPredmeti(@RequestBody @Valid StudentIndeksRequest studentIndeksRequest) {
+	public Page<PredmetResponse> polozeniPredmeti(
+			@RequestBody @Valid StudentIndeksRequest studentIndeksRequest,
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
+
 		StudentIndeks studentIndeks = studentIndeksRepository.findStudentIndeks(
 				studentIndeksRequest.getStudProgramOznaka(),
 				studentIndeksRequest.getGodina(),
@@ -208,8 +212,29 @@ public class StudentController {
 			throw new RuntimeException("Student indeks nije pronađen u bazi.");
 		}
 
-		return studentIndeksService.findPolozeniPredmetiByStudentIndeks(studentIndeks);
+		return studentIndeksService.findPolozeniPredmetiByStudentIndeks(studentIndeks, page, size);
 	}
+
+	//- [ ] selekcija svih nepoloženih ispita za broj indeksa studenta, paginirano
+	@PostMapping(path="/nepolozenipredmeti")
+	public Page<PredmetResponse> nepolozeniPredmeti(
+			@RequestBody @Valid StudentIndeksRequest studentIndeksRequest,
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
+
+		StudentIndeks studentIndeks = studentIndeksRepository.findStudentIndeks(
+				studentIndeksRequest.getStudProgramOznaka(),
+				studentIndeksRequest.getGodina(),
+				studentIndeksRequest.getBroj()
+		);
+
+		if (studentIndeks == null) {
+			throw new RuntimeException("Student indeks nije pronađen u bazi.");
+		}
+
+		return studentIndeksService.findNePolozeniPredmetiByStudentIndeks(studentIndeks, page, size);
+	}
+
 
 	//pregled svih upisanih godina za broj indeksa
 	@PostMapping(path = "/upisanegodine")
@@ -301,5 +326,11 @@ public class StudentController {
 
 		StudentIndeks saved = studentIndeksRepository.save(studentIndeks);
 		return saved.getId();
+	}
+
+	//Selekcija studenta (njegovih ličnih podataka) preko broja indeksa
+	@GetMapping(path = "/nadjiStudentaPrekoStudentIndeksa")
+	public StudentPodaciResponse nadjiStudentaPrekoStudentIndeks(@RequestParam String studProgramOznaka, @RequestParam int broj, @RequestParam int godina){
+		return studentIndeksService.getStudentPodaciByStudentIndeks(studProgramOznaka, broj, godina);
 	}
 }

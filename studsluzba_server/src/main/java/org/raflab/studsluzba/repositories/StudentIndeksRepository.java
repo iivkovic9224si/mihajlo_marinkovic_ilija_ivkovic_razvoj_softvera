@@ -40,4 +40,6 @@ public interface StudentIndeksRepository extends JpaRepository<StudentIndeks, Lo
 
 	Optional<StudentIndeks> findByGodinaAndBrojAndStudProgramOznakaAndAktivan(int godina, int broj, String studProgramOznaka, boolean aktivan);
 
+	@Query("select si from StudentIndeks si join si.studijskiProgram sp where sp.oznaka = :studProgramOznaka and si.broj = :broj and si.godina = :godina")
+	StudentIndeks getStudentIndeks(@Param("studProgramOznaka") String studProgramOznaka, @Param("broj") int broj, @Param("godina") int godina);
 }

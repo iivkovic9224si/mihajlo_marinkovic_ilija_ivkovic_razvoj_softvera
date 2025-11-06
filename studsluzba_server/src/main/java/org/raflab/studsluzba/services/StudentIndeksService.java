@@ -2,6 +2,7 @@ package org.raflab.studsluzba.services;
 
 import org.raflab.studsluzba.controllers.response.PredmetResponse;
 import org.raflab.studsluzba.controllers.response.StudentPodaciResponse;
+import org.raflab.studsluzba.model.entity.Predmet;
 import org.raflab.studsluzba.model.entity.StudentIndeks;
 import org.raflab.studsluzba.model.entity.StudentPodaci;
 import org.raflab.studsluzba.repositories.PolozenPredmetRepository;
@@ -12,6 +13,7 @@ import org.raflab.studsluzba.utils.converters.PredmetConverter;
 import org.raflab.studsluzba.utils.converters.StudentPodaciConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,8 +62,16 @@ public class StudentIndeksService {
         return studentIndeksRepository.findAktivanStudentIndeksiByStudentPodaciId(studentPodaciId);
     }
 
-    public List<PredmetResponse> findPolozeniPredmetiByStudentIndeks(StudentIndeks studentIndeks) {
-        return PredmetConverter.toPredmetResponseList(polozenPredmetRepository.findPolozeniPredmetiByStudentIndeks(studentIndeks));
+    public Page<PredmetResponse> findPolozeniPredmetiByStudentIndeks(StudentIndeks studentIndeks, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Predmet> pageResult = polozenPredmetRepository.findPolozeniPredmetiByStudentIndeks(studentIndeks, pageable);
+        return pageResult.map(PredmetConverter::toPredmetResponse);
+    }
+
+    public Page<PredmetResponse> findNePolozeniPredmetiByStudentIndeks(StudentIndeks studentIndeks, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Predmet> pageResult = polozenPredmetRepository.findNePolozeniPredmetiByStudentIndeks(studentIndeks, pageable);
+        return pageResult.map(PredmetConverter::toPredmetResponse);
     }
 
     public List<Integer> getUpisaneGodineByStudentIndeks(StudentIndeks studentIndeks) {
@@ -75,4 +85,14 @@ public class StudentIndeksService {
     public Page<StudentPodaciResponse> getStudentPodaciByImeandorPrezime(String ime, String prezime, Pageable pageable) {
         return StudentPodaciConverter.toStudentPodaciResponse(studentPodaciRepository.findStudentByImeandorPrezime(ime, prezime, pageable));
     }
+
+    public StudentPodaciResponse getStudentPodaciByStudentIndeks(String oznakaPrograma, int broj, int godina) {
+        StudentIndeks si = studentIndeksRepository.findStudentIndeks(oznakaPrograma, broj, godina);
+        if (si == null) {
+            throw new RuntimeException("Student indeks nije pronađen u bazi.");
+        }
+        return StudentPodaciConverter.toStudentPodaciResponse(studentPodaciRepository.getStudentPodaciFromStudentIndeks(si));
+    }
+
+
 }

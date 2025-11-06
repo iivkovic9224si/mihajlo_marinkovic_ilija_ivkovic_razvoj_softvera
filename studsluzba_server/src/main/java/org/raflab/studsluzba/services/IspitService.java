@@ -95,7 +95,7 @@ public class IspitService {
 
         // Pronađi DrziPredmet
         Optional<DrziPredmet> drziPredmetOpt = drziPredmetRepository
-                .findBySkolskaGodinaAndNastavnikEmailAndPredmetSifra(
+                .findBySkolskaGodinaGodinaAndNastavnikEmailAndPredmetSifra(
                         request.getDrziPredmetRequest().getSkolskaGodinaNaziv(),
                         request.getDrziPredmetRequest().getNastavnikEmail(),
                         request.getDrziPredmetRequest().getPredmetSifra()
