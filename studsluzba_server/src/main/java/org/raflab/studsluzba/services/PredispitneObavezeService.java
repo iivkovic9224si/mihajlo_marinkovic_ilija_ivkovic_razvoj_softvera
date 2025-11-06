@@ -22,7 +22,7 @@ public class PredispitneObavezeService {
     private final PredmetRepository predmetRepository;
     private final PredmetService predmetService;
 
-    // CREATE / UPDATE
+    // CREATE
     public PredispitneObavezeResponse save(PredispitneObavezeRequest request) {
         if (request.getId() != null) {
             throw new IllegalArgumentException("ID ne sme biti poslat prilikom kreiranja nove predispitne obaveze.");

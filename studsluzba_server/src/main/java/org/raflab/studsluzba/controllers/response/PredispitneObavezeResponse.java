@@ -21,6 +21,5 @@ public class PredispitneObavezeResponse {
     private VrstaPredispitneObaveze vrstaPredispitneObaveze;
 
     @NotNull
-    @ManyToOne
     private PredmetResponse predmetResponse;
 }
