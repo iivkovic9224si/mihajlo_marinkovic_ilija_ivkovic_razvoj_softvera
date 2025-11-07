@@ -5,6 +5,7 @@ package org.raflab.studsluzba.repositories;
 import java.util.List;
 
 import org.raflab.studsluzba.controllers.response.StudentPodaciResponse;
+import org.raflab.studsluzba.model.entity.SrednjaSkola;
 import org.raflab.studsluzba.model.entity.StudentIndeks;
 import org.raflab.studsluzba.model.entity.StudentPodaci;
 import org.springframework.data.domain.Page;
@@ -40,5 +41,9 @@ public interface StudentPodaciRepository extends JpaRepository<StudentPodaci, Lo
 
 	@Query("SELECT sp FROM StudentPodaci sp WHERE sp = :#{#si.student}")
 	StudentPodaci getStudentPodaciFromStudentIndeks(@Param("si") StudentIndeks si);
+
+	@Query("select sp from StudentPodaci sp where sp.srednjaSkola = :srednjaSkola")
+	List<StudentPodaci> getStudentiBySrednjaSkola(SrednjaSkola srednjaSkola);
+
 
 }

@@ -9,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Data
+@AllArgsConstructor
 public class StudijskiTokAktivnosti {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

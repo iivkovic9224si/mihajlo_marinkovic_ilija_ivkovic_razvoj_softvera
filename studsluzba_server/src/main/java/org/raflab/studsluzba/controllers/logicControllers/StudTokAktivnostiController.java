@@ -1,7 +1,9 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
 import lombok.RequiredArgsConstructor;
+import org.raflab.studsluzba.controllers.request.DrziPredmetRequest;
 import org.raflab.studsluzba.controllers.request.StudijskiTokAktivnostiRequest;
+import org.raflab.studsluzba.controllers.request.UpisStudentaRequest;
 import org.raflab.studsluzba.controllers.response.StudijskiTokAktivnostiResponse;
 import org.raflab.studsluzba.model.entity.StudijskiTokAktivnosti;
 import org.raflab.studsluzba.repositories.StudentIndeksRepository;
@@ -42,5 +44,10 @@ public class StudTokAktivnostiController {
         entity.setId(id);
         StudijskiTokAktivnosti updated = studijskiTokAktivnostiService.update(entity);
         return StudentIndexAktivnostController.toStudijskiTokAktivnostiResponse(updated);
+    }
+
+    @PostMapping(path = "/upisstudenta")
+    public void upisiStudenta(@RequestBody UpisStudentaRequest upisStudentaRequest) {
+        studijskiTokAktivnostiService.upisiStudentaNaGodinu(upisStudentaRequest.getStudijskiTokAktivnostiRequest(), upisStudentaRequest.getDrziPredmetRequests());
     }
 }

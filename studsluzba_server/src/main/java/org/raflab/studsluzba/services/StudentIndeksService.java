@@ -1,14 +1,13 @@
 package org.raflab.studsluzba.services;
 
+import org.raflab.studsluzba.controllers.request.StudijskiTokAktivnostiRequest;
 import org.raflab.studsluzba.controllers.response.PredmetResponse;
 import org.raflab.studsluzba.controllers.response.StudentPodaciResponse;
 import org.raflab.studsluzba.model.entity.Predmet;
+import org.raflab.studsluzba.model.entity.SrednjaSkola;
 import org.raflab.studsluzba.model.entity.StudentIndeks;
 import org.raflab.studsluzba.model.entity.StudentPodaci;
-import org.raflab.studsluzba.repositories.PolozenPredmetRepository;
-import org.raflab.studsluzba.repositories.StudentIndeksRepository;
-import org.raflab.studsluzba.repositories.StudentPodaciRepository;
-import org.raflab.studsluzba.repositories.StudijskiTokAktivnostiRepository;
+import org.raflab.studsluzba.repositories.*;
 import org.raflab.studsluzba.utils.converters.PredmetConverter;
 import org.raflab.studsluzba.utils.converters.StudentPodaciConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +31,8 @@ public class StudentIndeksService {
     private StudijskiTokAktivnostiRepository studijskiTokAktivnostiRepository;
     @Autowired
     private StudentPodaciRepository studentPodaciRepository;
+    @Autowired
+    private SrednjaSkolaRepository srednjaSkolaRepository;
 
     @Transactional(readOnly = true)
     public int findBroj(int godina, String studProgramOznaka) {
@@ -94,5 +95,10 @@ public class StudentIndeksService {
         return StudentPodaciConverter.toStudentPodaciResponse(studentPodaciRepository.getStudentPodaciFromStudentIndeks(si));
     }
 
+    public List<StudentPodaciResponse> getStudentPodaciBySrednjaSkola(String sifra){
+        SrednjaSkola srednjaSkola = srednjaSkolaRepository.findBySifra(sifra)
+                .orElseThrow(() -> new RuntimeException("Srednja skola pod sifrom " + sifra + " nije pronadjena"));
 
+        return StudentPodaciConverter.toStudentPodaciResponseList(studentPodaciRepository.getStudentiBySrednjaSkola(srednjaSkola));
+    }
 }

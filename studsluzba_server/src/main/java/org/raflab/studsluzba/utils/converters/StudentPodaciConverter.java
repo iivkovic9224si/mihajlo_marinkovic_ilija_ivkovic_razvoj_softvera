@@ -45,4 +45,14 @@ public class StudentPodaciConverter {
                 .collect(Collectors.toList());
         return new PageImpl<>(content, students.getPageable(), students.getTotalElements());
     }
+
+    //Lista
+    public static List<StudentPodaciResponse> toStudentPodaciResponseList(List<StudentPodaci> students) {
+        if (students == null) return null;
+
+        return students.stream()
+                .map(StudentPodaciConverter::toStudentPodaciResponse)
+                .collect(Collectors.toList());
+    }
+
 }

@@ -32,4 +32,5 @@ public interface StudijskiProgramRepository extends CrudRepository<StudijskiProg
 			"from Predmet p where p.studProgram = :studProgram")
 	List<Predmet> findPredmetByStudProgram(StudijskiProgram studProgram);
 
+
 }
