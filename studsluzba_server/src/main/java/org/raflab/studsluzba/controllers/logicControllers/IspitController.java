@@ -45,20 +45,15 @@ public class IspitController {
         ispitService.delete(id);
     }
 
-//    @GetMapping(path = "/rezultati/{id}")
-//    public List<RezultatiIspitaResponse> rezultati(@PathVariable Long id) {
-//        Optional<IspitResponse> ispit = ispitService.findById(id);
-//
-//        if(ispit.isEmpty()) {
-//            return null;
-//        }
-//        return ispit.map(ispitService::getRezultatiSaIspita).orElse(null);
-//    }
-//
-//    @GetMapping(path = "/prosecnaOcena/{id}")
-//    public Double prosecnaOcena(@PathVariable Long id) {
-//        Optional<Ispit> ispit = ispitService.findById(id);
-//
-//        return ispit.map(ispitService::findProsecnaOcenaNaIspitu).orElse(null);
-//    }
+    @GetMapping(path = "/rezultati/{id}")
+    public List<RezultatiIspitaResponse> rezultati(@PathVariable Long id) {
+        return ispitService.getRezultatiSaIspita(id);
+    }
+
+    //PROSECNA OCENA ISPITA
+    @GetMapping(path = "/prosecnaOcena/{id}")
+    public Double prosecnaOcena(@PathVariable Long id) {
+        return ispitService.findProsecnaOcenaNaIspitu(id);
+    }
+
 }

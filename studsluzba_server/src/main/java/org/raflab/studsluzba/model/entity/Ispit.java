@@ -24,7 +24,6 @@ public class Ispit {
     @ManyToOne
     private IspitniRok ispitniRok;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "ispit")
     private List<PrijavaIspita> prijavaIspita;
 }

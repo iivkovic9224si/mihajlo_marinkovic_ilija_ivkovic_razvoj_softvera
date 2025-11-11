@@ -20,7 +20,6 @@ public class IspitniRok {
     @Column(name = "kraj", columnDefinition = "DATE")
     private LocalDate kraj;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "ispitniRok")
     private List<Ispit> ispit;
 

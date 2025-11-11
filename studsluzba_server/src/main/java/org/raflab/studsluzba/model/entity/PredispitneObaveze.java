@@ -21,7 +21,6 @@ public class PredispitneObaveze {
     @ManyToOne
     private Predmet predmet;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "predispitneObaveze")
     private List<OstvareniPredispitni> ostvareniPredispitni;
 }

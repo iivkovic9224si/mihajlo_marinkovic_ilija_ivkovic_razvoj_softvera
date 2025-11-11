@@ -18,7 +18,7 @@ import org.raflab.studsluzba.services.StudentIndeksService;
 import org.raflab.studsluzba.services.StudentProfileService;
 import org.raflab.studsluzba.utils.EntityMappers;
 import org.raflab.studsluzba.utils.ParseUtils;
-import org.raflab.studsluzba.utils.converters.StudentIndexAktivnostController;
+import org.raflab.studsluzba.utils.converters.StudentIndexAktivnostConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -58,7 +58,7 @@ public class StudentController {
     @PostMapping(path="/add")
    	public Long addNewStudentPodaci(@RequestBody StudentPodaciRequest studentPodaci) {
     	
-   	    StudentPodaci sp = studentPodaciRepository.save(StudentIndexAktivnostController.toStudentPodaci(studentPodaci));
+   	    StudentPodaci sp = studentPodaciRepository.save(StudentIndexAktivnostConverter.toStudentPodaci(studentPodaci));
    	    
    	    return sp.getId();
  	}
@@ -90,7 +90,7 @@ public class StudentController {
 	//Dodaj novi red u tabelu Student Indeks
     @PostMapping(path="/saveindeks")
    	public Long saveIndeks(@RequestBody StudentIndeksRequest studentIndeksRequest) {
-		StudentIndeks studentIndeks = StudentIndexAktivnostController.toStudentIndeks(studentIndeksRequest);
+		StudentIndeks studentIndeks = StudentIndexAktivnostConverter.toStudentIndeks(studentIndeksRequest);
 
 		int nextBroj = studentIndeksService.findBroj(studentIndeksRequest.getGodina(), studentIndeksRequest.getStudProgramOznaka());
 		studentIndeks.setBroj(nextBroj);
@@ -253,7 +253,7 @@ public class StudentController {
 	//Dodaj novog studenta
 	@PostMapping(path = "/dodajstudenta")
 	public Long addStudent(@RequestBody @Valid StudentPodaciRequest studentPodaciRequest) {
-		StudentPodaci studentPodaci = StudentIndexAktivnostController.toStudentPodaci(studentPodaciRequest);
+		StudentPodaci studentPodaci = StudentIndexAktivnostConverter.toStudentPodaci(studentPodaciRequest);
 		StudentPodaci savedStudent = studentPodaciRepository.save(studentPodaci);
 		return savedStudent.getId();
 	}

@@ -16,7 +16,7 @@ import java.util.List;
 
 import static org.raflab.studsluzba.utils.converters.StudProgramConverter.toStudijskiProgramResponse;
 
-public class StudentIndexAktivnostController {
+public class StudentIndexAktivnostConverter {
     public static StudentPodaci toStudentPodaci(StudentPodaciRequest request) {
         StudentPodaci studentPodaci = new StudentPodaci();
         studentPodaci.setIme(request.getIme());
@@ -63,6 +63,21 @@ public class StudentIndexAktivnostController {
                 si.isAktivan(),
                 si.getVaziOd(),
                 si.getStudent(),
+                toStudijskiProgramResponse(si.getStudijskiProgram()),
+                si.getOstvarenoEspb()
+        );
+    }public static StudentIndeksResponse toStudentIndeksResponseWithoutPodaci(StudentIndeks si) {
+        if (si == null) return null;
+
+        return new StudentIndeksResponse(
+                si.getId(),
+                si.getBroj(),
+                si.getGodina(),
+                si.getStudProgramOznaka(),
+                si.getNacinFinansiranja(),
+                si.isAktivan(),
+                si.getVaziOd(),
+                null,
                 toStudijskiProgramResponse(si.getStudijskiProgram()),
                 si.getOstvarenoEspb()
         );

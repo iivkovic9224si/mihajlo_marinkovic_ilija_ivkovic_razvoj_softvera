@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.raflab.studsluzba.model.entity.StudentPodaci;
 import org.raflab.studsluzba.model.entity.StudijskiProgram;
+import org.springframework.lang.Nullable;
 
 import java.time.LocalDate;
 
@@ -19,6 +20,7 @@ public class StudentIndeksResponse {
     private String nacinFinansiranja;
     private boolean aktivan;
     private LocalDate vaziOd;
+    @Nullable
     private StudentPodaci student;
     private StudijskiProgramResponse studijskiProgramResponse;
     private Integer ostvarenoEspb;

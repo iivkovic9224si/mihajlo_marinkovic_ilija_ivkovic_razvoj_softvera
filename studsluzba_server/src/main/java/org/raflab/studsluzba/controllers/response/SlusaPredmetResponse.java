@@ -11,9 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 public class SlusaPredmetResponse {
     private long id;
-
-
-
     private String skolskaGodina;
     private String studentIndeks;
     private String nastavnik;
