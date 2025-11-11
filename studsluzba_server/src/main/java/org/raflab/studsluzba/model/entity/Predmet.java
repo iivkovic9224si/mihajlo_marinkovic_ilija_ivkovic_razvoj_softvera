@@ -33,6 +33,9 @@ public class Predmet {
     @ManyToMany
     private List<StudijskiTokAktivnosti> studijskiTokAktivnosti;
 
+    @ManyToMany
+    private List<Grupa> grupa;
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
