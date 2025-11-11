@@ -27,7 +27,6 @@ public class Predmet {
 
 	private boolean obavezan;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "predmet")
     private List<PredispitneObaveze> predispitneObaveze;
 

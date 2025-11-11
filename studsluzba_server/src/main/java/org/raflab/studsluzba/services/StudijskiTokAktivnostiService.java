@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.raflab.studsluzba.controllers.response.StudijskiTokAktivnostiResponse;
 import org.raflab.studsluzba.model.entity.StudijskiTokAktivnosti;
 import org.raflab.studsluzba.repositories.StudijskiTokAktivnostiRepository;
-import org.raflab.studsluzba.utils.converters.StudentIndexAktivnostController;
+import org.raflab.studsluzba.utils.converters.StudentIndexAktivnostConverter;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,11 +21,11 @@ public class StudijskiTokAktivnostiService {
     }
 
     public List<StudijskiTokAktivnostiResponse> findAll(){
-        return new ArrayList<>(StudentIndexAktivnostController.toStudijskiTokAktivnostiResponseList(studijskiTokAktivnostiRepository.findAll()));
+        return new ArrayList<>(StudentIndexAktivnostConverter.toStudijskiTokAktivnostiResponseList(studijskiTokAktivnostiRepository.findAll()));
     }
 
     public Optional<StudijskiTokAktivnostiResponse> findById(Long id){
-        return studijskiTokAktivnostiRepository.findById(id).map(StudentIndexAktivnostController::toStudijskiTokAktivnostiResponse);
+        return studijskiTokAktivnostiRepository.findById(id).map(StudentIndexAktivnostConverter::toStudijskiTokAktivnostiResponse);
     }
 
     public StudijskiTokAktivnosti update(StudijskiTokAktivnosti studijski){

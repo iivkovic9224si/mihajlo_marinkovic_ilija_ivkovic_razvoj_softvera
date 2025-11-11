@@ -6,7 +6,7 @@ import org.raflab.studsluzba.controllers.response.StudijskiTokAktivnostiResponse
 import org.raflab.studsluzba.model.entity.StudijskiTokAktivnosti;
 import org.raflab.studsluzba.repositories.StudentIndeksRepository;
 import org.raflab.studsluzba.services.StudijskiTokAktivnostiService;
-import org.raflab.studsluzba.utils.converters.StudentIndexAktivnostController;
+import org.raflab.studsluzba.utils.converters.StudentIndexAktivnostConverter;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,9 +21,9 @@ public class StudTokAktivnostiController {
 
     @PostMapping(path = "/save")
     public StudijskiTokAktivnostiResponse save(@RequestBody StudijskiTokAktivnostiRequest request) {
-        StudijskiTokAktivnosti entity = StudentIndexAktivnostController.toStudijskiTokAktivnosti(request, studentIndeksRepository);
+        StudijskiTokAktivnosti entity = StudentIndexAktivnostConverter.toStudijskiTokAktivnosti(request, studentIndeksRepository);
         StudijskiTokAktivnosti saved = studijskiTokAktivnostiService.save(entity);
-        return StudentIndexAktivnostController.toStudijskiTokAktivnostiResponse(saved);
+        return StudentIndexAktivnostConverter.toStudijskiTokAktivnostiResponse(saved);
     }
 
     @GetMapping(path = "/all")
@@ -38,9 +38,9 @@ public class StudTokAktivnostiController {
 
     @PutMapping(path = "/update/{id}")
     public StudijskiTokAktivnostiResponse update(@PathVariable Long id, @RequestBody StudijskiTokAktivnostiRequest request) {
-        StudijskiTokAktivnosti entity = StudentIndexAktivnostController.toStudijskiTokAktivnosti(request, studentIndeksRepository);
+        StudijskiTokAktivnosti entity = StudentIndexAktivnostConverter.toStudijskiTokAktivnosti(request, studentIndeksRepository);
         entity.setId(id);
         StudijskiTokAktivnosti updated = studijskiTokAktivnostiService.update(entity);
-        return StudentIndexAktivnostController.toStudijskiTokAktivnostiResponse(updated);
+        return StudentIndexAktivnostConverter.toStudijskiTokAktivnostiResponse(updated);
     }
 }

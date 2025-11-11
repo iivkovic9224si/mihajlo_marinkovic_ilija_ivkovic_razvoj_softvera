@@ -16,19 +16,15 @@ public class SkolskaGodina {
     private boolean aktivna;
     private String godina;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "skolskaGodina")
     private List<SlusaPredmet> slusaPredmet;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "skolskaGodina")
     private List<DrziPredmet> drziPredmet;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "skolskaGodina")
     private List<IspitniRok> ispitniRok;
 
-    @JsonIgnore
     @OneToMany
     private List<Uplata> uplate;
 

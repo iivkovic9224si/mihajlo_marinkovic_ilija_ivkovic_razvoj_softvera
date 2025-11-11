@@ -13,7 +13,6 @@ public class IzlazakNaIspit {
     private Long id;
     private double brojPoenaSaIspita;
     private double brojPredispitnihPoena;
-    private Integer ocena;
     private String napomena;
     private boolean ponistava;
 

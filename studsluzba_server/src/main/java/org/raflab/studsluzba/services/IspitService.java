@@ -17,6 +17,7 @@ import org.raflab.studsluzba.repositories.IzlazakNaIspitRepository;
 import org.raflab.studsluzba.utils.converters.IspitConverter;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -95,7 +96,7 @@ public class IspitService {
 
         // Pronađi DrziPredmet
         Optional<DrziPredmet> drziPredmetOpt = drziPredmetRepository
-                .findBySkolskaGodinaAndNastavnikEmailAndPredmetSifra(
+                .findBySkolskaGodinaGodinaAndNastavnikEmailAndPredmetSifra(
                         request.getDrziPredmetRequest().getSkolskaGodinaNaziv(),
                         request.getDrziPredmetRequest().getNastavnikEmail(),
                         request.getDrziPredmetRequest().getPredmetSifra()
@@ -136,12 +137,20 @@ public class IspitService {
     }
 
 
-    public List<RezultatiIspitaResponse> getRezultatiSaIspita(Ispit ispit) {
-        List<Object[]> res = izlazakNaIspitRepository.getRezultatiIspitaRaw(ispit);
-        return res.stream().map(IspitConverter::toRezultatiIspitaResponse).collect(Collectors.toList());
+    public List<RezultatiIspitaResponse> getRezultatiSaIspita(Long ispitId) {
+        List<Object[]> res = izlazakNaIspitRepository.getRezultatiIspitaRawByIspitId(ispitId);
+
+        List<RezultatiIspitaResponse> rezultati = new ArrayList<>();
+        for (Object[] row : res) {
+            rezultati.add(IspitConverter.toRezultatiIspitaResponse(row));
+        }
+        return rezultati;
     }
 
-    public Double findProsecnaOcenaNaIspitu(Ispit ispit) {
-        return izlazakNaIspitRepository.getProsecnaOcenaNaIspitu(ispit);
+
+    //PROSECNA OCENA ISPITA
+    public Double findProsecnaOcenaNaIspitu(Long ispitId) {
+        return izlazakNaIspitRepository.getProsecnaOcenaNaIspituById(ispitId);
     }
+
 }

@@ -851,7 +851,6 @@ public class Seeder implements CommandLineRunner {
                     else if(ukupniPoeni <= 90) ocena = 9;
                     else ocena = 10;
 
-                    izlazak.setOcena(ocena);
                     izlazak.setNapomena(random.nextDouble() < 0.1 ? "Ponistava" : "");
                     izlazak.setPonistava(false);
                     izlazakNaIspitRepository.save(izlazak);
