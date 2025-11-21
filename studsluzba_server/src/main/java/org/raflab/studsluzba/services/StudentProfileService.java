@@ -1,8 +1,8 @@
 package org.raflab.studsluzba.services;
 
 import org.raflab.studsluzba.model.entity.StudentIndeks;
-import org.raflab.studsluzba.model.dtos.StudentProfileDTO;
-import org.raflab.studsluzba.model.dtos.StudentWebProfileDTO;
+import org.raflab.studsluzba.controllers.dtosIlija.StudentProfileDTO;
+import org.raflab.studsluzba.controllers.dtosIlija.StudentWebProfileDTO;
 import org.raflab.studsluzba.repositories.PredmetRepository;
 import org.raflab.studsluzba.repositories.SlusaPredmetRepository;
 import org.raflab.studsluzba.repositories.StudentIndeksRepository;
