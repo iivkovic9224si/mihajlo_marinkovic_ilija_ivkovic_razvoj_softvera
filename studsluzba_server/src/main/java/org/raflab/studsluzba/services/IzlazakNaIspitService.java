@@ -4,12 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.raflab.studsluzba.controllers.request.IzlazakNaIspitRequest;
 import org.raflab.studsluzba.controllers.response.IzlazakNaIspitResponse;
 import org.raflab.studsluzba.model.entity.IzlazakNaIspit;
+import org.raflab.studsluzba.model.entity.PolozenPredmet;
 import org.raflab.studsluzba.model.entity.PrijavaIspita;
 import org.raflab.studsluzba.repositories.IzlazakNaIspitRepository;
+import org.raflab.studsluzba.repositories.PolozenPredmetRepository;
 import org.raflab.studsluzba.repositories.PrijavaIspitaRepository;
 import org.raflab.studsluzba.utils.converters.IzlazakNaIspitConverter;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +23,7 @@ public class IzlazakNaIspitService {
 
     private final IzlazakNaIspitRepository izlazakNaIspitRepository;
     private final PrijavaIspitaRepository prijavaIspitaRepository;
+    private final PolozenPredmetRepository polozenPredmetRepository;
 
     // SAVE - kreira novi
     public IzlazakNaIspitResponse save(IzlazakNaIspitRequest request) {
@@ -35,6 +39,42 @@ public class IzlazakNaIspitService {
         IzlazakNaIspit e = IzlazakNaIspitConverter.toEntity(request, prijava.get());
         izlazakNaIspitRepository.save(e);
         return IzlazakNaIspitConverter.toResponse(e);
+    }
+
+    public IzlazakNaIspitResponse saveWithPolozenPredmetIfPass(IzlazakNaIspitRequest request) {
+        if (request.getId() != null) {
+            throw new RuntimeException("ID must be null for save");
+        }
+
+        PrijavaIspita prijava = prijavaIspitaRepository.findById(request.getPrijavaIspitaID())
+                .orElseThrow(() -> new RuntimeException("Prijava ispita ne postoji"));
+
+        IzlazakNaIspit izlazak = IzlazakNaIspitConverter.toEntity(request, prijava);
+
+        double ukupnoPoena = izlazak.getBrojPoenaSaIspita() + izlazak.getBrojPredispitnihPoena();
+
+        // Sačuvaj izlazak prvo
+        izlazakNaIspitRepository.save(izlazak);
+
+        if (ukupnoPoena >= 51) {
+            PolozenPredmet pp = new PolozenPredmet();
+
+            pp.setBrojPoena(ukupnoPoena);
+            pp.setDatum(LocalDate.now());
+            pp.setIzlazakIspita(izlazak);
+
+            // Popuni entitete StudentIndeks i Predmet
+            pp.setStudentIndeks(prijava.getSlusaPredmet().getStudentIndeks());
+            pp.setPredmet(prijava.getIspit().getDrziPredmet().getPredmet());
+
+            polozenPredmetRepository.save(pp);
+
+            // Poveži izlazak sa položenim predmetom
+            izlazak.setPolozenPredmet(pp);
+            izlazakNaIspitRepository.save(izlazak);
+        }
+
+        return IzlazakNaIspitConverter.toResponse(izlazak);
     }
 
     public IzlazakNaIspitResponse findById(Long id) {

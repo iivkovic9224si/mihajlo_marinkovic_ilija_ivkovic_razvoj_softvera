@@ -21,6 +21,11 @@ public class IzlazakNaIspitController {
         return izlazakNaIspitService.save(request);
     }
 
+    @PostMapping("/saveWithPolozen")
+    public IzlazakNaIspitResponse saveWithPolozen(@RequestBody IzlazakNaIspitRequest request) {
+        return izlazakNaIspitService.saveWithPolozenPredmetIfPass(request);
+    }
+
     @GetMapping("/findAll")
     public List<IzlazakNaIspitResponse> findAll() { return izlazakNaIspitService.findAll(); }
 
