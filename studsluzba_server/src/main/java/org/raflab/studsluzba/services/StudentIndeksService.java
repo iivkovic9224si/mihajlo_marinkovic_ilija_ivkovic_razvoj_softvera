@@ -1,16 +1,17 @@
 package org.raflab.studsluzba.services;
 
+import org.raflab.studsluzba.controllers.request.StudentIndeksRequest;
+import org.raflab.studsluzba.controllers.request.StudentPodaciRequest;
 import org.raflab.studsluzba.controllers.request.StudijskiTokAktivnostiRequest;
 import org.raflab.studsluzba.controllers.response.PredmetResponse;
 import org.raflab.studsluzba.controllers.response.StudentPodaciResponse;
-import org.raflab.studsluzba.model.entity.Predmet;
-import org.raflab.studsluzba.model.entity.SrednjaSkola;
-import org.raflab.studsluzba.model.entity.StudentIndeks;
-import org.raflab.studsluzba.model.entity.StudentPodaci;
+import org.raflab.studsluzba.model.entity.*;
 import org.raflab.studsluzba.repositories.*;
 import org.raflab.studsluzba.utils.converters.PredmetConverter;
+import org.raflab.studsluzba.utils.converters.StudentIndeksConverter;
 import org.raflab.studsluzba.utils.converters.StudentPodaciConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,8 @@ public class StudentIndeksService {
     private StudentPodaciRepository studentPodaciRepository;
     @Autowired
     private SrednjaSkolaRepository srednjaSkolaRepository;
+    @Autowired
+    private StudijskiProgramRepository studijskiProgramRepository;
 
     @Transactional(readOnly = true)
     public int findBroj(int godina, String studProgramOznaka) {
@@ -40,6 +43,51 @@ public class StudentIndeksService {
                 findBrojeviByGodinaAndStudProgramOznaka(godina, studProgramOznaka);
 
         return findNextAvailableNumber(brojeviList);
+    }
+
+    public StudentIndeks save(StudentIndeksRequest siRequest) {
+        StudentIndeks si = StudentIndeksConverter.toStudentIndeks(siRequest);
+        return studentIndeksRepository.save(si);
+    }
+
+    @Transactional
+    public Long saveIndeks(StudentIndeksRequest studentIndeksRequest) {
+        StudentIndeks studentIndeks = StudentIndeksConverter.toStudentIndeks(studentIndeksRequest);
+
+        int nextBroj = findBroj(studentIndeksRequest.getGodina(), studentIndeksRequest.getStudProgramOznaka());
+        studentIndeks.setBroj(nextBroj);
+
+        StudentPodaci studentPodaci = studentPodaciRepository.findById(studentIndeksRequest.getStudentId())
+                .orElseThrow(() -> new RuntimeException("Student sa ID " + studentIndeksRequest.getStudentId() + " nije pronađen"));
+        studentIndeks.setStudent(studentPodaci);
+
+        List<StudijskiProgram> studijskiProgrami = studijskiProgramRepository.findByOznaka(studentIndeksRequest.getStudProgramOznaka());
+        if (studijskiProgrami.isEmpty()) {
+            throw new RuntimeException("No StudijskiProgram found with oznaka: " + studentIndeksRequest.getStudProgramOznaka());
+        }
+        studentIndeks.setStudijskiProgram(studijskiProgrami.get(0));
+
+        try {
+            StudentIndeks savedStudentIndeks = studentIndeksRepository.save(studentIndeks);
+            return savedStudentIndeks.getId();
+        } catch (DataIntegrityViolationException e) {
+            throw new RuntimeException("Duplicate entry for broj, godina, and studProgramOznaka", e);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while saving the StudentIndeks.", e);
+        }
+    }
+
+    public Long update(Long id, StudentIndeksRequest siRequest) {
+        StudentIndeks studentIndeks = studentIndeksRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("StudentIndeks sa ID " + id + " ne postoji"));
+
+        studentIndeks.setGodina(siRequest.getGodina());
+        studentIndeks.setAktivan(siRequest.isAktivan());
+        studentIndeks.setNacinFinansiranja(siRequest.getNacinFinansiranja());
+        studentIndeks.setVaziOd(siRequest.getVaziOd());
+
+        StudentIndeks saved = studentIndeksRepository.save(studentIndeks);
+        return saved.getId();
     }
 
     private int findNextAvailableNumber(List<Integer> brojeviList) {
@@ -63,24 +111,52 @@ public class StudentIndeksService {
         return studentIndeksRepository.findAktivanStudentIndeksiByStudentPodaciId(studentPodaciId);
     }
 
-    public Page<PredmetResponse> findPolozeniPredmetiByStudentIndeks(StudentIndeks studentIndeks, int page, int size) {
+    public Page<PredmetResponse> findPolozeniPredmetiByStudentIndeks(StudentIndeksRequest studentIndeksRequest, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
+
+        StudentIndeks studentIndeks = studentIndeksRepository.findStudentIndeks(
+                studentIndeksRequest.getStudProgramOznaka(),
+                studentIndeksRequest.getGodina(),
+                studentIndeksRequest.getBroj()
+        );
+
+        if (studentIndeks == null) {
+            throw new RuntimeException("Student indeks nije pronađen u bazi.");
+        }
+
         Page<Predmet> pageResult = polozenPredmetRepository.findPolozeniPredmetiByStudentIndeks(studentIndeks, pageable);
         return pageResult.map(PredmetConverter::toPredmetResponse);
     }
 
-    public Page<PredmetResponse> findNePolozeniPredmetiByStudentIndeks(StudentIndeks studentIndeks, int page, int size) {
+    public Page<PredmetResponse> findNePolozeniPredmetiByStudentIndeks(StudentIndeksRequest studentIndeksRequest, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
+
+        StudentIndeks studentIndeks = studentIndeksRepository.findStudentIndeks(
+                studentIndeksRequest.getStudProgramOznaka(),
+                studentIndeksRequest.getGodina(),
+                studentIndeksRequest.getBroj()
+        );
+
+        if (studentIndeks == null) {
+            throw new RuntimeException("Student indeks nije pronađen u bazi.");
+        }
+
         Page<Predmet> pageResult = polozenPredmetRepository.findNePolozeniPredmetiByStudentIndeks(studentIndeks, pageable);
         return pageResult.map(PredmetConverter::toPredmetResponse);
     }
 
-    public List<Integer> getUpisaneGodineByStudentIndeks(StudentIndeks studentIndeks) {
-        return studijskiTokAktivnostiRepository.getUpisaneGodineByStudentIndeks(studentIndeks);
-    }
+    public List<Integer> getUpisaneGodineByStudentIndeks(StudentIndeksRequest studentIndeksRequest) {
+        StudentIndeks studentIndeks = studentIndeksRepository.findStudentIndeks(
+                studentIndeksRequest.getStudProgramOznaka(),
+                studentIndeksRequest.getGodina(),
+                studentIndeksRequest.getBroj()
+        );
 
-    public List<Integer> getObnovljeneGodineByStudentIndeks(StudentIndeks studentIndeks) {
-        return studijskiTokAktivnostiRepository.getObnovljeneGodineByStudentIndeks(studentIndeks);
+        if (studentIndeks == null) {
+            throw new RuntimeException("Student indeks nije pronađen u bazi.");
+        }
+
+        return studijskiTokAktivnostiRepository.getUpisaneGodineByStudentIndeks(studentIndeks);
     }
 
     public Page<StudentPodaciResponse> getStudentPodaciByImeandorPrezime(String ime, String prezime, Pageable pageable) {
@@ -100,5 +176,19 @@ public class StudentIndeksService {
                 .orElseThrow(() -> new RuntimeException("Srednja skola pod sifrom " + sifra + " nije pronadjena"));
 
         return StudentPodaciConverter.toStudentPodaciResponseList(studentPodaciRepository.getStudentiBySrednjaSkola(srednjaSkola));
+    }
+
+    public List<Integer> getObnovljeneGodine(StudentIndeksRequest studentIndeksRequest) {
+        StudentIndeks studentIndeks = studentIndeksRepository.findStudentIndeks(
+                studentIndeksRequest.getStudProgramOznaka(),
+                studentIndeksRequest.getGodina(),
+                studentIndeksRequest.getBroj()
+        );
+
+        if (studentIndeks == null) {
+            throw new RuntimeException("Student indeks nije pronađen u bazi.");
+        }
+
+        return studijskiTokAktivnostiRepository.getObnovljeneGodineByStudentIndeks(studentIndeks);
     }
 }

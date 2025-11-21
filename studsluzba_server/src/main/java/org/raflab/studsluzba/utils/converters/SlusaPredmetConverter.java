@@ -9,6 +9,7 @@ import org.raflab.studsluzba.model.entity.StudentIndeks;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class SlusaPredmetConverter {
     public static SlusaPredmet toSlusaPredmet(SkolskaGodina skolskaGodina, StudentIndeks studentIndeks, DrziPredmet drziPredmet) {
@@ -34,4 +35,11 @@ public class SlusaPredmetConverter {
                 .map(SlusaPredmetConverter::toSlusaPredmetResponse)
                 .collect(Collectors.toList());
     }
+
+    public static List<SlusaPredmetResponse> toSlusaPredmetResponseList(Iterable<SlusaPredmet> iterable) {
+        return StreamSupport.stream(iterable.spliterator(), false)
+                .map(SlusaPredmetConverter::toSlusaPredmetResponse)
+                .collect(Collectors.toList());
+    }
+
 }

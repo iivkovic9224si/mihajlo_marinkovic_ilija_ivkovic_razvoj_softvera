@@ -81,4 +81,52 @@ public class StudijskiTokAktivnostiService {
             slusaPredmetRepository.save(slusaPredmet);
         }
     }
+
+    // obnova godine za studenta (nepoloženi + izbor predmeta iz naredne godine, max 60 ESPB)
+    public void obnovaGodine(StudijskiTokAktivnostiRequest studijskiTokAktivnostiRequest,
+                             List<DrziPredmetRequest> drziPredmetRequests) {
+
+        StudentIndeks studentIndeks = studentIndeksRepository.findStudentIndeks(studijskiTokAktivnostiRequest.getIndeksStudProgramOznaka(),studijskiTokAktivnostiRequest.getIndeksGodina(),studijskiTokAktivnostiRequest.getIndeksBroj());
+        if(studentIndeks == null){
+            throw new RuntimeException("Student sa tim indeksom nije pronadjen");
+        }
+
+        studijskiTokAktivnostiRepository.save(StudijskiTokAktivnostiConverter.toStrudijskiTokAktivnosti(studijskiTokAktivnostiRequest, studentIndeks));
+
+
+        List<DrziPredmet> drziPredmets = new ArrayList<>();
+        int ukupnoESPB = 0;
+
+        for (DrziPredmetRequest drziPredmetRequest : drziPredmetRequests) {
+
+            DrziPredmet drziPredmet = drziPredmetRepository
+                    .getDrziPredmetByNastavnikMailAndPredmetSifra(
+                            drziPredmetRequest.getNastavnikEmail(),
+                            drziPredmetRequest.getPredmetSifra()
+                    );
+
+            if (drziPredmet == null) {
+                throw new RuntimeException("Predmet pod sifrom " + drziPredmetRequest.getPredmetSifra() +
+                        " koji predaje profesor " + drziPredmetRequest.getNastavnikEmail() + " nije pronađen.");
+            }
+
+            ukupnoESPB += drziPredmet.getPredmet().getEspb();
+
+            if (ukupnoESPB > 60) {
+                throw new RuntimeException("Ukupan broj ESPB ne može preći 60! Trenutno: " + ukupnoESPB);
+            }
+
+            drziPredmets.add(drziPredmet);
+        }
+
+        SkolskaGodina skolskaGodina = skolskaGodinaRepository.findByAktivnaTrue();
+
+        for (DrziPredmet drziPredmet : drziPredmets) {
+            SlusaPredmet slusaPredmet = SlusaPredmetConverter.toSlusaPredmet(
+                    skolskaGodina, studentIndeks, drziPredmet
+            );
+            slusaPredmetRepository.save(slusaPredmet);
+        }
+    }
+
 }

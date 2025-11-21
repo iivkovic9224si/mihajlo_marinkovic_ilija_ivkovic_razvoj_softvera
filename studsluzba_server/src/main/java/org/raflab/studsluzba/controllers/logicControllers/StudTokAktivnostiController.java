@@ -11,6 +11,7 @@ import org.raflab.studsluzba.services.StudijskiTokAktivnostiService;
 import org.raflab.studsluzba.utils.converters.StudentIndexAktivnostController;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,8 +47,19 @@ public class StudTokAktivnostiController {
         return StudentIndexAktivnostController.toStudijskiTokAktivnostiResponse(updated);
     }
 
+    @Transactional
     @PostMapping(path = "/upisstudenta")
     public void upisiStudenta(@RequestBody UpisStudentaRequest upisStudentaRequest) {
         studijskiTokAktivnostiService.upisiStudentaNaGodinu(upisStudentaRequest.getStudijskiTokAktivnostiRequest(), upisStudentaRequest.getDrziPredmetRequests());
     }
+
+    @Transactional
+    @PostMapping(path = "/obnova")
+    public void obnovaGodine(@RequestBody UpisStudentaRequest upisStudentaRequest) {
+        studijskiTokAktivnostiService.obnovaGodine(
+                upisStudentaRequest.getStudijskiTokAktivnostiRequest(),
+                upisStudentaRequest.getDrziPredmetRequests()
+        );
+    }
+
 }
