@@ -7,7 +7,6 @@ import org.raflab.studsluzba.controllers.response.StudijskiTokAktivnostiResponse
 import org.raflab.studsluzba.model.entity.*;
 import org.raflab.studsluzba.repositories.*;
 import org.raflab.studsluzba.utils.converters.SlusaPredmetConverter;
-import org.raflab.studsluzba.utils.converters.StudentIndexAktivnostController;
 import org.raflab.studsluzba.utils.converters.StudijskiTokAktivnostiConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.raflab.studsluzba.model.entity.StudijskiTokAktivnosti;
