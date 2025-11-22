@@ -3,6 +3,7 @@ package org.raflab.studsluzba.repositories;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.raflab.studsluzba.controllers.response.StudentPodaciResponse;
 import org.raflab.studsluzba.model.entity.SrednjaSkola;
@@ -45,5 +46,7 @@ public interface StudentPodaciRepository extends JpaRepository<StudentPodaci, Lo
 	@Query("select sp from StudentPodaci sp where sp.srednjaSkola = :srednjaSkola")
 	List<StudentPodaci> getStudentiBySrednjaSkola(SrednjaSkola srednjaSkola);
 
+	void deleteByJmbg(String jmbg);
 
+	Optional<StudentPodaci> findByJmbg(String jmbg);
 }

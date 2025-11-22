@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Data
-public class StudentIndeksRequest { //TODO - add notNull annotations
+public class StudentIndeksRequest {
 
     @NotNull
     private int godina; //ako npr student mastera upisuje neki program, a godina presla u sledecu???

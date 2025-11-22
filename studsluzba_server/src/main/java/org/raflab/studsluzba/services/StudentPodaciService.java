@@ -11,11 +11,13 @@ import org.raflab.studsluzba.repositories.StudentIndeksRepository;
 import org.raflab.studsluzba.repositories.StudentPodaciRepository;
 import org.raflab.studsluzba.utils.converters.StudentPodaciConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,6 +50,12 @@ public class StudentPodaciService {
 
 	public Optional<StudentPodaciResponse> findById(long id) {
 		Optional<StudentPodaci> rez = studentPodaciRepository.findById(id);
+		if(rez.isEmpty()) return null;
+		return StudentPodaciConverter.toStudentPodaciResponseOptional(rez);
+	}
+
+	public Optional<StudentPodaciResponse> findByJmbg(String jmbg) {
+		Optional<StudentPodaci> rez = studentPodaciRepository.findByJmbg(jmbg);
 		if(rez.isEmpty()) return null;
 		return StudentPodaciConverter.toStudentPodaciResponseOptional(rez);
 	}
@@ -97,4 +105,16 @@ public class StudentPodaciService {
 		return retVal;
 	}
 
+	@Transactional
+	public void deleteStudentPodaci(StudentPodaciRequest studentPodaciRequest) {
+		StudentPodaci studentPodaci = studentPodaciRepository.findByJmbg(studentPodaciRequest.getJmbg())
+				.orElseThrow(() -> new RuntimeException("StudentPodaci sa JMBG " + studentPodaciRequest.getJmbg() + " nije pronađen."));
+
+		try {
+			studentPodaciRepository.delete(studentPodaci);
+		} catch (DataIntegrityViolationException e) {
+			throw new RuntimeException(
+					"Brisanje nije moguće – StudentPodaci je povezan sa drugim entitetima (npr. StudentIndeks, predmeti).", e);
+		}
+	}
 }

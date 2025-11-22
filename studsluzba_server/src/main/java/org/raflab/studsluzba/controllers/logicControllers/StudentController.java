@@ -199,7 +199,7 @@ public class StudentController {
 	//Selekcija studenta (njegovih ličnih podataka) preko broja indeksa
 	@GetMapping(path = "/nadjiStudentaPrekoStudentIndeksa")
 	public StudentPodaciResponse nadjiStudentaPrekoStudentIndeks(@RequestParam String studProgramOznaka, @RequestParam int broj, @RequestParam int godina){
-		return studentIndeksService.getStudentPodaciByStudentIndeks(studProgramOznaka, broj, godina);
+		return studentIndeksService.getStudentPodaciByStudentIndeks(studProgramOznaka, godina, broj);
 	}
 
 	//selekcija svih upisanih studenata koji su završili određenu srednju školu
@@ -207,4 +207,20 @@ public class StudentController {
 	public List<StudentPodaciResponse> nadjiStudenteBySrednjaSkola(@RequestParam String srednjaSkolaSifra){
 		return studentIndeksService.getStudentPodaciBySrednjaSkola(srednjaSkolaSifra);
 	}
+
+	@PostMapping(path = "/obrisiStudentIndeks")
+	public void obrisiStudentIndeks(@RequestBody StudentIndeksRequest request) {
+		studentIndeksService.deleteByStudentIndeks(
+				request.getStudProgramOznaka(),
+				request.getBroj(),
+				request.getGodina()
+		);
+	}
+
+	@PostMapping(path = "/obrisiStudentPodaci")
+	public void obrisiStudentPodaci(@RequestBody StudentPodaciRequest request) {
+		studentPodaciService.deleteStudentPodaci(request);
+	}
+
+
 }

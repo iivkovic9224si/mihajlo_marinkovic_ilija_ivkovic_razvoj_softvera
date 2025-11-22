@@ -191,4 +191,22 @@ public class StudentIndeksService {
 
         return studijskiTokAktivnostiRepository.getObnovljeneGodineByStudentIndeks(studentIndeks);
     }
+
+    @Transactional
+    public void deleteByStudentIndeks(String studProgramOznaka, int broj, int godina) {
+        StudentIndeks studentIndeks = studentIndeksRepository.findStudentIndeks(studProgramOznaka, broj, godina);
+
+        if (studentIndeks == null) {
+            throw new RuntimeException("Student indeks (" + studProgramOznaka + "-" + broj + "/" + godina + ") nije pronađen.");
+        }
+
+        try {
+            studentIndeksRepository.delete(studentIndeks);
+        } catch (DataIntegrityViolationException e) {
+            throw new RuntimeException(
+                    "Brisanje nije moguće – indeks je povezan sa drugim podacima (predmeti, aktivnosti, podaci o studentu).", e);
+        }
+    }
+
+
 }
