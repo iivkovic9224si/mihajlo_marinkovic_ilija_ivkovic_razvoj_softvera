@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class DrziPredmetResponse {
-    private String predmetSifra;
-    private String nastavnikEmail;
     private String skolskaGodinaNaziv;
+    private String nastavnikEmail;
+    private String predmetSifra;
 }

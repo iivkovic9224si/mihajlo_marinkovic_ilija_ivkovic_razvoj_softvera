@@ -43,7 +43,7 @@ public class PolozenPredmetConverter {
         return pp;
     }
 
-    private static Integer calculateOcena(double poeni) {
+    public static Integer calculateOcena(double poeni) {
         if (poeni < 51) return 5;
         else if (poeni <= 60) return 6;
         else if (poeni <= 70) return 7;

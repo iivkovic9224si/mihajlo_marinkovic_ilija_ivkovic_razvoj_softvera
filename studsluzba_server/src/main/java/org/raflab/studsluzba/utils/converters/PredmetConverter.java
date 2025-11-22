@@ -23,17 +23,19 @@ public class PredmetConverter {
 
 
     public static PredmetResponse toPredmetResponse(Predmet predmet) {
+        String studProgramOznaka = predmet.getStudProgram() != null
+                ? predmet.getStudProgram().getOznaka()
+                : null; // ili "" ako želiš prazan string
+
         return new PredmetResponse(
                 predmet.getSifra(),
                 predmet.getNaziv(),
                 predmet.getOpis(),
                 predmet.getEspb(),
-                predmet.getStudProgram().getOznaka(), // SAMO oznaka kao String
+                studProgramOznaka,
                 predmet.isObavezan()
         );
     }
-
-
 
     public static List<PredmetResponse> toPredmetResponseList(List<Predmet> predmetList) {
         List<PredmetResponse> responseList = new ArrayList<>();

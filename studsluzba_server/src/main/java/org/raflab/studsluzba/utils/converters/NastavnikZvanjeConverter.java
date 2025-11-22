@@ -15,7 +15,6 @@ public class NastavnikZvanjeConverter {
         nz.setUzaNaucnaOblast(request.getUzaNaucnaOblast());
         nz.setZvanje(request.getZvanje());
         nz.setAktivno(request.isAktivno());
-        // nastavnik će se setovati u servisu po request.getNastavnikRequest()
         return nz;
     }
 
