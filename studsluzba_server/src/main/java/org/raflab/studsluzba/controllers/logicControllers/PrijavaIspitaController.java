@@ -50,4 +50,12 @@ public class PrijavaIspitaController {
     public List<StudentIndeksResponse> getStudentiZaIspit(@PathVariable Long ispitId) {
         return prijavaIspitaService.findStudentiByIspitId(ispitId);
     }
+
+    // ------------------ UPDATE ------------------
+    @PutMapping("/update/{id}")
+    public PrijavaIspitaResponse update(
+            @PathVariable Long id,
+            @RequestBody @Valid PrijavaIspitaRequest request) {
+        return prijavaIspitaService.update(id, request);
+    }
 }

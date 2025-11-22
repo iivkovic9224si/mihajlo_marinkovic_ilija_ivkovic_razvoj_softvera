@@ -43,5 +43,4 @@ public interface PolozenPredmetRepository extends JpaRepository<PolozenPredmet, 
     Double getProsecnaOcenaZaPredmetIzmedju(@Param("predmet") Predmet predmet,
                                             @Param("donjaGodina") Integer donjaGodina,
                                             @Param("gornjaGodina") Integer gornjaGodina);
-
 }

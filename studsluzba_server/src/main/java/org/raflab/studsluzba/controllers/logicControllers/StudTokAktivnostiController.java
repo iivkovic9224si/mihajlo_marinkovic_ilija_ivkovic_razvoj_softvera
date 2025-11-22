@@ -62,4 +62,9 @@ public class StudTokAktivnostiController {
         );
     }
 
+    @PostMapping(path = "/delete")
+    public void delete(@RequestBody StudijskiTokAktivnostiRequest studijskiTokAktivnostiRequestrequest) {
+        studijskiTokAktivnostiService.delete(studijskiTokAktivnostiRequestrequest);
+    }
+
 }

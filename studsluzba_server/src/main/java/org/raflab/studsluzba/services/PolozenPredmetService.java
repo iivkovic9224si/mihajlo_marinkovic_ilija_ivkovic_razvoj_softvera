@@ -87,4 +87,65 @@ public class PolozenPredmetService {
     public void delete(Long id) {
         polozenPredmetRepository.deleteById(id);
     }
+
+    //UPDATE
+    public PolozenPredmetResponse updateHere(Long id, PolozenPredmetHereRequest request) {
+
+        PolozenPredmet pp = polozenPredmetRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("PolozenPredmet ne postoji"));
+
+        StudentIndeks si = studentIndeksRepository
+                .findByGodinaAndBrojAndStudProgramOznakaAndAktivan(
+                        request.getIndeksGodina(),
+                        request.getIndeksBroj(),
+                        request.getIndeksStudProgramOznaka(),
+                        true
+                )
+                .orElseThrow(() -> new RuntimeException("StudentIndeks ne postoji"));
+
+        Predmet predmet = predmetRepository.findBySifra(request.getPredmetSifra())
+                .orElseThrow(() -> new RuntimeException("Predmet ne postoji"));
+
+        pp.setStudentIndeks(si);
+        pp.setPredmet(predmet);
+        pp.setNapomena(request.getNapomena());
+
+        polozenPredmetRepository.save(pp);
+        return PolozenPredmetConverter.toResponse(pp);
+    }
+
+    public PolozenPredmetResponse updateAway(Long id, PolozenPredmetAwayRequest request) {
+
+        PolozenPredmet pp = polozenPredmetRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("PolozenPredmet ne postoji"));
+
+        StudentIndeks si = studentIndeksRepository
+                .findByGodinaAndBrojAndStudProgramOznakaAndAktivan(
+                        request.getIndeksGodina(),
+                        request.getIndeksBroj(),
+                        request.getIndeksStudProgramOznaka(),
+                        true
+                )
+                .orElseThrow(() -> new RuntimeException("StudentIndeks ne postoji"));
+
+        Predmet predmet = predmetRepository.findBySifra(request.getPredmetSifra())
+                .orElseThrow(() -> new RuntimeException("Predmet ne postoji"));
+
+        VisokoSkolskaUstanova ustanova = visokoSkolskaUstanovaRepository
+                .findBySifra(request.getVisokoSkolskaUstanovaSifra())
+                .orElseThrow(() -> new RuntimeException("VisokoSkolskaUstanova ne postoji"));
+
+        pp.setStudentIndeks(si);
+        pp.setPredmet(predmet);
+        pp.setPriznatoOdInstitucije(ustanova);
+        pp.setDatum(request.getDatum());
+        pp.setBrojPoena(request.getBrojPoena());
+        pp.setNapomena(request.getNapomena());
+        pp.setPriznato(true);
+
+        polozenPredmetRepository.save(pp);
+        return PolozenPredmetConverter.toResponse(pp);
+    }
+
+
 }

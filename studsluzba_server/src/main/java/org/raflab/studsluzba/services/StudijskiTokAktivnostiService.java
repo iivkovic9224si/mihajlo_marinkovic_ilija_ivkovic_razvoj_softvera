@@ -131,4 +131,30 @@ public class StudijskiTokAktivnostiService {
         }
     }
 
+    public StudijskiTokAktivnosti findByRequest(StudijskiTokAktivnostiRequest request) {
+
+        VrstaStudijskeAktivnosti tipEnum =
+                VrstaStudijskeAktivnosti.valueOf(request.getTip());
+
+        return studijskiTokAktivnostiRepository.findByDetails(
+                tipEnum,
+                request.getGodina(),
+                request.getDatum(),
+                request.getIndeksStudProgramOznaka(),
+                request.getIndeksGodina(),
+                request.getIndeksBroj()
+        );
+    }
+
+    public void delete(StudijskiTokAktivnostiRequest request) {
+        StudijskiTokAktivnosti sta = findByRequest(request);
+
+        if (sta == null) {
+            throw new RuntimeException("Tražena studijska aktivnost nije pronađena.");
+        }
+
+        studijskiTokAktivnostiRepository.delete(sta);
+    }
+
+
 }
