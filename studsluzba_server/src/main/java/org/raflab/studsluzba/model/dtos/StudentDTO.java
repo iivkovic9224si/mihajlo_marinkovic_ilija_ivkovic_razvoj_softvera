@@ -1,4 +1,4 @@
-package org.raflab.studsluzba.controllers.dtosIlija;
+package org.raflab.studsluzba.model.dtos;
 
 public class StudentDTO {
 	

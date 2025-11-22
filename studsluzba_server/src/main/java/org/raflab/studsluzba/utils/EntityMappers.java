@@ -4,7 +4,7 @@ import org.raflab.studsluzba.controllers.response.StudentIndeksResponse;
 import org.raflab.studsluzba.controllers.response.StudentPodaciResponse;
 import org.raflab.studsluzba.model.entity.StudentIndeks;
 import org.raflab.studsluzba.model.entity.StudentPodaci;
-import org.raflab.studsluzba.controllers.dtosIlija.StudentDTO;
+import org.raflab.studsluzba.model.dtos.StudentDTO;
 import org.springframework.stereotype.Component;
 
 @Component
