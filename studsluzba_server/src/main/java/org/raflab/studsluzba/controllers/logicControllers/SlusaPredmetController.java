@@ -49,4 +49,9 @@ public class SlusaPredmetController {
         return slusaPredmetService.getSlusaPredmetiZaStudenta(studProgramOznaka, studentGodina, studentBroj);
     }
 
+    @GetMapping(path = "/sve")
+    public List<SlusaPredmetResponse> findAll() {
+        return slusaPredmetService.findAll();
+    }
+
 }

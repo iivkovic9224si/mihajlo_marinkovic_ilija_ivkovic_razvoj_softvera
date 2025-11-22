@@ -75,6 +75,12 @@ public class SlusaPredmetService {
         return slusaPredmetRepository.findById(id).map(SlusaPredmetConverter::toSlusaPredmetResponse);
     }
 
+    public List<SlusaPredmetResponse> findAll() {
+        return SlusaPredmetConverter.toSlusaPredmetResponseList(
+                slusaPredmetRepository.findAll()
+        );
+
+    }
 
     public List<SlusaPredmetResponse> getSlusaPredmetiZaStudenta(String studProgramOznaka, int studentGodina, int studentBroj) {
         StudentIndeks studentIndeks = studentIndeksRepository.findStudentIndeks(studProgramOznaka, studentGodina, studentBroj);

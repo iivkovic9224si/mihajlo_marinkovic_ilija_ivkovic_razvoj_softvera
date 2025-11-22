@@ -15,7 +15,7 @@ import org.raflab.studsluzba.repositories.StudentIndeksRepository;
 import org.raflab.studsluzba.repositories.StudentPodaciRepository;
 import org.raflab.studsluzba.repositories.StudijskiProgramRepository;
 import org.raflab.studsluzba.services.StudentIndeksService;
-import org.raflab.studsluzba.services.StudentProfileService;
+import org.raflab.studsluzba.services.StudentPodaciService;
 import org.raflab.studsluzba.utils.EntityMappers;
 import org.raflab.studsluzba.utils.ParseUtils;
 import org.raflab.studsluzba.utils.converters.StudentIndexAktivnostConverter;
@@ -36,15 +36,12 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(path="/api/student")
 public class StudentController {
-
-	@Autowired
-	StudentPodaciRepository studentPodaciRepository;
 	
 	@Autowired
 	StudentIndeksRepository studentIndeksRepository;
 	
 	@Autowired
-	StudentProfileService studentProfileService;
+	StudentPodaciService studentPodaciService;
 
 	@Autowired
 	StudentIndeksService studentIndeksService;
@@ -55,68 +52,39 @@ public class StudentController {
     @Autowired
     EntityMappers entityMappers;
 
-    @PostMapping(path="/add")
-   	public Long addNewStudentPodaci(@RequestBody StudentPodaciRequest studentPodaci) {
-    	
-   	    StudentPodaci sp = studentPodaciRepository.save(StudentIndexAktivnostConverter.toStudentPodaci(studentPodaci));
-   	    
-   	    return sp.getId();
- 	}
 
+
+    @PostMapping(path="/add")
+   	public Long addNewStudentPodaci(@RequestBody StudentPodaciRequest studentPodaciRequest) {
+   	    return studentPodaciService.save(studentPodaciRequest).getId();
+ 	}
 
 	//Ispisi sve redove iz tabele Student Podaci
 	@GetMapping(path="/all")
 	public Iterable<StudentPodaciResponse> getAllStudentPodaci() {
-        return studentPodaciRepository.findAll().stream()
-                .map(entityMappers::fromStudentPodaciToResponse)
-                .collect(Collectors.toList());
+        return studentPodaciService.findAll();
 	}
 
 	//Isto kao i ovo gore (ispisi sve redove iz tabele Student Podaci) samo Paginated
 	@GetMapping(path="/svi")
 	public Page<StudentPodaciResponse> getAllStudentPodaciPaginated(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) {
-		return studentPodaciRepository.findAll(PageRequest.of(page, size, Sort.by("id").descending()))
-                .map(entityMappers::fromStudentPodaciToResponse);
+		return studentPodaciService.findAll(PageRequest.of(page, size));
 	}
 
 	//Nadji Student Podaci preko id-ja studenta
 	@GetMapping(path="/podaci/{id}")
-	public StudentPodaciResponse getStudentPodaci(@PathVariable Long id){
-		Optional<StudentPodaci> rez = studentPodaciRepository.findById(id);
-		if(rez.isEmpty()) return null;
-		return entityMappers.fromStudentPodaciToResponse(rez.get());
+	public Optional<StudentPodaciResponse> getStudentPodaci(@PathVariable Long id){
+		return studentPodaciService.findById(id);
 	}
 
 	//Dodaj novi red u tabelu Student Indeks
-    @PostMapping(path="/saveindeks")
-   	public Long saveIndeks(@RequestBody StudentIndeksRequest studentIndeksRequest) {
-		StudentIndeks studentIndeks = StudentIndexAktivnostConverter.toStudentIndeks(studentIndeksRequest);
+	@PostMapping(path="/saveindeks")
+	public Long saveIndeks(@RequestBody StudentIndeksRequest studentIndeksRequest) {
+		return studentIndeksService.saveIndeks(studentIndeksRequest);
+	}
 
-		int nextBroj = studentIndeksService.findBroj(studentIndeksRequest.getGodina(), studentIndeksRequest.getStudProgramOznaka());
-		studentIndeks.setBroj(nextBroj);
 
-		Optional<StudentPodaci> studentPodaci = studentPodaciRepository.findById(studentIndeksRequest.getStudentId());
-		if(studentPodaci.isEmpty()) return null;		//TODO - throw error if not exist
-		studentIndeks.setStudent(studentPodaci.get());
-
-		List<StudijskiProgram> studijskiProgrami = studijskiProgramRepository.findByOznaka(studentIndeksRequest.getStudProgramOznaka());
-		if (studijskiProgrami.isEmpty()) {
-            throw new RuntimeException("No StudijskiProgram found with oznaka: " + studentIndeksRequest.getStudProgramOznaka());
-		}
-		studentIndeks.setStudijskiProgram(studijskiProgrami.get(0));
-
-		try {
-			StudentIndeks savedStudentIndeks = studentIndeksRepository.save(studentIndeks);
-			return savedStudentIndeks.getId();
-		} catch (DataIntegrityViolationException e) {
-			// TODO
-			throw new RuntimeException("Duplicate entry for broj, godina, and studProgramOznaka", e);
-		} catch (Exception e) {
-			throw new RuntimeException("Error while saving the StudentIndeks.", e);
-		}
- 	}
-
-	 //Ispisi red iz tabele Student Indeks po id-ju studenta (student Indeks)
+	//Ispisi red iz tabele Student Indeks po id-ju studenta (student Indeks)
     @GetMapping(path="/indeks/{id}")
     public StudentIndeksResponse getStudentIndeks(@PathVariable Long id){
     	Optional<StudentIndeks> rez = studentIndeksRepository.findById(id);
@@ -156,32 +124,15 @@ public class StudentController {
     	  return entityMappers.fromStudentIndexToResponse(si);
       }else return null;
     }
-    
-    @GetMapping(path="/search")  // pretraga po imenu, prezimenu i elementima indeksa
-    public Page<StudentDTO> search(@RequestParam (required = false) String ime,
-								   @RequestParam (required = false) String prezime,
-								   @RequestParam (required = false) String studProgram,
-								   @RequestParam (required = false) Integer godina,
-								   @RequestParam (required = false) Integer broj,
-								   @RequestParam(defaultValue = "0") Integer page,
-								   @RequestParam(defaultValue = "10") Integer size) {
-
-		if(studProgram==null && godina == null && broj==null) { // pretrazivanje studenata bez indeksa
-    		Page<StudentPodaci> spList = studentPodaciRepository.findStudent(ime, prezime, PageRequest.of(page, size, Sort.by("id").descending()));
-			return spList.map(EntityMappers::fromStudentPodaciToDTO);
-    	}
-    	Page<StudentIndeks> siList = studentIndeksRepository.findStudentIndeks(ime, prezime, studProgram, godina, broj, PageRequest.of(page, size, Sort.by("id").descending()));
-		return siList.map(EntityMappers::fromStudentIndeksToDTO);
-    }
 
     @GetMapping(path="/profile/{studentIndeksId}")  
     public StudentProfileDTO getStudentProfile(@PathVariable  Long studentIndeksId) {
-    	return studentProfileService.getStudentProfile(studentIndeksId);   	
+    	return studentPodaciService.getStudentProfile(studentIndeksId);
     }
     
     @GetMapping(path="/webprofile/{studentIndeksId}")  
     public StudentWebProfileDTO getStudentWebProfile(@PathVariable  Long studentIndeksId) {
-    	return studentProfileService.getStudentWebProfile(studentIndeksId);   	
+    	return studentPodaciService.getStudentWebProfile(studentIndeksId);
     }
     
     @GetMapping(path="/webprofile/email")  
@@ -190,57 +141,39 @@ public class StudentController {
          if(parsedData!=null) {
        	  StudentIndeks si = studentIndeksRepository.findStudentIndeks(parsedData[0], 2000+Integer.parseInt(parsedData[1]),Integer.parseInt(parsedData[2]));
        	  if(si!=null)
-       		  return studentProfileService.getStudentWebProfile(si.getId());   	
+       		  return studentPodaciService.getStudentWebProfile(si.getId());
          }
          return null;
     }
 
 	//selekcija svih položenih ispita za broj indeksa studenta
 	@PostMapping(path="/polozenipredmeti")
-	public List<PredmetResponse> polozeniPredmeti(@RequestBody @Valid StudentIndeksRequest studentIndeksRequest) {
-		StudentIndeks studentIndeks = studentIndeksRepository.findStudentIndeks(
-				studentIndeksRequest.getStudProgramOznaka(),
-				studentIndeksRequest.getGodina(),
-				studentIndeksRequest.getBroj()
-		);
+	public Page<PredmetResponse> polozeniPredmeti(
+			@RequestBody @Valid StudentIndeksRequest studentIndeksRequest,
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
+		return studentIndeksService.findPolozeniPredmetiByStudentIndeks(studentIndeksRequest, page, size);
+	}
 
-		if (studentIndeks == null) {
-			throw new RuntimeException("Student indeks nije pronađen u bazi.");
-		}
-
-		return studentIndeksService.findPolozeniPredmetiByStudentIndeks(studentIndeks);
+	//selekcija svih nepoloženih ispita za broj indeksa studenta, paginirano
+	@PostMapping(path="/nepolozenipredmeti")
+	public Page<PredmetResponse> nepolozeniPredmeti(
+			@RequestBody @Valid StudentIndeksRequest studentIndeksRequest,
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
+		return studentIndeksService.findNePolozeniPredmetiByStudentIndeks(studentIndeksRequest, page, size);
 	}
 
 	//pregled svih upisanih godina za broj indeksa
 	@PostMapping(path = "/upisanegodine")
 	public List<Integer> upisaneGodine(@RequestBody @Valid StudentIndeksRequest studentIndeksRequest) {
-		StudentIndeks studentIndeks = studentIndeksRepository.findStudentIndeks(
-				studentIndeksRequest.getStudProgramOznaka(),
-				studentIndeksRequest.getGodina(),
-				studentIndeksRequest.getBroj()
-		);
-
-		if (studentIndeks == null) {
-			throw new RuntimeException("Student indeks nije pronađen u bazi.");
-		}
-
-		return studentIndeksService.getUpisaneGodineByStudentIndeks(studentIndeks);
+		return studentIndeksService.getUpisaneGodineByStudentIndeks(studentIndeksRequest);
 	}
 
 	//pregled obnovljenih godina za broj indeksa
 	@PostMapping(path = "/obnovljenegodine")
 	public List<Integer> obnovljeneGodine(@RequestBody @Valid StudentIndeksRequest studentIndeksRequest) {
-		StudentIndeks studentIndeks = studentIndeksRepository.findStudentIndeks(
-				studentIndeksRequest.getStudProgramOznaka(),
-				studentIndeksRequest.getGodina(),
-				studentIndeksRequest.getBroj()
-		);
-
-		if (studentIndeks == null) {
-			throw new RuntimeException("Student indeks nije pronađen u bazi.");
-		}
-
-		return studentIndeksService.getObnovljeneGodineByStudentIndeks(studentIndeks);
+		return studentIndeksService.getObnovljeneGodine(studentIndeksRequest);
 	}
 
 	//selekcija studenata na osnovu imena i/ili prezimena (može samo ime, ili samo prezime ili oba da se unesu)
@@ -250,56 +183,44 @@ public class StudentController {
 		return studentIndeksService.getStudentPodaciByImeandorPrezime(ime, prezime, pageable);
 	}
 
-	//Dodaj novog studenta
-	@PostMapping(path = "/dodajstudenta")
-	public Long addStudent(@RequestBody @Valid StudentPodaciRequest studentPodaciRequest) {
-		StudentPodaci studentPodaci = StudentIndexAktivnostConverter.toStudentPodaci(studentPodaciRequest);
-		StudentPodaci savedStudent = studentPodaciRepository.save(studentPodaci);
-		return savedStudent.getId();
-	}
 
 	//Update postojeceg studenta
 	@PutMapping(path = "/updateujStudenta/{id}")
 	public Long updateStudent(@PathVariable Long id, @RequestBody @Valid StudentPodaciRequest studentPodaciRequest) {
-		StudentPodaci studentPodaci = studentPodaciRepository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Student sa datim ID ne postoji."));
-
-		studentPodaci.setIme(studentPodaciRequest.getIme());
-		studentPodaci.setPrezime(studentPodaciRequest.getPrezime());
-		studentPodaci.setSrednjeIme(studentPodaciRequest.getSrednjeIme());
-		studentPodaci.setJmbg(studentPodaciRequest.getJmbg());
-		studentPodaci.setDatumRodjenja(studentPodaciRequest.getDatumRodjenja());
-		studentPodaci.setMestoRodjenja(studentPodaciRequest.getMestoRodjenja());
-		studentPodaci.setMestoPrebivalista(studentPodaciRequest.getMestoPrebivalista());
-		studentPodaci.setDrzavaRodjenja(studentPodaciRequest.getDrzavaRodjenja());
-		studentPodaci.setDrzavljanstvo(studentPodaciRequest.getDrzavljanstvo());
-		studentPodaci.setNacionalnost(studentPodaciRequest.getNacionalnost());
-		studentPodaci.setPol(studentPodaciRequest.getPol());
-		studentPodaci.setAdresa(studentPodaciRequest.getAdresa());
-		studentPodaci.setBrojTelefonaMobilni(studentPodaciRequest.getBrojTelefonaMobilni());
-		studentPodaci.setBrojTelefonaFiksni(studentPodaciRequest.getBrojTelefonaFiksni());
-		studentPodaci.setEmail(studentPodaciRequest.getEmail());
-		studentPodaci.setBrojLicneKarte(studentPodaciRequest.getBrojLicneKarte());
-		studentPodaci.setLicnuKartuIzdao(studentPodaciRequest.getLicnuKartuIzdao());
-		studentPodaci.setMestoStanovanja(studentPodaciRequest.getMestoStanovanja());
-		studentPodaci.setAdresaStanovanja(studentPodaciRequest.getAdresaStanovanja());
-
-		StudentPodaci savedStudent = studentPodaciRepository.save(studentPodaci);
-		return savedStudent.getId();
+		return studentPodaciService.update(id, studentPodaciRequest);
 	}
 
 	// Update postojeceg reda u tabeli Student Indeks
 	@PutMapping(path="/updateindeks/{id}")
 	public Long updateIndeks(@PathVariable Long id, @RequestBody StudentIndeksRequest request) {
-		StudentIndeks studentIndeks = studentIndeksRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("StudentIndeks sa ID " + id + " ne postoji"));
-
-		studentIndeks.setGodina(request.getGodina());
-		studentIndeks.setAktivan(request.isAktivan());
-		studentIndeks.setNacinFinansiranja(request.getNacinFinansiranja());
-		studentIndeks.setVaziOd(request.getVaziOd());
-
-		StudentIndeks saved = studentIndeksRepository.save(studentIndeks);
-		return saved.getId();
+		return studentIndeksService.update(id, request);
 	}
+
+	//Selekcija studenta (njegovih ličnih podataka) preko broja indeksa
+	@GetMapping(path = "/nadjiStudentaPrekoStudentIndeksa")
+	public StudentPodaciResponse nadjiStudentaPrekoStudentIndeks(@RequestParam String studProgramOznaka, @RequestParam int broj, @RequestParam int godina){
+		return studentIndeksService.getStudentPodaciByStudentIndeks(studProgramOznaka, godina, broj);
+	}
+
+	//selekcija svih upisanih studenata koji su završili određenu srednju školu
+	@GetMapping(path = "/srednjaskola")
+	public List<StudentPodaciResponse> nadjiStudenteBySrednjaSkola(@RequestParam String srednjaSkolaSifra){
+		return studentIndeksService.getStudentPodaciBySrednjaSkola(srednjaSkolaSifra);
+	}
+
+	@PostMapping(path = "/obrisiStudentIndeks")
+	public void obrisiStudentIndeks(@RequestBody StudentIndeksRequest request) {
+		studentIndeksService.deleteByStudentIndeks(
+				request.getStudProgramOznaka(),
+				request.getBroj(),
+				request.getGodina()
+		);
+	}
+
+	@PostMapping(path = "/obrisiStudentPodaci")
+	public void obrisiStudentPodaci(@RequestBody StudentPodaciRequest request) {
+		studentPodaciService.deleteStudentPodaci(request);
+	}
+
+
 }

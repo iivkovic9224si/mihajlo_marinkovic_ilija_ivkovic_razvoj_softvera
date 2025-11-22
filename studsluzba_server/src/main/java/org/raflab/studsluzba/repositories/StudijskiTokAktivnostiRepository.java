@@ -18,4 +18,5 @@ public interface StudijskiTokAktivnostiRepository extends JpaRepository<Studijsk
     //pregled obnovljenih godina za broj indeksa
     @Query("select tok.godina from StudijskiTokAktivnosti tok where tok.studentIndeks = :studentIndeks and tok.tip = 'OBNOVA'")
     List<Integer> getObnovljeneGodineByStudentIndeks(StudentIndeks studentIndeks);
+
 }

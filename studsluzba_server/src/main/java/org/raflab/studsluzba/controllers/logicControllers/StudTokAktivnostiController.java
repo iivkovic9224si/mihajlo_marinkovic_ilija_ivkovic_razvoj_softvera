@@ -1,7 +1,9 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
 import lombok.RequiredArgsConstructor;
+import org.raflab.studsluzba.controllers.request.DrziPredmetRequest;
 import org.raflab.studsluzba.controllers.request.StudijskiTokAktivnostiRequest;
+import org.raflab.studsluzba.controllers.request.UpisStudentaRequest;
 import org.raflab.studsluzba.controllers.response.StudijskiTokAktivnostiResponse;
 import org.raflab.studsluzba.model.entity.StudijskiTokAktivnosti;
 import org.raflab.studsluzba.repositories.StudentIndeksRepository;
@@ -9,6 +11,7 @@ import org.raflab.studsluzba.services.StudijskiTokAktivnostiService;
 import org.raflab.studsluzba.utils.converters.StudentIndexAktivnostConverter;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,4 +46,20 @@ public class StudTokAktivnostiController {
         StudijskiTokAktivnosti updated = studijskiTokAktivnostiService.update(entity);
         return StudentIndexAktivnostConverter.toStudijskiTokAktivnostiResponse(updated);
     }
+
+    @Transactional
+    @PostMapping(path = "/upisstudenta")
+    public void upisiStudenta(@RequestBody UpisStudentaRequest upisStudentaRequest) {
+        studijskiTokAktivnostiService.upisiStudentaNaGodinu(upisStudentaRequest.getStudijskiTokAktivnostiRequest(), upisStudentaRequest.getDrziPredmetRequests());
+    }
+
+    @Transactional
+    @PostMapping(path = "/obnova")
+    public void obnovaGodine(@RequestBody UpisStudentaRequest upisStudentaRequest) {
+        studijskiTokAktivnostiService.obnovaGodine(
+                upisStudentaRequest.getStudijskiTokAktivnostiRequest(),
+                upisStudentaRequest.getDrziPredmetRequests()
+        );
+    }
+
 }

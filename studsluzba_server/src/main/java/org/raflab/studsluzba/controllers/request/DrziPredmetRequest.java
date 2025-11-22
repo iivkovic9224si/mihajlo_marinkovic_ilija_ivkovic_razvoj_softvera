@@ -15,7 +15,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class DrziPredmetRequest {
-    @NotNull
     private String skolskaGodinaNaziv;
     @NotNull
     private String nastavnikEmail;
