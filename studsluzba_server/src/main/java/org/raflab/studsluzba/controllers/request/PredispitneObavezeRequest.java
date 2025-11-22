@@ -19,6 +19,5 @@ public class PredispitneObavezeRequest {
     private VrstaPredispitneObaveze vrstaPredispitneObaveze;
 
     @NotNull
-    @ManyToOne
     private PredmetRequest predmetRequest;
 }

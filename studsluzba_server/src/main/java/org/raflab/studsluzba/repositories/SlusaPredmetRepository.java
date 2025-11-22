@@ -1,6 +1,7 @@
 package org.raflab.studsluzba.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.raflab.studsluzba.model.entity.SlusaPredmet;
 import org.raflab.studsluzba.model.entity.StudentIndeks;
@@ -32,4 +33,8 @@ public interface SlusaPredmetRepository extends CrudRepository<SlusaPredmet, Lon
 			"sp.skolskaGodina.id = :skolskaGodinaId " +
 			"where sp.id = :id")
 	void updateSlusaPredmet(Long id, Long skolskaGodinaId, Long drziPredmetId);
+
+    // 🔹 DODATO: pronalazak SlusaPredmet po studentIndeksu i drziPredmetu
+    @Query("select sp from SlusaPredmet sp where sp.studentIndeks.id = :studentIndeksId and sp.drziPredmet.id = :drziPredmetId")
+    Optional<SlusaPredmet> findByStudentIndeksAndDrziPredmet(Long studentIndeksId, Long drziPredmetId);
 }

@@ -11,4 +11,6 @@ import java.util.Optional;
 @Repository
 public interface IspitRepository extends CrudRepository<Ispit, Long> {
     Optional<Ispit> findByDrziPredmetAndIspitniRok(DrziPredmet drziPredmet, IspitniRok ispitniRok);
+
+
 }

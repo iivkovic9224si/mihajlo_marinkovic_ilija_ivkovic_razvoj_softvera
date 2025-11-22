@@ -14,8 +14,6 @@ public class StudsluzbaServerApp {
 
 	public static void main(String[] args) {
 		SpringApplication.run(StudsluzbaServerApp.class, args);
-
-
 	}
 
 //	@Bean

@@ -18,7 +18,7 @@ import org.raflab.studsluzba.services.StudentIndeksService;
 import org.raflab.studsluzba.services.StudentPodaciService;
 import org.raflab.studsluzba.utils.EntityMappers;
 import org.raflab.studsluzba.utils.ParseUtils;
-import org.raflab.studsluzba.utils.converters.StudentIndexAktivnostController;
+import org.raflab.studsluzba.utils.converters.StudentIndexAktivnostConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
