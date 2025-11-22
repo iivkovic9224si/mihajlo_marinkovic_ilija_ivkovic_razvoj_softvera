@@ -24,7 +24,6 @@ public class DrziPredmet {
 	@ManyToOne
 	private Predmet predmet;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "drziPredmet")
     private List<Ispit> ispit;
 }

@@ -24,11 +24,9 @@ public class SlusaPredmet {
 	@ManyToOne
 	private DrziPredmet drziPredmet;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "slusaPredmet")
     private List<PrijavaIspita> prijavaIspita;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "slusaPredmet")
     private List<OstvareniPredispitni> ostvareniPredispitni;
 

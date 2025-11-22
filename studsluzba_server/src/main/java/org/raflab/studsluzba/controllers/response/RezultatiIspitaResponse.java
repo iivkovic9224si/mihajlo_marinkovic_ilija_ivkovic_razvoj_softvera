@@ -1,8 +1,8 @@
-package org.raflab.studsluzba.model.dtos;
+package org.raflab.studsluzba.controllers.response;
 
 import lombok.Data;
 @Data
-public class RezultatiIspitaDTO {
+public class RezultatiIspitaResponse {
     private String imeStudenta;
     private String prezimeStudenta;
     private String studProgram;
@@ -10,7 +10,7 @@ public class RezultatiIspitaDTO {
     private int brojIndeksa;
     private double ukupnoPoena;
 
-    public RezultatiIspitaDTO(String imeStudenta, String prezimeStudenta, String studProgram, int godinaUpisa, int brojIndeksa, double ukupnoPoena) {
+    public RezultatiIspitaResponse(String imeStudenta, String prezimeStudenta, String studProgram, int godinaUpisa, int brojIndeksa, double ukupnoPoena) {
         this.imeStudenta = imeStudenta;
         this.prezimeStudenta = prezimeStudenta;
         this.studProgram = studProgram;

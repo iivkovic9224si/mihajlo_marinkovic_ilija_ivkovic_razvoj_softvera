@@ -1,0 +1,90 @@
+package org.raflab.studsluzba.services;
+
+import lombok.RequiredArgsConstructor;
+import org.raflab.studsluzba.controllers.request.PolozenPredmetAwayRequest;
+import org.raflab.studsluzba.controllers.request.PolozenPredmetHereRequest;
+import org.raflab.studsluzba.controllers.response.PolozenPredmetResponse;
+import org.raflab.studsluzba.model.entity.PolozenPredmet;
+import org.raflab.studsluzba.model.entity.StudentIndeks;
+import org.raflab.studsluzba.model.entity.Predmet;
+import org.raflab.studsluzba.model.entity.VisokoSkolskaUstanova;
+import org.raflab.studsluzba.repositories.PolozenPredmetRepository;
+import org.raflab.studsluzba.repositories.StudentIndeksRepository;
+import org.raflab.studsluzba.repositories.VisokoSkolskaUstanovaRepository;
+import org.raflab.studsluzba.repositories.PredmetRepository;
+import org.raflab.studsluzba.utils.converters.PolozenPredmetConverter;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class PolozenPredmetService {
+
+    private final PolozenPredmetRepository polozenPredmetRepository;
+    private final StudentIndeksRepository studentIndeksRepository;
+    private final PredmetRepository predmetRepository;
+    private final VisokoSkolskaUstanovaRepository visokoSkolskaUstanovaRepository;
+
+    // SAVE za AwayRequest
+    public PolozenPredmetResponse saveAway(PolozenPredmetAwayRequest request) {
+        StudentIndeks si = studentIndeksRepository
+                .findByGodinaAndBrojAndStudProgramOznakaAndAktivan(request.getIndeksGodina(), request.getIndeksBroj(), request.getIndeksStudProgramOznaka(), true)
+                .orElseThrow(() -> new RuntimeException("StudentIndeks ne postoji"));
+
+        Predmet predmet = predmetRepository.findBySifra(request.getPredmetSifra())
+                .orElseThrow(() -> new RuntimeException("Predmet ne postoji"));
+
+        VisokoSkolskaUstanova ustanova = visokoSkolskaUstanovaRepository.findBySifra(request.getVisokoSkolskaUstanovaSifra())
+                .orElseThrow(() -> new RuntimeException("VisokoSkolskaUstanova ne postoji"));
+
+        PolozenPredmet pp = PolozenPredmetConverter.fromAwayRequest(request, ustanova);
+        pp.setStudentIndeks(si);
+        pp.setPredmet(predmet);
+
+        polozenPredmetRepository.save(pp);
+        return PolozenPredmetConverter.toResponse(pp);
+    }
+
+    // SAVE za HereRequest
+    public PolozenPredmetResponse saveHere(PolozenPredmetHereRequest request) {
+        StudentIndeks si = studentIndeksRepository
+                .findByGodinaAndBrojAndStudProgramOznakaAndAktivan(request.getIndeksGodina(), request.getIndeksBroj(), request.getIndeksStudProgramOznaka(), true)
+                .orElseThrow(() -> new RuntimeException("StudentIndeks ne postoji"));
+
+        Predmet predmet = predmetRepository.findBySifra(request.getPredmetSifra())
+                .orElseThrow(() -> new RuntimeException("Predmet ne postoji"));
+
+        PolozenPredmet pp = PolozenPredmetConverter.fromHereRequest(request);
+        pp.setStudentIndeks(si);
+        pp.setPredmet(predmet);
+
+        // ovde možeš dodati logiku za izlazakIspita po ID ako je potrebno
+        // pp.setIzlazakIspita(...);
+
+        polozenPredmetRepository.save(pp);
+        return PolozenPredmetConverter.toResponse(pp);
+    }
+
+    // FIND by ID
+    public PolozenPredmetResponse findById(Long id) {
+        return polozenPredmetRepository.findById(id)
+                .map(PolozenPredmetConverter::toResponse)
+                .orElse(null);
+    }
+
+    // FIND all
+    public List<PolozenPredmetResponse> findAll() {
+        return polozenPredmetRepository.findAll()
+                .stream()
+                .map(PolozenPredmetConverter::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    // DELETE
+    public void delete(Long id) {
+        polozenPredmetRepository.deleteById(id);
+    }
+}

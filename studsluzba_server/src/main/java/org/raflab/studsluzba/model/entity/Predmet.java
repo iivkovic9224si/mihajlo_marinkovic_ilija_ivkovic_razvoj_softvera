@@ -27,12 +27,14 @@ public class Predmet {
 
 	private boolean obavezan;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "predmet")
     private List<PredispitneObaveze> predispitneObaveze;
 
     @ManyToMany
     private List<StudijskiTokAktivnosti> studijskiTokAktivnosti;
+
+    @ManyToMany
+    private List<Grupa> grupa;
 
 	@Override
 	public int hashCode() {

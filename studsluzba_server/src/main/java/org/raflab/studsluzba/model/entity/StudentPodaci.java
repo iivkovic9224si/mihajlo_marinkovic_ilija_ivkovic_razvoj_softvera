@@ -1,8 +1,10 @@
 package org.raflab.studsluzba.model.entity;
 
 import lombok.Data;
+import net.minidev.json.annotate.JsonIgnore;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -40,5 +42,7 @@ public class StudentPodaci {
     private SrednjaSkola srednjaSkola;
     @ManyToOne
     private VisokoSkolskaUstanova visokoSkolskaUstanova;
+    @OneToMany
+    private List<Uplata> uplate;
 
 }
