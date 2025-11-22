@@ -3,6 +3,7 @@ package org.raflab.studsluzba.controllers.request;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.raflab.studsluzba.model.entity.Ispit;
 import org.raflab.studsluzba.model.entity.Nastavnik;
 import org.raflab.studsluzba.model.entity.Predmet;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class DrziPredmetRequest {
     private String skolskaGodinaNaziv;
     @NotNull

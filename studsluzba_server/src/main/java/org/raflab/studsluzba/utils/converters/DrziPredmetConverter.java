@@ -24,9 +24,10 @@ public class DrziPredmetConverter {
 
     public static DrziPredmetResponse toDrziPredmetResponse(DrziPredmet dp) {
         return new DrziPredmetResponse(
+                dp.getSkolskaGodina() != null ? dp.getSkolskaGodina().getGodina() : null,
                 dp.getNastavnik() != null ? dp.getNastavnik().getEmail() : null,
-                dp.getPredmet() != null ? dp.getPredmet().getSifra() : null,
-                dp.getSkolskaGodina() != null ? dp.getSkolskaGodina().getGodina() : null
+                dp.getPredmet() != null ? dp.getPredmet().getSifra() : null
+
         );
     }
 

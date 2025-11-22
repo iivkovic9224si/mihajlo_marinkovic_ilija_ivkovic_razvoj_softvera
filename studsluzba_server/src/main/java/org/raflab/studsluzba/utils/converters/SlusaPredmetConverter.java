@@ -21,14 +21,19 @@ public class SlusaPredmetConverter {
     }
 
     public static SlusaPredmetResponse toSlusaPredmetResponse(SlusaPredmet slusaPredmet) {
-        SlusaPredmetResponse slusaPredmetResponse = new SlusaPredmetResponse(
-                slusaPredmet.getSkolskaGodina().getGodina(), // umesto toString()
-                slusaPredmet.getStudentIndeks().getStudProgramOznaka() + slusaPredmet.getStudentIndeks().getBroj() + slusaPredmet.getStudentIndeks().getGodina(), // primer, zavisi šta ti treba
-                slusaPredmet.getDrziPredmet().getNastavnik().getIme(), // samo konkretna polja
-                slusaPredmet.getDrziPredmet().getPredmet().getSifra() // samo konkretna polja
-        );
-        return slusaPredmetResponse;
+        String godina = slusaPredmet.getSkolskaGodina() != null ? slusaPredmet.getSkolskaGodina().getGodina() : "Nepoznata godina";
+        String student = slusaPredmet.getStudentIndeks() != null ?
+                slusaPredmet.getStudentIndeks().getStudProgramOznaka() +
+                        slusaPredmet.getStudentIndeks().getBroj() +
+                        slusaPredmet.getStudentIndeks().getGodina() : "Nepoznat student";
+        String nastavnik = slusaPredmet.getDrziPredmet() != null && slusaPredmet.getDrziPredmet().getNastavnik() != null ?
+                slusaPredmet.getDrziPredmet().getNastavnik().getIme() : "Nepoznati nastavnik";
+        String sifraPredmeta = slusaPredmet.getDrziPredmet() != null && slusaPredmet.getDrziPredmet().getPredmet() != null ?
+                slusaPredmet.getDrziPredmet().getPredmet().getSifra() : "Nepoznata sifra";
+
+        return new SlusaPredmetResponse(godina, student, nastavnik, sifraPredmeta);
     }
+
 
     public static List<SlusaPredmetResponse> toSlusaPredmetResponseList(List<SlusaPredmet> slusaPredmeti) {
         return slusaPredmeti.stream()
