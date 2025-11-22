@@ -16,6 +16,7 @@ public class StudsluzbaServerApp {
 		SpringApplication.run(StudsluzbaServerApp.class, args);
 	}
 
+
 //	@Bean
 //	ApplicationRunner h2Reporter(Environment env, DataSource dataSource) {
 //		return args -> {
