@@ -54,6 +54,8 @@ public class Seeder implements CommandLineRunner {
     private VisokoSkolskaUstanovaRepository visokoSkolskaUstanovaRepository;
     @Autowired
     private SrednjaSkolaRepository srednjaSkolaRepository;
+    @Autowired
+    private UplataRepository uplataRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -847,9 +849,76 @@ public class Seeder implements CommandLineRunner {
                         polozen.setPriznato(false);
                         polozenPredmetRepository.save(polozen);
                     }
+
+
                 }
+
+            }
+            SlusaPredmet slusaPredmet = slusaPredmetRepository.findById(1L).orElseThrow();
+            Predmet predmet = predmetRepository.findBySifra("PR001").orElseThrow();
+
+// Lista ocena koju želimo da podelimo po ispitima
+            int[] ocene = {10, 9, 8, 7, 6};
+
+// --- Izlasci u 2023 ---
+            for (int i = 0; i < 5; i++) {
+                IzlazakNaIspit izlazak = new IzlazakNaIspit();
+                izlazakNaIspitRepository.save(izlazak);
+
+                // Kreiranje PolozenPredmet sa ocenom
+                PolozenPredmet polozen = new PolozenPredmet();
+                polozen.setPredmet(predmet);
+                polozen.setIzlazakIspita(izlazak);
+                polozen.setOcena(ocene[i]); // ocena od 10 do 6
+                polozen.setDatum(LocalDate.of(2023,4,1));
+                polozenPredmetRepository.save(polozen);
+            }
+
+// --- Izlasci u 2024 ---
+            for (int i = 0; i < 3; i++) {
+                IzlazakNaIspit izlazak = new IzlazakNaIspit();
+                izlazakNaIspitRepository.save(izlazak);
+
+                // Kreiranje PolozenPredmet sa ocenom (ponovo 10,9,8 za raznovrsnost)
+                PolozenPredmet polozen = new PolozenPredmet();
+                polozen.setPredmet(predmet);
+                polozen.setIzlazakIspita(izlazak);
+                polozen.setOcena(10 - i); // 10, 9, 8
+                polozen.setDatum(LocalDate.of(2024,10,1));
+                polozenPredmetRepository.save(polozen);
+            }
+
+        }
+        // ----------- Uplate za prvih 10 studenata -----------
+        // ----------- Uplate -----------
+        if(uplataRepository.count() == 0) {
+            List<StudentPodaci> sviStudenti = studentPodaciRepository.findAll();
+
+            // Fiksni iznosi i datumi (svi < 300000)
+            double[] iznosi = {50000, 75000, 100000, 125000, 150000, 175000, 200000, 225000, 250000, 275000};
+            LocalDate[] datumi = {
+                    LocalDate.of(2025, 1, 15),
+                    LocalDate.of(2025, 2, 15),
+                    LocalDate.of(2025, 3, 15),
+                    LocalDate.of(2025, 4, 15),
+                    LocalDate.of(2025, 5, 15),
+                    LocalDate.of(2025, 6, 15),
+                    LocalDate.of(2025, 7, 15),
+                    LocalDate.of(2025, 8, 15),
+                    LocalDate.of(2025, 9, 15),
+                    LocalDate.of(2025, 10, 15)
+            };
+
+            // Dodajemo uplate za prvih 10 studenata
+            for (int i = 0; i < 10 && i < sviStudenti.size(); i++) {
+                Uplata uplata = new Uplata();
+                uplata.setStudentPodaci(sviStudenti.get(i));
+                uplata.setIznosUDinarima(iznosi[i]);
+                uplata.setDatumUplate(datumi[i]);
+                uplataRepository.save(uplata);
             }
         }
+
 
     }
 }
