@@ -660,7 +660,6 @@ public class Seeder implements CommandLineRunner {
                     indeks.setVaziOd(LocalDate.of(2025, 1, 1));
                     indeks.setOstvarenoEspb(0);
                     studentIndeksRepository.save(indeks);
-
                     StudijskiTokAktivnosti upis = new StudijskiTokAktivnosti();
                     upis.setTip(VrstaStudijskeAktivnosti.UPIS);
                     upis.setGodina(1);
@@ -668,8 +667,8 @@ public class Seeder implements CommandLineRunner {
                     upis.setNapomena("Upis prve godine");
                     upis.setStudentIndeks(indeks);
                     upis.setPredmet(Arrays.asList(predmeti.get(i % predmeti.size()),
-                            predmeti.get((i+1) % predmeti.size()),
-                            predmeti.get((i+2) % predmeti.size())));
+                            predmeti.get((i + 1) % predmeti.size()),
+                            predmeti.get((i + 2) % predmeti.size())));
                     studijskiTokAktivnostiRepository.save(upis);
                 }
             }

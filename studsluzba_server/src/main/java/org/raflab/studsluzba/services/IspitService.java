@@ -49,12 +49,14 @@ public class IspitService {
         // Odredi SkolskuGodinu (po imenu ili aktivnu)
         SkolskaGodina godina = drziPredmet.getSkolskaGodina();
         if (godina == null) {
+            System.out.println("a");
             return Optional.empty();
         }
 
         // Pronađi IspitniRok koji pokriva datum ispita
         List<IspitniRok> rokovi = ispitniRokRepository.findBySkolskaGodinaAndDatum(godina, request.getDatumIspita());
         if (rokovi.isEmpty()) {
+            System.out.println("b");
             return Optional.empty();
         }
         IspitniRok ispitniRok = rokovi.get(0);
@@ -62,6 +64,7 @@ public class IspitService {
         // Proveri da li ispit već postoji
         Optional<Ispit> existing = ispitRepository.findByDrziPredmetAndIspitniRok(drziPredmet, ispitniRok);
         if (existing.isPresent()) {
+            System.out.println("c");
             return Optional.empty();
         }
 
