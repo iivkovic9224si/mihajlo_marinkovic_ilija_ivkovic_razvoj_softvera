@@ -46,6 +46,16 @@ public class SlusaPredmetService {
             throw new IllegalArgumentException("Nastavnik sa mejlom " + slusaPredmetRequest.getNastavnikMail() + " ne drzi predmet sa sifrom " + slusaPredmetRequest.getSifraPredmeta());
         }
 
+        String programStudenta = studentIndeks.getStudProgramOznaka();
+        String programPredmeta = drziPredmet.getPredmet().getStudProgram().getOznaka();
+
+        if (!programStudenta.equals(programPredmeta)) {
+            throw new RuntimeException(
+                    "Student je na programu " + programStudenta +
+                            " ali predmet pripada programu " + programPredmeta
+            );
+        }
+
         SlusaPredmet slusaPredmet = SlusaPredmetConverter.toSlusaPredmet(skolskaGodina, studentIndeks, drziPredmet);
         SlusaPredmet saved = slusaPredmetRepository.save(slusaPredmet);
         return SlusaPredmetConverter.toSlusaPredmetResponse(saved);
