@@ -42,7 +42,7 @@ public class StudentPodaci {
     private SrednjaSkola srednjaSkola;
     @ManyToOne
     private VisokoSkolskaUstanova visokoSkolskaUstanova;
-    @OneToMany
+    @OneToMany(mappedBy = "studentPodaci")
     private List<Uplata> uplate;
 
 }

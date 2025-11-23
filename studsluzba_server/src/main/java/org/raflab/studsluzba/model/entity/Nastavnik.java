@@ -33,6 +33,6 @@ public class Nastavnik {
     private Character pol;
     private String jmbg;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "nastavnik")
     private List<VisokoSkolskaUstanova> visokoSkolskaUstanova;
 }
