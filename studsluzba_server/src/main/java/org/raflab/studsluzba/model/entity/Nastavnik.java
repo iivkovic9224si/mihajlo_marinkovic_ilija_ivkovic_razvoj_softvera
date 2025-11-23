@@ -23,10 +23,10 @@ public class Nastavnik {
     private String brojTelefona;
     private String adresa;
 
-    @OneToMany
+    @OneToMany(mappedBy = "nastavnik")
     private List<NastavnikZvanje> zvanja;
 
-    @OneToMany
+    @OneToMany(mappedBy = "nastavnik")
     private List<DrziPredmet> drziPredmet;
 	 
     private LocalDate datumRodjenja;

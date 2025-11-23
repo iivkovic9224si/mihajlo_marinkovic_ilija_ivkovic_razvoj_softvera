@@ -58,41 +58,14 @@ public class Seeder implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        boolean tabelePrazne =
-                studijskiProgramRepository.count() == 0 &&
-                        predmetRepository.count() == 0 &&
-                        nastavnikRepository.count() == 0 &&
-                        nastavnikZvanjeRepository.count() == 0 &&
-                        studentPodaciRepository.count() == 0 &&
-                        studentIndeksRepository.count() == 0 &&
-                        drziPredmetRepository.count() == 0 &&
-                        slusaPredmetRepository.count() == 0 &&
-                        grupaRepository.count() == 0 &&
-                        skolskaGodinaRepository.count() == 0 &&
-                        ostvareniPredispitniRepository.count() == 0 &&
-                        predispitneObavezeRepository.count() == 0 &&
-                        ispitniRokRepository.count() == 0 &&
-                        ispitRepository.count() == 0 &&
-                        prijavaIspitaRepository.count() == 0 &&
-                        studijskiTokAktivnostiRepository.count() == 0 &&
-                        polozenPredmetRepository.count() == 0 &&
-                        izlazakNaIspitRepository.count() == 0 &&
-                        visokoSkolskaUstanovaRepository.count() == 0 &&
-                        srednjaSkolaRepository.count() == 0;
-
-        if (!tabelePrazne) {
-            return;
-        }
-
         List<StudijskiProgram> spList = new ArrayList<>();
         if (studijskiProgramRepository.count() == 0) {
 
 
-            // 1. RN - Racunarske Nauke
             StudijskiProgram sp1 = new StudijskiProgram();
             sp1.setOznaka("RN");
             sp1.setNaziv("Racunarske Nauke");
-            sp1.setGodinaAkreditacije(2016); // izmislimo godinu ranije
+            sp1.setGodinaAkreditacije(2016);
             sp1.setZvanje("Diplomirani inzenjer racunarskih nauka");
             sp1.setTrajanjeGodina(4);
             sp1.setTrajanjeSemestara(8);
@@ -100,11 +73,10 @@ public class Seeder implements CommandLineRunner {
             sp1.setUkupnoEspb(240);
             spList.add(studijskiProgramRepository.save(sp1));
 
-            // 2. RI - Racunarsko Inzenjerstvo
             StudijskiProgram sp2 = new StudijskiProgram();
             sp2.setOznaka("RI");
             sp2.setNaziv("Racunarsko Inzenjerstvo");
-            sp2.setGodinaAkreditacije(2017); // izmislimo godinu ranije
+            sp2.setGodinaAkreditacije(2017);
             sp2.setZvanje("Diplomirani inzenjer racunarskog inzenjerstva");
             sp2.setTrajanjeGodina(4);
             sp2.setTrajanjeSemestara(8);
@@ -112,11 +84,10 @@ public class Seeder implements CommandLineRunner {
             sp2.setUkupnoEspb(240);
             spList.add(studijskiProgramRepository.save(sp2));
 
-            // 3. SOFT - Softversko Inzenjerstvo
             StudijskiProgram sp3 = new StudijskiProgram();
             sp3.setOznaka("SI");
             sp3.setNaziv("Softversko Inzenjerstvo");
-            sp3.setGodinaAkreditacije(2022); // recimo kasnije
+            sp3.setGodinaAkreditacije(2022);
             sp3.setZvanje("Diplomirani inzenjer softverskog inzenjerstva");
             sp3.setTrajanjeGodina(4);
             sp3.setTrajanjeSemestara(8);
@@ -124,11 +95,10 @@ public class Seeder implements CommandLineRunner {
             sp3.setUkupnoEspb(240);
             spList.add(studijskiProgramRepository.save(sp3));
 
-            // 4. IT - Informacione Tehnologije (OSS)
             StudijskiProgram sp4 = new StudijskiProgram();
             sp4.setOznaka("IT");
             sp4.setNaziv("Informacione Tehnologije");
-            sp4.setGodinaAkreditacije(2020); // izmislimo godinu
+            sp4.setGodinaAkreditacije(2020);
             sp4.setZvanje("Strukovni dipl. inzenjer IT");
             sp4.setTrajanjeGodina(3);
             sp4.setTrajanjeSemestara(6);
@@ -138,88 +108,100 @@ public class Seeder implements CommandLineRunner {
         }
 
         // ----------- Predmeti -----------
+        predmetRepository.deleteAll();
+
         List<Predmet> predmetList = new ArrayList<>();
-        if(predmetRepository.count() == 0) {
 
-            int counter = 1;
+        Map<String, String[]> realniPredmeti = new HashMap<>();
+        realniPredmeti.put("RN", new String[]{
+                "Algoritmi i strukture podataka",
+                "Dizajn softvera",
+                "Inteligentni sistemi",
+                "Napredna matematička analiza",
+                "Operativni sistemi",
+                "Računarske mreže",
+                "Baze podataka",
+                "Dizajn i analiza algoritama"
+        });
+        realniPredmeti.put("RI", new String[]{
+                "Matematika 1",
+                "Matematika 2",
+                "Fizika",
+                "Elektronika",
+                "Operativni sistemi"
+        });
+        realniPredmeti.put("SI", new String[]{
+                "Objektno-orijentisano programiranje",
+                "Razvoj web aplikacija",
+                "Softverski projekti",
+                "Analiza i dizajn softvera",
+                "Testiranje softvera"
+        });
+        realniPredmeti.put("IT", new String[]{
+                "Uvod u informacione tehnologije",
+                "Mrežne tehnologije",
+                "Programiranje u Javi",
+                "Baze podataka i SQL",
+                "Računarska sigurnost"
+        });
 
-            Map<String, String[]> realniPredmeti = new HashMap<>();
-            realniPredmeti.put("RN", new String[]{
-                    "Osnove programiranja",
-                    "Algoritmi i strukture podataka",
-                    "Računarske mreže",
-                    "Baze podataka",
-                    "Softversko inženjerstvo"
-            });
-            realniPredmeti.put("RI", new String[]{
-                    "Matematika 1",
-                    "Matematika 2",
-                    "Fizika",
-                    "Elektronika",
-                    "Operativni sistemi"
-            });
-            realniPredmeti.put("SI", new String[]{ // OVDJE JE KLJUČ POZOVAN PO OZNACI SP
-                    "Objektno-orijentisano programiranje",
-                    "Razvoj web aplikacija",
-                    "Softverski projekti",
-                    "Analiza i dizajn softvera",
-                    "Testiranje softvera"
-            });
-            realniPredmeti.put("IT", new String[]{
-                    "Uvod u informacione tehnologije",
-                    "Mrežne tehnologije",
-                    "Programiranje u Javi",
-                    "Baze podataka i SQL",
-                    "Računarska sigurnost"
-            });
+        Map<String, String[]> opisiPredmeta = new HashMap<>();
+        opisiPredmeta.put("RN", new String[]{
+                "Detaljno proučavanje struktura podataka i algoritama.",
+                "Principi analize i dizajna softverskih sistema.",
+                "Osnovni koncepti inteligentnih i autonomnih sistema.",
+                "Napredne metode matematičke analize.",
+                "Procesi, niti i memorijsko upravljanje u operativnim sistemima.",
+                "Arhitektura i protokoli računarskih mreža.",
+                "Koncepti baza podataka i SQL jezik.",
+                "Napredni algoritmi i tehnike optimizacije."
+        });
+        opisiPredmeta.put("RI", new String[]{
+                "Osnovni koncepti diferencijalnog i integralnog računa.",
+                "Linearna algebra i diskretna matematika.",
+                "Osnovi fizike primenjeni u tehnici.",
+                "Digitalna elektronika i logički sklopovi.",
+                "Osnovi operativnih sistema."
+        });
+        opisiPredmeta.put("SI", new String[]{
+                "Objektno-orijentisani principi u programiranju.",
+                "Razvoj modernih web aplikacija.",
+                "Projektovanje i izrada softverskih projekata.",
+                "Analiza zahteva i dizajn sistema.",
+                "Tehnike testiranja i kontrola kvaliteta softvera."
+        });
+        opisiPredmeta.put("IT", new String[]{
+                "Osnovni koncepti informacionih tehnologija.",
+                "Osnovni mrežni protokoli i arhitekture.",
+                "Uvod u Javu i OOP.",
+                "SQL i rad sa relacionim bazama.",
+                "Osnovni principi računarske bezbednosti."
+        });
 
-            Map<String, String[]> opisiPredmeta = new HashMap<>();
-            opisiPredmeta.put("RN", new String[]{
-                    "Upoznavanje sa osnovnim principima programiranja u Pythonu i Javi.",
-                    "Proučavanje osnovnih algoritama i struktura podataka.",
-                    "Osnove računarskih mreža, topologije i protokoli.",
-                    "Upoznavanje sa konceptima baza podataka i SQL jezikom.",
-                    "Principi softverskog inženjerstva i životni ciklus softvera."
-            });
-            opisiPredmeta.put("RI", new String[]{
-                    "Osnovni koncepti diferencijalne i integralne matematike.",
-                    "Napredna matematika sa linearnom algebrom i diskretnom matematikom.",
-                    "Fizički zakoni i njihova primena u računarstvu.",
-                    "Uvod u elektroniku i digitalne logičke sklopove.",
-                    "Principi i koncepti operativnih sistema."
-            });
-            opisiPredmeta.put("SI", new String[]{ // OVDJE JE KLJUČ POZOVAN PO OZNACI SP
-                    "Programiranje koristeći objektno-orijentisane paradigme.",
-                    "Razvoj web aplikacija koristeći moderne tehnologije.",
-                    "Praktični softverski projekti u timskom okruženju.",
-                    "Analiza zahteva i dizajn softverskih rešenja.",
-                    "Metode i alati za testiranje softvera."
-            });
-            opisiPredmeta.put("IT", new String[]{
-                    "Uvod u osnovne informacione tehnologije i softver.",
-                    "Osnove mrežnih tehnologija i TCP/IP protokola.",
-                    "Programiranje koristeći jezik Java.",
-                    "Rad sa relacijskim bazama podataka i SQL upiti.",
-                    "Osnovi računarske sigurnosti i zaštite podataka."
-            });
+        int sifraCounter = 1;
 
-            for (StudijskiProgram sp : spList) {
-                String[] nazivi = realniPredmeti.get(sp.getOznaka());
-                String[] opisi = opisiPredmeta.get(sp.getOznaka());
+        for (StudijskiProgram sp : spList) {
+            String[] nazivi = realniPredmeti.get(sp.getOznaka());
+            String[] opisi = opisiPredmeta.get(sp.getOznaka());
 
-                for (int i = 0; i < 5; i++) {
-                    Predmet p = new Predmet();
-                    p.setSifra("PR" + counter++);
-                    p.setNaziv(nazivi[i]);
-                    p.setOpis(opisi[i]);
-                    p.setEspb((i % 2 == 0) ? 6 : 8); // varira ESPB
-                    p.setObavezan(p.getEspb() == 6); // uglavnom 6 ESPB obavezni
-                    p.setStudProgram(sp);
-                    predmetList.add(predmetRepository.save(p));
+            for (int i = 0; i < nazivi.length; i++) {
+                Predmet p = new Predmet();
+                p.setSifra(String.format("PR%03d", sifraCounter++));
+                p.setNaziv(nazivi[i]);
+                p.setOpis(opisi[i]);
+                p.setEspb(sp.getOznaka().equals("SI") ? 6 : 8);
+
+                // Postavi obaveznost: neka 2–3 predmeta nisu obavezna
+                if (i == 1 || i == 2) {
+                    p.setObavezan(false);
+                } else {
+                    p.setObavezan(true);
                 }
+
+                p.setStudProgram(sp);
+                predmetList.add(predmetRepository.save(p));
             }
         }
-
         // ----------- Visokoškolske ustanove -----------
         List<VisokoSkolskaUstanova> vsuList = new ArrayList<>();
         String[] naziviVSU = {
@@ -258,8 +240,6 @@ public class Seeder implements CommandLineRunner {
         }
 
 
-
-        // ----------- Nastavnici i njihova zvanja -----------
         List<Nastavnik> nastavnikList = new ArrayList<>();
         List<NastavnikZvanje> sveZvanjeList = new ArrayList<>();
 
@@ -280,41 +260,28 @@ public class Seeder implements CommandLineRunner {
             n.setPol(i % 2 == 0 ? 'M' : 'F');
             n.setJmbg("75010123456" + i);
 
-            // Sačuvamo nastavnika
             nastavnikList.add(nastavnikRepository.save(n));
 
-            // Generišemo 1 do 3 zvanja po nastavniku
-            int brojZvanja = 1 + new Random().nextInt(3);
-            boolean aktivnoPostavljeno = false;
-
+            int brojZvanja = (i % 3) + 1;
             for(int j = 0; j < brojZvanja; j++) {
                 NastavnikZvanje nz = new NastavnikZvanje();
                 nz.setNastavnik(n);
-                nz.setDatumIzbora(LocalDate.of(2000 + j + i, (j%12)+1, (j%28)+1));
+                nz.setDatumIzbora(LocalDate.of(2000 + i + j, (j % 12) + 1, ((i+j) % 28) + 1));
                 nz.setNaucnaOblast(oblasti[(i+j) % oblasti.length]);
                 nz.setUzaNaucnaOblast(oblasti[(i+j+1) % oblasti.length]);
                 nz.setZvanje(zvanja[(i+j) % zvanja.length]);
-
-                // Postavimo samo jedno aktivno
-                if(!aktivnoPostavljeno) {
-                    nz.setAktivno(true);
-                    aktivnoPostavljeno = true;
-                } else {
-                    nz.setAktivno(false);
-                }
+                nz.setAktivno(j == 0);
 
                 sveZvanjeList.add(nastavnikZvanjeRepository.save(nz));
             }
         }
 
-        // 1. Pronađi tekuću godinu
+
         int trenutnaGodina = LocalDate.now().getYear();
         String nazivTekuceGodine = trenutnaGodina + "/" + (trenutnaGodina + 1);
 
-// 2. Poništi sve stare aktivne godine pre nego što postaviš novu
         skolskaGodinaRepository.deactivateAll();
 
-// 3. Prođi kroz sve godine od 2016. do tekuće
         for (int godina = 2016; godina <= trenutnaGodina; godina++) {
             String nazivGodine = godina + "/" + (godina + 1);
 
