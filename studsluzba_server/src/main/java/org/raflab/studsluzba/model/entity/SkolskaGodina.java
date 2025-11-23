@@ -25,7 +25,7 @@ public class SkolskaGodina {
     @OneToMany(mappedBy = "skolskaGodina")
     private List<IspitniRok> ispitniRok;
 
-    @OneToMany
+    @OneToMany(mappedBy = "skolskaGodina")
     private List<Uplata> uplate;
 
 }
