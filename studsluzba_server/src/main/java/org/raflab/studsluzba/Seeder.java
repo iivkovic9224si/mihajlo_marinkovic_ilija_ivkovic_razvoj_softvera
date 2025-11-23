@@ -106,7 +106,7 @@ public class Seeder implements CommandLineRunner {
             sp4.setUkupnoEspb(180);
             spList.add(studijskiProgramRepository.save(sp4));
         }
-
+        if(predmetRepository.count() == 0) {
         List<Predmet> predmetList = new ArrayList<>();
 
         Map<String, String[]> realniPredmeti = new HashMap<>();
@@ -198,6 +198,9 @@ public class Seeder implements CommandLineRunner {
                 predmetList.add(predmetRepository.save(p));
             }
         }
+        }
+
+        if(visokoSkolskaUstanovaRepository.count()==0){
         List<VisokoSkolskaUstanova> vsuList = new ArrayList<>();
         String[] naziviVSU = {
                 "Univerzitet u Beogradu",
@@ -232,9 +235,9 @@ public class Seeder implements CommandLineRunner {
                 vsu.setVrsta(vrste[i]);
                 visokoSkolskaUstanovaRepository.save(vsu);
             }
-        }
+        }}
 
-
+        if(nastavnikRepository.count() == 0) {
         List<Nastavnik> nastavnikList = new ArrayList<>();
         List<NastavnikZvanje> sveZvanjeList = new ArrayList<>();
 
@@ -269,7 +272,8 @@ public class Seeder implements CommandLineRunner {
 
                 sveZvanjeList.add(nastavnikZvanjeRepository.save(nz));
             }
-        }
+        }}
+
 
         int trenutnaGodina = LocalDate.now().getYear();
         String nazivTekuceGodine = trenutnaGodina + "/" + (trenutnaGodina + 1);
@@ -496,7 +500,6 @@ public class Seeder implements CommandLineRunner {
 
 
 
-
         // ----------- Srednje škole -----------
         List<SrednjaSkola> srednjeSkoleList = new ArrayList<>();
         String[] naziviSS = {
@@ -599,7 +602,13 @@ public class Seeder implements CommandLineRunner {
 
                 studentPodaciRepository.save(student);
 
-
+                if(i == 0 || i == 5 || i == 12) {
+                    StudentIndeks noviIndeks = new StudentIndeks();
+                    noviIndeks.setBroj(i + 100);
+                    noviIndeks.setGodina(2022);
+                    noviIndeks.setStudent(student);
+                    studentIndeksRepository.save(noviIndeks);
+                }
             }
         }
 
@@ -661,6 +670,46 @@ public class Seeder implements CommandLineRunner {
                             predmeti.get((i+2) % predmeti.size())));
                     studijskiTokAktivnostiRepository.save(upis);
                 }
+            }
+        }if (studijskiTokAktivnostiRepository.count() > 0) {
+            List<StudentIndeks> sviIndeksi = studentIndeksRepository.findAll();
+            List<Predmet> sviPredmeti = (List<Predmet>) predmetRepository.findAll();
+
+            for (int i = 0; i < sviIndeksi.size(); i++) {
+                StudentIndeks indeks = sviIndeksi.get(i);
+
+                // Kreiraj novu obnavljanje godine
+                StudijskiTokAktivnosti obnova = new StudijskiTokAktivnosti();
+                obnova.setTip(VrstaStudijskeAktivnosti.OBNOVA);
+                obnova.setGodina(2); // recimo obnova druge godine
+                obnova.setDatum(LocalDate.of(2025, 10, 1));
+                obnova.setNapomena("Obnova godine - test podaci");
+                obnova.setStudentIndeks(indeks);
+
+                // Izbor predmeta: nepoloženi iz prethodne godine + neki iz naredne
+                List<Predmet> predmetiZaObnovu = new ArrayList<>();
+                double espbUkupno = 0;
+
+                // Dodaj nepoložene predmete iz prethodne godine (primer: uzimamo prvih 3 predmeta)
+                for (int j = 0; j < 3 && espbUkupno < 60; j++) {
+                    Predmet p = sviPredmeti.get((i + j) % sviPredmeti.size());
+                    if (espbUkupno + p.getEspb() <= 60) {
+                        predmetiZaObnovu.add(p);
+                        espbUkupno += p.getEspb();
+                    }
+                }
+
+                // Dodaj predmete iz naredne godine dok ne dostignemo ESPB limit
+                for (int j = 3; j < 6 && espbUkupno < 60; j++) {
+                    Predmet p = sviPredmeti.get((i + j) % sviPredmeti.size());
+                    if (espbUkupno + p.getEspb() <= 60) {
+                        predmetiZaObnovu.add(p);
+                        espbUkupno += p.getEspb();
+                    }
+                }
+
+                obnova.setPredmet(predmetiZaObnovu);
+                studijskiTokAktivnostiRepository.save(obnova);
             }
         }
 
