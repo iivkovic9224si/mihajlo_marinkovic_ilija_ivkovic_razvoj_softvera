@@ -107,9 +107,6 @@ public class Seeder implements CommandLineRunner {
             spList.add(studijskiProgramRepository.save(sp4));
         }
 
-        // ----------- Predmeti -----------
-        predmetRepository.deleteAll();
-
         List<Predmet> predmetList = new ArrayList<>();
 
         Map<String, String[]> realniPredmeti = new HashMap<>();
@@ -191,7 +188,6 @@ public class Seeder implements CommandLineRunner {
                 p.setOpis(opisi[i]);
                 p.setEspb(sp.getOznaka().equals("SI") ? 6 : 8);
 
-                // Postavi obaveznost: neka 2–3 predmeta nisu obavezna
                 if (i == 1 || i == 2) {
                     p.setObavezan(false);
                 } else {
@@ -202,7 +198,6 @@ public class Seeder implements CommandLineRunner {
                 predmetList.add(predmetRepository.save(p));
             }
         }
-        // ----------- Visokoškolske ustanove -----------
         List<VisokoSkolskaUstanova> vsuList = new ArrayList<>();
         String[] naziviVSU = {
                 "Univerzitet u Beogradu",
@@ -295,20 +290,17 @@ public class Seeder implements CommandLineRunner {
                 sg.setGodina(nazivGodine);
             }
 
-            // Postavi aktivno samo ako je tekuća godina
             sg.setAktivna(nazivGodine.equals(nazivTekuceGodine));
             skolskaGodinaRepository.save(sg);
         }
 
 
-        // ----------- DrziPredmet -----------
         if (drziPredmetRepository.count() == 0) {
 
             List<Nastavnik> nastavnici = nastavnikRepository.findAll();
             List<Predmet> predmeti = (List<Predmet>) predmetRepository.findAll();
             List<SkolskaGodina> skoleGodine = (List<SkolskaGodina>) skolskaGodinaRepository.findAll();
 
-            // Pronađi aktivnu školsku godinu
             SkolskaGodina aktuelnaGodina = null;
             for (SkolskaGodina sg : skoleGodine) {
                 if (sg.isAktivna()) {
@@ -322,7 +314,6 @@ public class Seeder implements CommandLineRunner {
 
             if (!nastavnici.isEmpty() && !predmeti.isEmpty() && aktuelnaGodina != null) {
 
-                // 1. Svaki nastavnik drži barem jedan predmet
                 for (int i = 0; i < nastavnici.size(); i++) {
                     Nastavnik n = nastavnici.get(i);
                     Predmet p = predmeti.get(i % predmeti.size()); // ciklično kroz predmete
@@ -333,12 +324,10 @@ public class Seeder implements CommandLineRunner {
                     drziPredmetRepository.save(dp);
                 }
 
-                // 2. Svaki predmet ima barem jednog nastavnika (dodaj još nastavnika ako treba)
                 for (int i = 0; i < predmeti.size(); i++) {
                     Predmet p = predmeti.get(i);
                     Nastavnik n1 = nastavnici.get(i % nastavnici.size());
                     Nastavnik n2 = nastavnici.get((i + 1) % nastavnici.size()); // drugi nastavnik za isti predmet
-                    // Proveri da li je dp već postoji za p i n1
                     boolean exists = false;
                     for (DrziPredmet dp : drziPredmetRepository.findAll()) {
                         if (dp.getPredmet().getId().equals(p.getId()) && dp.getNastavnik().getId().equals(n1.getId())) {
@@ -354,7 +343,6 @@ public class Seeder implements CommandLineRunner {
                         drziPredmetRepository.save(dp1);
                     }
 
-                    // Dodaj još jednog nastavnika za isti predmet (da vidimo više nastavnika po predmetu)
                     DrziPredmet dp2 = new DrziPredmet();
                     dp2.setPredmet(p);
                     dp2.setNastavnik(n2);
@@ -363,82 +351,79 @@ public class Seeder implements CommandLineRunner {
                 }
             }
         }
-        // ----------- Grupa -----------
         if (grupaRepository.count() == 0) {
 
             if (!spList.isEmpty()) {
-                // Grupa 1
                 Grupa g1 = new Grupa();
                 g1.setStudijskiProgram(spList.get(0));
                 grupaRepository.save(g1);
 
-                // Grupa 2
                 Grupa g2 = new Grupa();
                 g2.setStudijskiProgram(spList.get(1));
                 grupaRepository.save(g2);
 
-                // Grupa 3
                 Grupa g3 = new Grupa();
                 g3.setStudijskiProgram(spList.get(2));
                 grupaRepository.save(g3);
 
-                // Grupa 4
                 Grupa g4 = new Grupa();
                 g4.setStudijskiProgram(spList.get(3));
                 grupaRepository.save(g4);
             }
         }
 
-        // ----------- Ispitni rokovi -----------
+        List<Grupa> sveGrupe = grupaRepository.findAll();
+
+        for (Grupa g : sveGrupe) {
+            List<Predmet> predmetiZaProgram = predmetRepository.findByStudProgram(g.getStudijskiProgram());
+
+            g.setPredmeti(new ArrayList<>(predmetiZaProgram));
+
+            grupaRepository.save(g);
+        }
+
         if (ispitniRokRepository.count() == 0) {
             List<SkolskaGodina> skoleGodine = (List<SkolskaGodina>) skolskaGodinaRepository.findAll();
 
             for (SkolskaGodina sg : skoleGodine) {
                 List<IspitniRok> rokovi = new ArrayList<>();
 
-                // Jan: 15.01 - 31.01
                 IspitniRok jan = new IspitniRok();
                 jan.setSkolskaGodina(sg);
                 jan.setPocetak(LocalDate.of(Integer.parseInt(sg.getGodina().substring(0, 4)), 1, 15));
                 jan.setKraj(LocalDate.of(Integer.parseInt(sg.getGodina().substring(0, 4)), 1, 31));
                 rokovi.add(jan);
 
-                // Feb: 15.02 - 28.02
                 IspitniRok feb = new IspitniRok();
                 feb.setSkolskaGodina(sg);
                 feb.setPocetak(LocalDate.of(Integer.parseInt(sg.getGodina().substring(0, 4)), 2, 15));
                 feb.setKraj(LocalDate.of(Integer.parseInt(sg.getGodina().substring(0, 4)), 2, 28));
                 rokovi.add(feb);
 
-                // Jun: 01.06 - 15.06
                 IspitniRok jun = new IspitniRok();
                 jun.setSkolskaGodina(sg);
                 jun.setPocetak(LocalDate.of(Integer.parseInt(sg.getGodina().substring(0, 4)), 6, 1));
                 jun.setKraj(LocalDate.of(Integer.parseInt(sg.getGodina().substring(0, 4)), 6, 15));
                 rokovi.add(jun);
 
-                // Jul: 01.07 - 15.07
                 IspitniRok jul = new IspitniRok();
                 jul.setSkolskaGodina(sg);
                 jul.setPocetak(LocalDate.of(Integer.parseInt(sg.getGodina().substring(0, 4)), 7, 1));
                 jul.setKraj(LocalDate.of(Integer.parseInt(sg.getGodina().substring(0, 4)), 7, 15));
                 rokovi.add(jul);
 
-                // Avgust: 01.08 - 15.08
                 IspitniRok avg = new IspitniRok();
                 avg.setSkolskaGodina(sg);
                 avg.setPocetak(LocalDate.of(Integer.parseInt(sg.getGodina().substring(0, 4)), 8, 1));
                 avg.setKraj(LocalDate.of(Integer.parseInt(sg.getGodina().substring(0, 4)), 8, 15));
                 rokovi.add(avg);
 
-                // Septembar: 01.09 - 15.09
                 IspitniRok sep = new IspitniRok();
                 sep.setSkolskaGodina(sg);
                 sep.setPocetak(LocalDate.of(Integer.parseInt(sg.getGodina().substring(0, 4)), 9, 1));
                 sep.setKraj(LocalDate.of(Integer.parseInt(sg.getGodina().substring(0, 4)), 9, 15));
                 rokovi.add(sep);
 
-                // Sačuvaj sve rokove
                 for (IspitniRok rok : rokovi) {
                     ispitniRokRepository.save(rok);
                 }
@@ -469,20 +454,54 @@ public class Seeder implements CommandLineRunner {
                     }
                 }
 
-                // 3. Dodaj 15 ispita ciklično kroz dostupne DrziPredmet
+                // 3. Uzmi sve ispitne rokove iz aktivne godine
+                List<IspitniRok> sviRokovi = (List<IspitniRok>) ispitniRokRepository.findAll();
+                List<IspitniRok> rokoviAktuelnaGodina = new ArrayList<>();
+                for (IspitniRok rok : sviRokovi) {
+                    if (rok.getSkolskaGodina().getId().equals(aktuelnaGodina.getId())) {
+                        rokoviAktuelnaGodina.add(rok);
+                    }
+                }
+
+                // 4. Fiksni datumi za 15 ispita (deterministički, svaki put isti)
+                LocalDate[] datumiIspita = new LocalDate[] {
+                        LocalDate.of(2025, 1, 16), LocalDate.of(2025, 1, 20),
+                        LocalDate.of(2025, 2, 16), LocalDate.of(2025, 2, 20),
+                        LocalDate.of(2025, 6, 2), LocalDate.of(2025, 6, 5),
+                        LocalDate.of(2025, 6, 10), LocalDate.of(2025, 7, 2),
+                        LocalDate.of(2025, 7, 5), LocalDate.of(2025, 7, 10),
+                        LocalDate.of(2025, 8, 2), LocalDate.of(2025, 8, 5),
+                        LocalDate.of(2025, 8, 10), LocalDate.of(2025, 9, 2),
+                        LocalDate.of(2025, 9, 5)
+                };
+
+                // 5. Kreiranje ispita i povezivanje sa ispitnim rokom
                 for (int i = 0; i < 15; i++) {
                     DrziPredmet dpZaIspit = dpAktuelnaGodina.get(i % dpAktuelnaGodina.size());
 
                     Ispit ispit = new Ispit();
                     ispit.setDrziPredmet(dpZaIspit);
-                    ispit.setDatumIspita(LocalDate.now().plusDays(3 + i)); // različiti datumi
-                    ispit.setVremePocetkaIspita(LocalTime.of(9 + (i % 5), 0));   // menjamo vreme
+                    ispit.setDatumIspita(datumiIspita[i]);
+                    ispit.setVremePocetkaIspita(LocalTime.of(9 + (i % 5), 0)); // ciklično vreme
+                    ispit.setZakljucen(false);
 
+                    // --- povezivanje sa odgovarajućim ispitnim rokom ---
+                    for (IspitniRok rok : rokoviAktuelnaGodina) {
+                        if (!ispit.getDatumIspita().isBefore(rok.getPocetak()) &&
+                                !ispit.getDatumIspita().isAfter(rok.getKraj())) {
 
+                            ispit.setIspitniRok(rok); // VEZA sa instancom iz baze
+                            break; // nađi prvi odgovarajući rok i izlazi
+                        }
+                    }
+
+                    // --- sačuvaj ispit nakon što je povezan sa rokom ---
                     ispitRepository.save(ispit);
                 }
             }
         }
+
+
 
 
 

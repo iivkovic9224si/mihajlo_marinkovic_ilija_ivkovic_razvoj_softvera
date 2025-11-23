@@ -33,7 +33,7 @@ public class Predmet {
     @ManyToMany
     private List<StudijskiTokAktivnosti> studijskiTokAktivnosti;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "predmeti")
     private List<Grupa> grupa;
 
 	@Override
