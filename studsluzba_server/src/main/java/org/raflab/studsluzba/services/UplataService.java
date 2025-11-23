@@ -9,9 +9,13 @@ import org.raflab.studsluzba.model.entity.Uplata;
 import org.raflab.studsluzba.repositories.SkolskaGodinaRepository;
 import org.raflab.studsluzba.repositories.StudentPodaciRepository;
 import org.raflab.studsluzba.repositories.UplataRepository;
+import org.raflab.studsluzba.utils.converters.UplataConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UplataService {
@@ -70,5 +74,59 @@ public class UplataService {
         }
 
         return uplataResponse;
+    }
+
+    //CRUD
+
+    public List<UplataResponse> findAll() {
+        return uplataRepository.findAll()
+                .stream()
+                .map(uplata -> {
+                    Double uplacenoUEurima = uplataRepository.uplaceno(uplata.getStudentPodaci());
+                    if (uplacenoUEurima == null) uplacenoUEurima = 0.0;
+                    return UplataConverter.toUplataResponse(uplata, uplacenoUEurima);
+                })
+                .collect(Collectors.toList());
+    }
+
+    public UplataResponse findById(Long id) {
+        Uplata uplata = uplataRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Uplata nije pronađena za ID: " + id));
+
+        Double uplacenoUEurima = uplataRepository.uplaceno(uplata.getStudentPodaci());
+        if (uplacenoUEurima == null) uplacenoUEurima = 0.0;
+
+        return UplataConverter.toUplataResponse(uplata, uplacenoUEurima);
+    }
+
+    public UplataResponse update(Long id, UplataRequest request) {
+        Uplata existing = uplataRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Uplata nije pronađena za ID: " + id));
+
+        StudentPodaci student = studentPodaciRepository.getStudentPodaciByJmbg(request.getStudentJmbg());
+        SkolskaGodina skolskaGodina = skolskaGodinaRepository.findByGodina(request.getSkolskaGodina());
+
+        RestTemplate restTemplate = new RestTemplate();
+        KursResponse kursResponse = restTemplate.getForObject(UplataService.KURS_API_URL, KursResponse.class);
+        Double srednjiKurs = kursResponse != null ? kursResponse.getExchange_middle() : null;
+
+        existing.setDatumUplate(request.getDatumUplate());
+        existing.setIznosUDinarima(request.getIznosUDinarima());
+        existing.setStudentPodaci(student);
+        existing.setSkolskaGodina(skolskaGodina);
+        existing.setSrednjiKurs(srednjiKurs);
+
+        Uplata updated = uplataRepository.save(existing);
+
+        Double uplacenoUEurima = uplataRepository.uplaceno(updated.getStudentPodaci());
+        if (uplacenoUEurima == null) uplacenoUEurima = 0.0;
+
+        return UplataConverter.toUplataResponse(updated, uplacenoUEurima);
+    }
+
+    public void delete(Long id) {
+        Uplata uplata = uplataRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Uplata nije pronađena za ID: " + id));
+        uplataRepository.delete(uplata);
     }
 }

@@ -41,4 +41,15 @@ public class PolozenPredmetController {
     public void delete(@PathVariable Long id) {
         polozenPredmetService.delete(id);
     }
+
+    @PutMapping("/update/here/{id}")
+    public PolozenPredmetResponse updateHere(@PathVariable Long id, @RequestBody PolozenPredmetHereRequest request) {
+        return polozenPredmetService.updateHere(id, request);
+    }
+
+    @PutMapping("/update/away/{id}")
+    public PolozenPredmetResponse updateAway(@PathVariable Long id, @RequestBody PolozenPredmetAwayRequest request) {
+        return polozenPredmetService.updateAway(id, request);
+    }
+
 }

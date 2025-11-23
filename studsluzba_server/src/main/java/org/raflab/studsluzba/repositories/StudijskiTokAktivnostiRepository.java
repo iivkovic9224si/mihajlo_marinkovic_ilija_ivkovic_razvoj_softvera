@@ -2,10 +2,12 @@ package org.raflab.studsluzba.repositories;
 
 import org.raflab.studsluzba.model.entity.StudentIndeks;
 import org.raflab.studsluzba.model.entity.StudijskiTokAktivnosti;
+import org.raflab.studsluzba.model.entity.VrstaStudijskeAktivnosti;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -19,4 +21,19 @@ public interface StudijskiTokAktivnostiRepository extends JpaRepository<Studijsk
     @Query("select tok.godina from StudijskiTokAktivnosti tok where tok.studentIndeks = :studentIndeks and tok.tip = 'OBNOVA'")
     List<Integer> getObnovljeneGodineByStudentIndeks(StudentIndeks studentIndeks);
 
+    @Query("SELECT sta FROM StudijskiTokAktivnosti sta " +
+            "WHERE sta.tip = :tip " +
+            "AND sta.godina = :godina " +
+            "AND sta.datum = :datum " +
+            "AND sta.studentIndeks.studProgramOznaka = :studProgramOznaka " +
+            "AND sta.studentIndeks.godina = :indeksGodina " +
+            "AND sta.studentIndeks.broj = :indeksBroj")
+    StudijskiTokAktivnosti findByDetails(
+            VrstaStudijskeAktivnosti tip,
+            Integer godina,
+            LocalDate datum,
+            String studProgramOznaka,
+            Integer indeksGodina,
+            Integer indeksBroj
+    );
 }

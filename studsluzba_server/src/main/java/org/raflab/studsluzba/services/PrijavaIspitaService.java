@@ -89,4 +89,37 @@ public class PrijavaIspitaService {
         }
         return responses;
     }
+
+    // ------------------ UPDATE ------------------
+    public PrijavaIspitaResponse update(Long id, PrijavaIspitaRequest request) {
+
+        PrijavaIspita prijava = prijavaIspitaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Prijava ispita ne postoji sa ID: " + id));
+
+        Ispit ispit = ispitRepository.findById(request.getIspitID())
+                .orElseThrow(() -> new RuntimeException("Ispit ne postoji"));
+
+        StudentIndeks studentIndeks = studentIndeksRepository
+                .findByGodinaAndBrojAndStudProgramOznaka(
+                        request.getIndeksGodina(),
+                        request.getIndeksBroj(),
+                        request.getIndeksStudProgramOznaka())
+                .orElseThrow(() -> new RuntimeException("Student indeks nije pronađen"));
+
+        SlusaPredmet slusaPredmet = slusaPredmetRepository
+                .findByStudentIndeksAndDrziPredmet(
+                        studentIndeks.getId(),
+                        ispit.getDrziPredmet().getId()
+                )
+                .orElseThrow(() -> new RuntimeException("SlusaPredmet nije pronađen"));
+
+        prijava.setDatumPrijave(request.getDatumPrijave());
+        prijava.setIspit(ispit);
+        prijava.setSlusaPredmet(slusaPredmet);
+
+        prijavaIspitaRepository.save(prijava);
+
+        return PrijavaIspitaConverter.toPrijavaIspitaResponse(prijava);
+    }
+
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @CrossOrigin
@@ -41,4 +42,26 @@ public class UplataController {
 
         return ostalo;
     }
+
+    @GetMapping("/findAll")
+    public List<UplataResponse> findAll() {
+        return uplataService.findAll();
+    }
+
+    @GetMapping("/findById/{id}")
+    public UplataResponse findById(@PathVariable Long id) {
+        return uplataService.findById(id);
+    }
+
+    @PutMapping("/update/{id}")
+    public UplataResponse update(@PathVariable Long id,
+                                 @RequestBody @Valid UplataRequest request) {
+        return uplataService.update(id, request);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public void delete(@PathVariable Long id) {
+        uplataService.delete(id);
+    }
+
 }
