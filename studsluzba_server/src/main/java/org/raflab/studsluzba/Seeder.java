@@ -271,7 +271,6 @@ public class Seeder implements CommandLineRunner {
             }
         }
 
-
         int trenutnaGodina = LocalDate.now().getYear();
         String nazivTekuceGodine = trenutnaGodina + "/" + (trenutnaGodina + 1);
 
@@ -296,7 +295,6 @@ public class Seeder implements CommandLineRunner {
 
 
         if (drziPredmetRepository.count() == 0) {
-
             List<Nastavnik> nastavnici = nastavnikRepository.findAll();
             List<Predmet> predmeti = (List<Predmet>) predmetRepository.findAll();
             List<SkolskaGodina> skoleGodine = (List<SkolskaGodina>) skolskaGodinaRepository.findAll();
@@ -309,48 +307,42 @@ public class Seeder implements CommandLineRunner {
                 }
             }
             if (aktuelnaGodina == null && !skoleGodine.isEmpty()) {
-                aktuelnaGodina = skoleGodine.get(0); // fallback
+                aktuelnaGodina = skoleGodine.get(0);
             }
 
-            if (!nastavnici.isEmpty() && !predmeti.isEmpty() && aktuelnaGodina != null) {
+            int nastavnikIndex = 0;
+            for (Predmet p : predmeti) {
+                Nastavnik n = nastavnici.get(nastavnikIndex);
+                DrziPredmet dp = new DrziPredmet();
+                dp.setPredmet(p);
+                dp.setNastavnik(n);
+                dp.setSkolskaGodina(aktuelnaGodina);
+                drziPredmetRepository.save(dp);
 
-                for (int i = 0; i < nastavnici.size(); i++) {
-                    Nastavnik n = nastavnici.get(i);
-                    Predmet p = predmeti.get(i % predmeti.size()); // ciklično kroz predmete
-                    DrziPredmet dp = new DrziPredmet();
-                    dp.setNastavnik(n);
-                    dp.setPredmet(p);
-                    dp.setSkolskaGodina(aktuelnaGodina);
-                    drziPredmetRepository.save(dp);
+                nastavnikIndex++;
+                if (nastavnikIndex >= nastavnici.size()) {
+                    nastavnikIndex = 0;
                 }
+            }
 
-                for (int i = 0; i < predmeti.size(); i++) {
-                    Predmet p = predmeti.get(i);
-                    Nastavnik n1 = nastavnici.get(i % nastavnici.size());
-                    Nastavnik n2 = nastavnici.get((i + 1) % nastavnici.size()); // drugi nastavnik za isti predmet
-                    boolean exists = false;
-                    for (DrziPredmet dp : drziPredmetRepository.findAll()) {
-                        if (dp.getPredmet().getId().equals(p.getId()) && dp.getNastavnik().getId().equals(n1.getId())) {
-                            exists = true;
-                            break;
-                        }
-                    }
-                    if (!exists) {
-                        DrziPredmet dp1 = new DrziPredmet();
-                        dp1.setPredmet(p);
-                        dp1.setNastavnik(n1);
-                        dp1.setSkolskaGodina(aktuelnaGodina);
-                        drziPredmetRepository.save(dp1);
-                    }
+            nastavnikIndex = 1;
+            for (Predmet p : predmeti) {
+                Nastavnik n = nastavnici.get(nastavnikIndex);
+                DrziPredmet dp = new DrziPredmet();
+                dp.setPredmet(p);
+                dp.setNastavnik(n);
+                dp.setSkolskaGodina(aktuelnaGodina);
+                drziPredmetRepository.save(dp);
 
-                    DrziPredmet dp2 = new DrziPredmet();
-                    dp2.setPredmet(p);
-                    dp2.setNastavnik(n2);
-                    dp2.setSkolskaGodina(aktuelnaGodina);
-                    drziPredmetRepository.save(dp2);
+                nastavnikIndex++;
+                if (nastavnikIndex >= nastavnici.size()) {
+                    nastavnikIndex = 0;
                 }
             }
         }
+
+
+        // ----------- Grupa -----------
         if (grupaRepository.count() == 0) {
 
             if (!spList.isEmpty()) {
@@ -552,7 +544,6 @@ public class Seeder implements CommandLineRunner {
             }
         }
 
-        // ----------- StudentPodaci 30 realnih studenata -----------
         if(studentPodaciRepository.count() == 0) {
             List<SrednjaSkola> srednjeSkole = (List<SrednjaSkola>) srednjaSkolaRepository.findAll();
             List<VisokoSkolskaUstanova> sveVSU = (List<VisokoSkolskaUstanova>) visokoSkolskaUstanovaRepository.findAll();
@@ -572,15 +563,13 @@ public class Seeder implements CommandLineRunner {
                     "Antić","Mandić","Radosavljević","Živković"
             );
 
-            Random random = new Random();
-
             for(int i = 0; i < 30; i++) {
                 StudentPodaci student = new StudentPodaci();
                 student.setIme(imenaStudenata.get(i));
                 student.setPrezime(prezimenaStudenata.get(i));
                 student.setSrednjeIme("Srednje" + i);
                 student.setJmbg("01010012345" + String.format("%02d", i));
-                student.setDatumRodjenja(LocalDate.of(2000 + random.nextInt(4), random.nextInt(12)+1, random.nextInt(28)+1));
+                student.setDatumRodjenja(LocalDate.of(2000 + (i % 4), (i % 12) + 1, (i % 28) + 1));
                 student.setMestoRodjenja("Grad" + (i+1));
                 student.setMestoPrebivalista("Grad" + (i+1));
                 student.setDrzavaRodjenja("Srbija");
@@ -595,135 +584,116 @@ public class Seeder implements CommandLineRunner {
                 student.setLicnuKartuIzdao("MUP Grad" + (i+1));
                 student.setMestoStanovanja("Grad" + (i+1));
                 student.setAdresaStanovanja("Ulica " + (i+1));
+                student.setUspehIzSrednjeSkole(7.0 + (i % 4) * 0.5);
+                student.setPoeniSaPrijemnog(50 + (i % 51));
+                student.setSrednjaSkola(srednjeSkole.get(i % srednjeSkole.size()));
 
-                student.setUspehIzSrednjeSkole(7 + random.nextDouble() * 3); // 7.0 - 10.0
-                student.setPoeniSaPrijemnog(50 + random.nextDouble() * 50); // 50 - 100 poena
-
-                // Random srednja škola
-                student.setSrednjaSkola(srednjeSkole.get(random.nextInt(srednjeSkole.size())));
-
-                // Random VSU sa 15% prelaznika
-                if(random.nextDouble() < 0.15 && sveVSU.size() > 1) { // 15% prelaznika
-                    VisokoSkolskaUstanova trenutnaVSU = sveVSU.get(random.nextInt(sveVSU.size()));
-                    VisokoSkolskaUstanova prethodnaVSU;
-                    do {
-                        prethodnaVSU = sveVSU.get(random.nextInt(sveVSU.size()));
-                    } while (prethodnaVSU.equals(trenutnaVSU));
+                if(i == 3 || i == 7 || i == 15 || i == 23) {
+                    VisokoSkolskaUstanova trenutnaVSU = sveVSU.get(i % sveVSU.size());
+                    VisokoSkolskaUstanova prethodnaVSU = sveVSU.get((i+1) % sveVSU.size());
                     student.setVisokoSkolskaUstanova(trenutnaVSU);
+                    student.setVisokoSkolskaUstanova(prethodnaVSU);
                 } else {
-                    student.setVisokoSkolskaUstanova(sveVSU.get(random.nextInt(sveVSU.size())));
+                    student.setVisokoSkolskaUstanova(sveVSU.get(i % sveVSU.size()));
                 }
 
                 studentPodaciRepository.save(student);
+
+                if(i == 0 || i == 5 || i == 12) {
+                    StudentIndeks noviIndeks = new StudentIndeks();
+                    noviIndeks.setBroj(i + 100);
+                    noviIndeks.setGodina(2022);
+                    noviIndeks.setStudent(student);
+                    studentIndeksRepository.save(noviIndeks);
+                }
             }
         }
+
+
 
         // ----------- StudentIndeks i StudijskiTokAktivnosti (ISPRAVLJENO) -----------
         if(studentIndeksRepository.count() == 0) {
             List<StudentPodaci> studenti = studentPodaciRepository.findAll();
             List<StudijskiProgram> studProgrami = (List<StudijskiProgram>) studijskiProgramRepository.findAll();
             List<Predmet> predmeti = (List<Predmet>) predmetRepository.findAll();
-            Random random = new Random();
+            int globalBrojIndeksa = 1;
+            Map<String, Set<Integer>> zauzetiBrojevi = new HashMap<>();
 
-            int globalBrojIndeksa = 1; // garantuje jedinstven broj indeksa
+            for(int i = 0; i < studenti.size(); i++) {
+                StudentPodaci student = studenti.get(i);
+                int brojIndeksa = (i % 5 == 0) ? 2 : 1;
 
-            for(StudentPodaci student : studenti) {
-                // Odredimo koliko indeksa student ima (1 do 2 indeksa, neki prelaznici imaju 2)
-                int brojIndeksa = random.nextDouble() < 0.15 ? 2 : 1; // 15% prelaznika
-
-                for(int i = 0; i < brojIndeksa; i++) {
+                for(int j = 0; j < brojIndeksa; j++) {
                     StudentIndeks indeks = new StudentIndeks();
                     indeks.setStudent(student);
-                    StudijskiProgram sp = studProgrami.get(random.nextInt(studProgrami.size()));
+                    StudijskiProgram sp = studProgrami.get(i % studProgrami.size());
                     indeks.setStudijskiProgram(sp);
                     indeks.setStudProgramOznaka(sp.getOznaka());
-                    indeks.setGodina(2025); // tekuća godina upisa
+                    int godina = 2025 + j;
+                    indeks.setGodina(godina);
+                    String key = sp.getOznaka() + "-" + godina;
+                    zauzetiBrojevi.putIfAbsent(key, new HashSet<>());
 
-                    // Jedinstveni broj indeksa
-                    indeks.setBroj(globalBrojIndeksa++);
-                    indeks.setNacinFinansiranja(random.nextBoolean() ? "Budžet" : "Samofinansiranje");
-                    indeks.setAktivan(i == 0); // samo prvi indeks aktivan
-                    indeks.setVaziOd(LocalDate.now().minusDays(random.nextInt(30)));
+                    int broj;
+                    if(i == 0 && j == 0) {
+                        broj = 100;
+                    } else if(i == 1 && j == 0) {
+                        broj = 100;
+                    } else if(i == 2 && j == 0) {
+                        broj = 100;
+                    } else {
+                        broj = globalBrojIndeksa++;
+                    }
+
+                    while(zauzetiBrojevi.get(key).contains(broj)) {
+                        broj++;
+                    }
+                    zauzetiBrojevi.get(key).add(broj);
+                    indeks.setBroj(broj);
+                    indeks.setNacinFinansiranja("Budžet");
+                    indeks.setAktivan(j == 0);
+                    indeks.setVaziOd(LocalDate.of(2025, 1, 1));
                     indeks.setOstvarenoEspb(0);
-
                     studentIndeksRepository.save(indeks);
 
-                    // ---------- StudijskiTokAktivnosti ----------
-                    // 1. Upis prve godine
                     StudijskiTokAktivnosti upis = new StudijskiTokAktivnosti();
                     upis.setTip(VrstaStudijskeAktivnosti.UPIS);
                     upis.setGodina(1);
-                    upis.setDatum(LocalDate.now().minusDays(random.nextInt(10)));
-                    upis.setNapomena("Automatski upis prve godine");
+                    upis.setDatum(LocalDate.of(2025, 9, 1));
+                    upis.setNapomena("Upis prve godine");
                     upis.setStudentIndeks(indeks);
-
-                    // Dodeli 3 do 5 nasumičnih predmeta
-                    Collections.shuffle(predmeti);
-                    int brojPredmeta = Math.min(3 + random.nextInt(3), predmeti.size());
-                    upis.setPredmet(new ArrayList<>(predmeti.subList(0, brojPredmeta)));
-
+                    upis.setPredmet(Arrays.asList(predmeti.get(i % predmeti.size()),
+                            predmeti.get((i+1) % predmeti.size()),
+                            predmeti.get((i+2) % predmeti.size())));
                     studijskiTokAktivnostiRepository.save(upis);
-
-                    // 2. Eventualna obnova prve godine
-                    if(random.nextDouble() < 0.2) { // 20% obnavlja
-                        StudijskiTokAktivnosti obnova = new StudijskiTokAktivnosti();
-                        obnova.setTip(VrstaStudijskeAktivnosti.OBNOVA);
-                        obnova.setGodina(1);
-                        obnova.setDatum(LocalDate.now().minusDays(random.nextInt(5)));
-                        obnova.setNapomena("Automatska obnova godine");
-                        obnova.setStudentIndeks(indeks);
-
-                        Collections.shuffle(predmeti);
-                        int brojPredmetaObnova = Math.min(2 + random.nextInt(2), predmeti.size());
-                        obnova.setPredmet(new ArrayList<>(predmeti.subList(0, brojPredmetaObnova)));
-
-                        studijskiTokAktivnostiRepository.save(obnova);
-                    }
-
-                    // 3. Upis druge godine
-                    if(random.nextDouble() < 0.7) { // 70% prešli u 2. godinu
-                        StudijskiTokAktivnosti drugaGodina = new StudijskiTokAktivnosti();
-                        drugaGodina.setTip(VrstaStudijskeAktivnosti.UPIS);
-                        drugaGodina.setGodina(2);
-                        drugaGodina.setDatum(LocalDate.now().minusDays(random.nextInt(5)));
-                        drugaGodina.setNapomena("Automatski upis druge godine");
-                        drugaGodina.setStudentIndeks(indeks);
-
-                        Collections.shuffle(predmeti);
-                        int brojPredmetaDrugaGodina = Math.min(3 + random.nextInt(3), predmeti.size());
-                        drugaGodina.setPredmet(new ArrayList<>(predmeti.subList(0, brojPredmetaDrugaGodina)));
-
-                        studijskiTokAktivnostiRepository.save(drugaGodina);
-                    }
                 }
             }
         }
+
 // ----------- SlusaPredmet -----------
         if(slusaPredmetRepository.count() == 0) {
             List<StudentIndeks> sviIndeksi = studentIndeksRepository.findAll();
             List<SkolskaGodina> sveSkolskeGodine = (List<SkolskaGodina>) skolskaGodinaRepository.findAll();
-            Random random = new Random();
 
-            for(StudentIndeks indeks : sviIndeksi) {
+            for(int i = 0; i < sviIndeksi.size(); i++) {
+                StudentIndeks indeks = sviIndeksi.get(i);
                 StudijskiProgram sp = indeks.getStudijskiProgram();
-
-                // Uzmi sve predmete za dati studijski program
                 List<Predmet> predmetiZaSP = predmetRepository.findByStudProgram(sp);
 
-                // Odredi aktivnu školsku godinu
                 SkolskaGodina aktuelnaGodina = sveSkolskeGodine.stream()
                         .filter(SkolskaGodina::isAktivna)
                         .findFirst()
                         .orElse(sveSkolskeGodine.get(0));
 
-                for(Predmet predmet : predmetiZaSP) {
-                    boolean slusa = predmet.isObavezan() || random.nextDouble() < 0.5; // obavezni uvek, neobavezni 50% šanse
+                for(int j = 0; j < predmetiZaSP.size(); j++) {
+                    Predmet predmet = predmetiZaSP.get(j);
+                    boolean slusa = predmet.isObavezan() || (i + j) % 2 == 0;
+
                     if(slusa) {
-                        // Pronađi odgovarajući DrziPredmet za aktivnu godinu
                         List<DrziPredmet> dpZaPredmet = drziPredmetRepository.findByPredmetAndSkolskaGodina(predmet, aktuelnaGodina);
                         if(dpZaPredmet.isEmpty()) continue;
 
-                        DrziPredmet dp = dpZaPredmet.get(random.nextInt(dpZaPredmet.size()));
+                        DrziPredmet dp = dpZaPredmet.get((i + j) % dpZaPredmet.size());
 
                         SlusaPredmet spStudent = new SlusaPredmet();
                         spStudent.setStudentIndeks(indeks);
@@ -735,99 +705,80 @@ public class Seeder implements CommandLineRunner {
                 }
             }
         }
+
         // ----------- PredispitneObaveze za svaki predmet -----------
         if(predispitneObavezeRepository.count() == 0) {
             List<Predmet> sviPredmeti = (List<Predmet>) predmetRepository.findAll();
-            Random random = new Random();
+            VrstaPredispitneObaveze[] vrstePO = VrstaPredispitneObaveze.values();
 
-            for(Predmet predmet : sviPredmeti) {
-                // Random broj predispitnih obaveza između 1 i 3
-                int brojObaveza = 1 + random.nextInt(3);
+            for(int i = 0; i < sviPredmeti.size(); i++) {
+                Predmet predmet = sviPredmeti.get(i);
+                int brojObaveza = (i % 3) + 1;
 
-                for(int i = 0; i < brojObaveza; i++) {
+                for(int j = 0; j < brojObaveza; j++) {
                     PredispitneObaveze po = new PredispitneObaveze();
                     po.setPredmet(predmet);
-
-                    // Postavimo maksimalan broj poena, npr. 10 do 30 poena
-                    po.setMaksimalanBrojPoena(10 + random.nextInt(21));
-
-                    // Nasumično dodeljujemo vrstu predispitne obaveze
-                    VrstaPredispitneObaveze[] vrstePO = VrstaPredispitneObaveze.values();
-                    po.setVrstaPredispitneObaveze(vrstePO[random.nextInt(vrstePO.length)]);
-
+                    po.setMaksimalanBrojPoena(10 + j * 10);
+                    po.setVrstaPredispitneObaveze(vrstePO[j % vrstePO.length]);
                     predispitneObavezeRepository.save(po);
                 }
             }
         }
+
         // ----------- OstvareniPredispitni ----------
         if(ostvareniPredispitniRepository.count() == 0) {
             List<SlusaPredmet> sviSlusaPredmet = (List<SlusaPredmet>) slusaPredmetRepository.findAll();
-            Random random = new Random();
+            List<PredispitneObaveze> sveObaveze = (List<PredispitneObaveze>) predispitneObavezeRepository.findAll();
 
-            for(SlusaPredmet sp : sviSlusaPredmet) {
+            for(int i = 0; i < sviSlusaPredmet.size(); i++) {
+                SlusaPredmet sp = sviSlusaPredmet.get(i);
                 Predmet predmet = sp.getDrziPredmet().getPredmet();
-                List<PredispitneObaveze> obaveze = predispitneObavezeRepository.findByPredmet(predmet);
-                if(obaveze.isEmpty()) continue;
-
-                for(PredispitneObaveze po : obaveze) {
+                List<PredispitneObaveze> obaveze = sveObaveze.stream()
+                        .filter(po -> po.getPredmet().getId().equals(predmet.getId()))
+                        .collect(Collectors.toList());
+                for(int j = 0; j < obaveze.size(); j++) {
+                    PredispitneObaveze po = obaveze.get(j);
                     OstvareniPredispitni op = new OstvareniPredispitni();
                     op.setSlusaPredmet(sp);
                     op.setPredispitneObaveze(po);
-
-                    // Nasumični poeni između 50% i 100% maksimalnih poena
-                    double poeni = po.getMaksimalanBrojPoena() * (0.5 + random.nextDouble() * 0.5);
-                    op.setOstvareniPoeni(Math.round(poeni * 100.0) / 100.0); // 2 decimale
-
+                    op.setOstvareniPoeni(Math.round((po.getMaksimalanBrojPoena() * (0.75 + j*0.05)) * 100.0) / 100.0);
                     ostvareniPredispitniRepository.save(op);
                 }
             }
         }
-        // ----------- PrijavaIspita i IzlazakNaIspit -----------
+
         if(prijavaIspitaRepository.count() == 0) {
             List<SlusaPredmet> sviSlusaPredmet = (List<SlusaPredmet>) slusaPredmetRepository.findAll();
             List<Ispit> sviIspiti = (List<Ispit>) ispitRepository.findAll();
-            Random random = new Random();
 
-            for(SlusaPredmet sp : sviSlusaPredmet) {
-
-                // Ispiti koji pripadaju predmetu
+            for(int i = 0; i < sviSlusaPredmet.size(); i++) {
+                SlusaPredmet sp = sviSlusaPredmet.get(i);
                 List<Ispit> ispitiZaPredmet = sviIspiti.stream()
                         .filter(ispit -> ispit.getDrziPredmet().getPredmet().getId()
                                 .equals(sp.getDrziPredmet().getPredmet().getId()))
                         .collect(Collectors.toList());
-
                 if(ispitiZaPredmet.isEmpty()) continue;
 
-                // Odlučujemo da li student izlazi na ispit ili samo prijavljuje
-                boolean izlazi = random.nextDouble() < 0.8; // 80% šanse da izađe
+                boolean izlazi = (i % 5 != 0);
+                Ispit izabraniIspit = ispitiZaPredmet.get(i % ispitiZaPredmet.size());
 
-                Ispit izabraniIspit = ispitiZaPredmet.get(random.nextInt(ispitiZaPredmet.size()));
-
-                // Kreiramo PrijavaIspita
                 PrijavaIspita prijava = new PrijavaIspita();
                 prijava.setSlusaPredmet(sp);
                 prijava.setIspit(izabraniIspit);
-                prijava.setDatumPrijave(LocalDate.now().minusDays(random.nextInt(10)));
+                prijava.setDatumPrijave(LocalDate.now().minusDays(i % 10));
                 prijavaIspitaRepository.save(prijava);
 
                 if(izlazi) {
                     IzlazakNaIspit izlazak = new IzlazakNaIspit();
                     izlazak.setPrijavaIspita(prijava);
-                    // Broj poena sa ispita + predispitni poeni
                     double poeniPredispitni = ostvareniPredispitniRepository.findBySlusaPredmet(sp)
                             .stream()
                             .mapToDouble(OstvareniPredispitni::getOstvareniPoeni)
                             .sum();
-
-// Generišemo poene sa ispita tako da ukupno bude realno između 51 i 100
-                    double maxPoeniIspit = 100.0 - poeniPredispitni;
-                    if(maxPoeniIspit < 0) maxPoeniIspit = 0;
-                    double poeniIspit = poeniPredispitni >= 100 ? 0 : 1 + random.nextDouble() * (maxPoeniIspit - 1);
-
+                    double maxPoeniIspit = Math.max(0, 100.0 - poeniPredispitni);
+                    double poeniIspit = Math.min(maxPoeniIspit, 20 + (i % 10) * 5);
                     izlazak.setBrojPredispitnihPoena(poeniPredispitni);
                     izlazak.setBrojPoenaSaIspita(poeniIspit);
-
-// Računanje ukupne ocene
                     double ukupniPoeni = poeniPredispitni + poeniIspit;
                     int ocena;
                     if(ukupniPoeni < 51) ocena = 5;
@@ -836,38 +787,26 @@ public class Seeder implements CommandLineRunner {
                     else if(ukupniPoeni <= 80) ocena = 8;
                     else if(ukupniPoeni <= 90) ocena = 9;
                     else ocena = 10;
-
-                    izlazak.setNapomena(random.nextDouble() < 0.1 ? "Ponistava" : "");
+                    izlazak.setNapomena("");
                     izlazak.setPonistava(false);
                     izlazakNaIspitRepository.save(izlazak);
-
-// Povezujemo izlazak sa prijavom
                     prijava.setIzlazakNaIspita(izlazak);
                     prijavaIspitaRepository.save(prijava);
 
-// Kreiramo PolozenPredmet samo ako je student položio
                     if(ocena >= 6) {
                         PolozenPredmet polozen = new PolozenPredmet();
                         polozen.setStudentIndeks(sp.getStudentIndeks());
                         polozen.setPredmet(sp.getDrziPredmet().getPredmet());
                         polozen.setIzlazakIspita(izlazak);
-
-                        // --- Postavljanje datuma polaganja ---
-                        LocalDate datumIspita = izabraniIspit.getDatumIspita();
-                        // Dodajemo random varijaciju +/- 0-2 dana, ali ne izlazi iz logike
-                        int randomOffset = random.nextInt(3); // 0,1,2
-                        LocalDate datumPolaganja = datumIspita.plusDays(randomOffset);
-                        polozen.setDatum(datumPolaganja);
-
+                        polozen.setDatum(izabraniIspit.getDatumIspita().plusDays(i % 3));
                         polozen.setBrojPoena(ukupniPoeni);
                         polozen.setOcena(ocena);
                         polozen.setPriznato(false);
-
                         polozenPredmetRepository.save(polozen);
                     }
-
                 }
             }
         }
+
     }
 }

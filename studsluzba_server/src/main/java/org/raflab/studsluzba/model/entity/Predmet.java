@@ -30,7 +30,7 @@ public class Predmet {
     @OneToMany(mappedBy = "predmet")
     private List<PredispitneObaveze> predispitneObaveze;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "predmet")
     private List<StudijskiTokAktivnosti> studijskiTokAktivnosti;
 
     @ManyToMany(mappedBy = "predmeti")
