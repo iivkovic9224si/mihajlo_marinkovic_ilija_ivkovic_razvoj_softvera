@@ -599,13 +599,7 @@ public class Seeder implements CommandLineRunner {
 
                 studentPodaciRepository.save(student);
 
-                if(i == 0 || i == 5 || i == 12) {
-                    StudentIndeks noviIndeks = new StudentIndeks();
-                    noviIndeks.setBroj(i + 100);
-                    noviIndeks.setGodina(2022);
-                    noviIndeks.setStudent(student);
-                    studentIndeksRepository.save(noviIndeks);
-                }
+
             }
         }
 
