@@ -43,6 +43,12 @@ public interface StudentPodaciRepository extends JpaRepository<StudentPodaci, Lo
 	@Query("SELECT sp FROM StudentPodaci sp WHERE sp = :#{#si.student}")
 	StudentPodaci getStudentPodaciFromStudentIndeks(@Param("si") StudentIndeks si);
 
+    @Query(" select sp from StudentPodaci sp where sp.srednjaSkola.sifra = :sifra")
+    Page<StudentPodaci> findStudentiBySrednjaSkolaSifra(
+            @Param("sifra") String sifra,
+            Pageable pageable
+    );
+
 	@Query("select sp from StudentPodaci sp where sp.srednjaSkola = :srednjaSkola")
 	List<StudentPodaci> getStudentiBySrednjaSkola(SrednjaSkola srednjaSkola);
 

@@ -72,6 +72,25 @@ public class StudentService {
         else return List.of();
     }
 
+    // ----------------- Asinkrona pretraga po srednjoj školi sa paginacijom -----------------
+    public Mono<PageResultDTO<StudentDTO>> searchStudentsByHighSchoolPaged(
+            String srednjaSkolaSifra,
+            int page,
+            int size
+    ) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(STUDENT_URL_PATH + "/srednjaskola")
+                        .queryParam("srednjaSkolaSifra", srednjaSkolaSifra)
+                        .queryParam("page", page)
+                        .queryParam("size", size)
+                        .build()
+                )
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<PageResultDTO<StudentDTO>>() {});
+    }
+
+
     // ----------------- Asinkrona pretraga studenta sa paginacijom -----------------
     public Mono<PageResultDTO<StudentDTO>> searchStudentsPaged(String ime, String prezime, int page, int size) {
         return webClient.get()
@@ -105,6 +124,21 @@ public class StudentService {
             return List.of();
         }
     }
+
+    // ----------------- Asinkrona pretraga po broju indeksa -----------------
+    // Asinhrona pretraga po broju indeksa
+    public Mono<StudentIndexDTO> searchStudentByIndex(String indeksShort) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(STUDENT_URL_PATH + "/fastsearch")
+                        .queryParam("indeksShort", indeksShort)
+                        .build()
+                )
+                .retrieve()
+                .bodyToMono(StudentIndexDTO.class);
+    }
+
+
 
 
 
