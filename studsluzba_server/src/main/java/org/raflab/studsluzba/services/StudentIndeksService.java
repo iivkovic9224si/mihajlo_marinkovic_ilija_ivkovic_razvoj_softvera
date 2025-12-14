@@ -181,6 +181,20 @@ public class StudentIndeksService {
         return StudentPodaciConverter.toStudentPodaciResponseList(studentPodaciRepository.getStudentiBySrednjaSkola(srednjaSkola));
     }
 
+    @Transactional(readOnly = true)
+    public Page<StudentPodaciResponse> getStudentPodaciBySrednjaSkola(
+            String sifra,
+            int page,
+            int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<StudentPodaci> studenti =
+                studentPodaciRepository.findStudentiBySrednjaSkolaSifra(sifra, pageable);
+
+        return StudentPodaciConverter.toStudentPodaciResponse(studenti);
+    }
+
     public List<Integer> getObnovljeneGodine(StudentIndeksRequest studentIndeksRequest) {
         StudentIndeks studentIndeks = studentIndeksRepository.findStudentIndeks(
                 studentIndeksRequest.getStudProgramOznaka(),

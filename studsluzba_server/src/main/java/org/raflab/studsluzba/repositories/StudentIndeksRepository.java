@@ -3,6 +3,7 @@ package org.raflab.studsluzba.repositories;
 import java.util.List;
 import java.util.Optional;
 
+import org.raflab.studsluzba.controllers.response.StudentIndeksResponse;
 import org.raflab.studsluzba.model.entity.StudentIndeks;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,13 +14,22 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StudentIndeksRepository extends JpaRepository<StudentIndeks, Long> {
-	
-	
-	@Query("select indeks from StudentIndeks indeks where indeks.studProgramOznaka like ?1 and indeks.godina = ?2 "
+
+
+	@Query("select indeks from StudentIndeks indeks where indeks.studProgramOznaka = ?1 and indeks.godina = ?2 "
 			+ "and indeks.broj = ?3 ")
     StudentIndeks findStudentIndeks(String studProgramOznaka, int godina, int broj);
-	
-	
+
+    @Query("select si from StudentIndeks si " +
+            "join fetch si.student s " +   // ovo će odmah učitati student entitet
+            "where si.studProgramOznaka = :studProgramOznaka " +
+            "and si.godina = :godina " +
+            "and si.broj = :broj")
+    StudentIndeks findStudentIndeksWithStudent(@Param("studProgramOznaka") String studProgramOznaka,
+                                               @Param("godina") int godina,
+                                               @Param("broj") int broj);
+
+
 	//TODO dodati da se gledaju samo aktivni indeksi
 	@Query("select indeks from StudentIndeks indeks where "
 			+ "(:ime is null or lower(indeks.student.ime) like :ime) and "
@@ -28,7 +38,7 @@ public interface StudentIndeksRepository extends JpaRepository<StudentIndeks, Lo
 			+ "(:godina is null or indeks.godina = :godina) and "
 			+ "(:broj is null or indeks.broj = :broj)")
 	Page<StudentIndeks> findStudentIndeks(String ime, String prezime, String studProgramOznaka, Integer godina, Integer broj, Pageable pageable);
-	
+
 	@Query("select si from StudentIndeks si where si.student.id = :idStudentPodaci")
 	List<StudentIndeks> findStudentIndeksiForStudentPodaciId(Long idStudentPodaci);
 
