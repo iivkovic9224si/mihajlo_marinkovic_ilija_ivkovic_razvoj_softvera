@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 @Data
 public class StudijskiTokAktivnostiRequest {
+    private Long id;
     private String tip;
     private Integer godina;
     private LocalDate datum;

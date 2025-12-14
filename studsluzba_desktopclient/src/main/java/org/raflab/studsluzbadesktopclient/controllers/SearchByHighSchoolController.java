@@ -4,19 +4,17 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
-import javafx.scene.control.*;
-import javafx.scene.control.TableRow;
-import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
-
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
 import org.raflab.studsluzbadesktopclient.dtos.PageResultDTO;
 import org.raflab.studsluzbadesktopclient.dtos.StudentDTO;
 import org.raflab.studsluzbadesktopclient.dtos.StudentIndexDTO;
 import org.raflab.studsluzbadesktopclient.services.StudentService;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -43,8 +41,6 @@ public class SearchByHighSchoolController {
     @FXML
     private Label pageInfoLabel;
 
-    private List<StudentDTO> trenutniRezultati =  new ArrayList<>();
-
     public SearchByHighSchoolController(StudentService studentService) {
         this.studentService = studentService;
     }
@@ -64,7 +60,6 @@ public class SearchByHighSchoolController {
         });
     }
 
-    // 🔎 SEARCH
     @FXML
     public void handleSearchStudent(ActionEvent actionEvent) {
         currentPage = 0;
@@ -118,9 +113,7 @@ public class SearchByHighSchoolController {
         pageInfoLabel.setText("Strana " + (currentPage + 1) + " od " + totalPages);
     }
 
-
     private void showIndexSelection(StudentDTO student) {
-        // 1. Povuci listu indeks DTO-ova
         List<StudentIndexDTO> indeksDtoList = studentService.getIndeksiForStudent(student.getId());
 
         if (indeksDtoList.isEmpty()) {
@@ -132,34 +125,30 @@ public class SearchByHighSchoolController {
             return;
         }
 
-        // 2. Napravi listu stringova za prikaz: broj/godinaSTUDOZNAKA
         List<String> indeksiZaPrikaz = indeksDtoList.stream()
                 .map(i -> i.getBroj() + "/" + i.getGodina() + i.getStudProgramOznaka().toUpperCase())
                 .toList();
 
         ChoiceDialog<String> dialog = new ChoiceDialog<>(indeksiZaPrikaz.get(0), indeksiZaPrikaz);
         dialog.setTitle("Odabir indeksa");
-        dialog.setHeaderText(
-                "Student: " + student.getIme() + " " + student.getPrezime()
-        );
+        dialog.setHeaderText("Student: " + student.getIme() + " " + student.getPrezime());
         dialog.setContentText("Izaberite indeks:");
 
         dialog.showAndWait().ifPresent(selected -> {
+            int idx = indeksiZaPrikaz.indexOf(selected);
+            StudentIndexDTO izabraniIndeks = indeksDtoList.get(idx);
+
             try {
-                FXMLLoader loader =
-                        new FXMLLoader(getClass().getResource("/fxml/studentDetailView.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/studentDetailView.fxml"));
                 Parent root = loader.load();
 
                 StudentDetailController controller = loader.getController();
                 controller.setStudent(student);
-
-                // ako ti zatreba konkretan indeks DTO:
-                // int idx = indeksiZaPrikaz.indexOf(selected);
-                // StudentIndexDTO izabraniIndeks = indeksDtoList.get(idx);
+                controller.getStudentAktivnostiController().setIzabraniIndeks(izabraniIndeks);
 
                 Stage stage = new Stage();
-                stage.setTitle("Detalji studenta");
-                stage.setScene(new javafx.scene.Scene(root));
+                stage.setTitle("Detalji studenta - " + student.getIme() + " " + student.getPrezime());
+                stage.setScene(new Scene(root));
                 stage.show();
 
             } catch (Exception e) {
@@ -167,5 +156,4 @@ public class SearchByHighSchoolController {
             }
         });
     }
-
 }
