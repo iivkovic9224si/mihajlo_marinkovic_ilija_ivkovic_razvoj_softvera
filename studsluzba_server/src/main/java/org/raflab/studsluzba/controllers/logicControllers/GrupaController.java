@@ -14,7 +14,8 @@ import java.util.List;
 @RequestMapping("/api/grupa")
 @RequiredArgsConstructor
 public class GrupaController {
-
+    //PRIJAVA ISPITA
+    //OBNOVA PREDMETI KOJI SMEJU UOPSTE DA SE OBNOVE/UPISU
     private final GrupaService grupaService;
 
     @PostMapping("/save")
