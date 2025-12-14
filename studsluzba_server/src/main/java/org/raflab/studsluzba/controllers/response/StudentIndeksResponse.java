@@ -21,7 +21,7 @@ public class StudentIndeksResponse {
     private boolean aktivan;
     private LocalDate vaziOd;
     @Nullable
-    private StudentPodaci student;
+    private StudentPodaciResponse student;
     private StudijskiProgramResponse studijskiProgramResponse;
     private Integer ostvarenoEspb;
 }

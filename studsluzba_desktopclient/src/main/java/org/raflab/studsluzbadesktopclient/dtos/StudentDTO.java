@@ -4,27 +4,30 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class StudentDTO {
-    private int godinaUpisa;
-    private String pol;
-    private String ime;
-    private String prezime;
-    private String srednjeIme;
+    private long id;
+    private String ime;	  // not null
+    private String prezime;  // not null
+    private String srednjeIme;   // not null
     private String jmbg;
-    private Date datumRodjenja;
+    private LocalDate datumRodjenja;  // not null
     private String mestoRodjenja;
+    private String mestoPrebivalista;  // not null
     private String drzavaRodjenja;
-    private String drzavljanstvo;
-    private String nacionalnost;
-    private String adresa;
+    private String drzavljanstvo;   // not null
+    private String nacionalnost;   // samoizjasnjavanje, moze bilo sta
+    private Character pol;    // not null
+    private String adresa;  // not null
+    private String brojTelefonaMobilni;
+    private String brojTelefonaFiksni;
+    private String email;  // not null
+    private String brojLicneKarte;
+    private String licnuKartuIzdao;
     private String mestoStanovanja;
-    private String brojTelefona;
-    private String emailFakultet;
-    private String emailPrivatni;
-    private String licnaKarta;
+    private String adresaStanovanja;
 }

@@ -36,10 +36,10 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(path="/api/student")
 public class StudentController {
-	
+
 	@Autowired
 	StudentIndeksRepository studentIndeksRepository;
-	
+
 	@Autowired
 	StudentPodaciService studentPodaciService;
 
@@ -90,10 +90,10 @@ public class StudentController {
     	Optional<StudentIndeks> rez = studentIndeksRepository.findById(id);
     	if(rez.isEmpty()) return null;
     	else {
-    		StudentIndeks retVal = rez.get();    		
+    		StudentIndeks retVal = rez.get();
     		return entityMappers.fromStudentIndexToResponse(retVal);
     	}
-    	    	
+
     }
 
 	//Ispisi Student Indeks redove prema id-u iz tabele Student Podaci
@@ -110,7 +110,7 @@ public class StudentController {
     public StudentIndeksResponse fastSearch(@RequestParam String indeksShort) {
       String[] parsedData = ParseUtils.parseIndeks(indeksShort);
       if(parsedData!=null) {
-    	  StudentIndeks si = studentIndeksRepository.findStudentIndeks(parsedData[0], 2000+Integer.parseInt(parsedData[1]),Integer.parseInt(parsedData[2]));	
+    	  StudentIndeks si = studentIndeksRepository.findStudentIndeks(parsedData[0], 2000+Integer.parseInt(parsedData[1]),Integer.parseInt(parsedData[2]));
     	  return entityMappers.fromStudentIndexToResponse(si);
       }else return null;
     }
@@ -120,22 +120,22 @@ public class StudentController {
     public StudentIndeksResponse emailSearch(@RequestParam String studEmail) {
       String[] parsedData = ParseUtils.parseEmail(studEmail);
       if(parsedData!=null) {
-    	  StudentIndeks si = studentIndeksRepository.findStudentIndeks(parsedData[0], 2000+Integer.parseInt(parsedData[1]),Integer.parseInt(parsedData[2]));	
+    	  StudentIndeks si = studentIndeksRepository.findStudentIndeks(parsedData[0], 2000+Integer.parseInt(parsedData[1]),Integer.parseInt(parsedData[2]));
     	  return entityMappers.fromStudentIndexToResponse(si);
       }else return null;
     }
 
-    @GetMapping(path="/profile/{studentIndeksId}")  
+    @GetMapping(path="/profile/{studentIndeksId}")
     public StudentProfileDTO getStudentProfile(@PathVariable  Long studentIndeksId) {
     	return studentPodaciService.getStudentProfile(studentIndeksId);
     }
-    
-    @GetMapping(path="/webprofile/{studentIndeksId}")  
+
+    @GetMapping(path="/webprofile/{studentIndeksId}")
     public StudentWebProfileDTO getStudentWebProfile(@PathVariable  Long studentIndeksId) {
     	return studentPodaciService.getStudentWebProfile(studentIndeksId);
     }
-    
-    @GetMapping(path="/webprofile/email")  
+
+    @GetMapping(path="/webprofile/email")
     public StudentWebProfileDTO getStudentWebProfileForEmail(@RequestParam String studEmail) {
     	 String[] parsedData = ParseUtils.parseEmail(studEmail);
          if(parsedData!=null) {
@@ -222,5 +222,10 @@ public class StudentController {
 		studentPodaciService.deleteStudentPodaci(request);
 	}
 
+    // Vraća sve indekse za dati StudentPodaci ID
+    @GetMapping(path="/indeksi/all/{studentPodaciId}")
+    public List<StudentIndeksResponse> getAllIndeksiForStudentPodaci(@PathVariable Long studentPodaciId) {
+        return studentIndeksService.getAllIndeksiForStudentPodaci(studentPodaciId);
+    }
 
 }

@@ -4,11 +4,13 @@ import org.raflab.studsluzba.controllers.request.StudentIndeksRequest;
 import org.raflab.studsluzba.controllers.request.StudentPodaciRequest;
 import org.raflab.studsluzba.controllers.request.StudijskiTokAktivnostiRequest;
 import org.raflab.studsluzba.controllers.response.PredmetResponse;
+import org.raflab.studsluzba.controllers.response.StudentIndeksResponse;
 import org.raflab.studsluzba.controllers.response.StudentPodaciResponse;
 import org.raflab.studsluzba.model.entity.*;
 import org.raflab.studsluzba.repositories.*;
 import org.raflab.studsluzba.utils.converters.PredmetConverter;
 import org.raflab.studsluzba.utils.converters.StudentIndeksConverter;
+import org.raflab.studsluzba.utils.converters.StudentIndexAktivnostConverter;
 import org.raflab.studsluzba.utils.converters.StudentPodaciConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentIndeksService {
@@ -207,6 +210,13 @@ public class StudentIndeksService {
                     "Brisanje nije moguće – indeks je povezan sa drugim podacima (predmeti, aktivnosti, podaci o studentu).", e);
         }
     }
-
+    //novo
+    @Transactional(readOnly = true)
+    public List<StudentIndeksResponse> getAllIndeksiForStudentPodaci(Long studentPodaciId) {
+        List<StudentIndeks> indeksi = studentIndeksRepository.findStudentIndeksiForStudentPodaciId(studentPodaciId);
+        return indeksi.stream()
+                .map(StudentIndexAktivnostConverter::toStudentIndeksResponse)
+                .collect(Collectors.toList());
+    }
 
 }

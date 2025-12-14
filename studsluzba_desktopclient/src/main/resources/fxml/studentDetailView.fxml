@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<TabPane fx:id="tabPane" xmlns:fx="http://javafx.com/fxml"
+         fx:controller="org.raflab.studsluzbadesktopclient.controllers.StudentDetailController"
+         tabMinWidth="120" tabMaxWidth="300">
+
+    <tabs>
+        <Tab text="Licni Podaci">
+            <ScrollPane fitToWidth="true" prefWidth="700">
+                <VBox spacing="15">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+
+                    <!-- Osnovni podaci -->
+                    <TitledPane text="Osnovni podaci" expanded="true">
+                        <content>
+                            <GridPane fx:id="osnovniPodaciGrid" hgap="10" vgap="10" maxWidth="Infinity">
+                                <padding>
+                                    <Insets top="10" right="10" bottom="10" left="10"/>
+                                </padding>
+                                <columnConstraints>
+                                    <ColumnConstraints halignment="RIGHT" minWidth="150"/>
+                                    <ColumnConstraints hgrow="ALWAYS"/>
+                                </columnConstraints>
+                            </GridPane>
+                        </content>
+                    </TitledPane>
+
+                    <!-- Kontakt i adresa -->
+                    <TitledPane text="Kontakt i adresa" expanded="true">
+                        <content>
+                            <GridPane fx:id="kontaktPodaciGrid" hgap="10" vgap="10" maxWidth="Infinity">
+                                <padding>
+                                    <Insets top="10" right="10" bottom="10" left="10"/>
+                                </padding>
+                                <columnConstraints>
+                                    <ColumnConstraints halignment="RIGHT" minWidth="150"/>
+                                    <ColumnConstraints hgrow="ALWAYS"/>
+                                </columnConstraints>
+                            </GridPane>
+                        </content>
+                    </TitledPane>
+
+                    <!-- Dugme za čuvanje -->
+                    <HBox spacing="10" alignment="CENTER_RIGHT">
+                        <padding>
+                            <Insets top="5" right="0" bottom="0" left="0"/>
+                        </padding>
+                        <Button fx:id="sacuvajBtn" text="Sačuvaj promene" minWidth="150"/>
+                    </HBox>
+
+                </VBox>
+            </ScrollPane>
+        </Tab>
+
+        <Tab text="Ispiti">
+            <VBox spacing="10">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+            </VBox>
+        </Tab>
+
+        <Tab text="Aktivnosti">
+            <VBox spacing="10">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+            </VBox>
+        </Tab>
+
+        <Tab text="Uspeh">
+            <VBox spacing="10">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+            </VBox>
+        </Tab>
+    </tabs>
+</TabPane>

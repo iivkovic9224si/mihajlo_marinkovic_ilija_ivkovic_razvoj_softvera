@@ -4,6 +4,7 @@ import org.raflab.studsluzba.controllers.request.StudentIndeksRequest;
 import org.raflab.studsluzba.controllers.request.StudentPodaciRequest;
 import org.raflab.studsluzba.controllers.request.StudijskiTokAktivnostiRequest;
 import org.raflab.studsluzba.controllers.response.StudentIndeksResponse;
+import org.raflab.studsluzba.controllers.response.StudentPodaciResponse;
 import org.raflab.studsluzba.controllers.response.StudijskiTokAktivnostiResponse;
 import org.raflab.studsluzba.model.entity.StudentIndeks;
 import org.raflab.studsluzba.model.entity.StudentPodaci;
@@ -17,7 +18,10 @@ import java.util.List;
 import static org.raflab.studsluzba.utils.converters.StudProgramConverter.toStudijskiProgramResponse;
 
 public class StudentIndexAktivnostConverter {
+
     public static StudentPodaci toStudentPodaci(StudentPodaciRequest request) {
+        if (request == null) return null;
+
         StudentPodaci studentPodaci = new StudentPodaci();
         studentPodaci.setIme(request.getIme());
         studentPodaci.setPrezime(request.getPrezime());
@@ -54,6 +58,12 @@ public class StudentIndexAktivnostConverter {
     public static StudentIndeksResponse toStudentIndeksResponse(StudentIndeks si) {
         if (si == null) return null;
 
+        // Koristimo DTO za student da izbegnemo LazyInitializationException
+        StudentPodaciResponse studentResponse = null;
+        if (si.getStudent() != null) {
+            studentResponse = StudentPodaciConverter.toStudentPodaciResponse(si.getStudent());
+        }
+
         return new StudentIndeksResponse(
                 si.getId(),
                 si.getBroj(),
@@ -62,11 +72,13 @@ public class StudentIndexAktivnostConverter {
                 si.getNacinFinansiranja(),
                 si.isAktivan(),
                 si.getVaziOd(),
-                si.getStudent(),
+                studentResponse,
                 toStudijskiProgramResponse(si.getStudijskiProgram()),
                 si.getOstvarenoEspb()
         );
-    }public static StudentIndeksResponse toStudentIndeksResponseWithoutPodaci(StudentIndeks si) {
+    }
+
+    public static StudentIndeksResponse toStudentIndeksResponseWithoutPodaci(StudentIndeks si) {
         if (si == null) return null;
 
         return new StudentIndeksResponse(
@@ -82,6 +94,7 @@ public class StudentIndexAktivnostConverter {
                 si.getOstvarenoEspb()
         );
     }
+
     public static StudijskiTokAktivnosti toStudijskiTokAktivnosti(StudijskiTokAktivnostiRequest req, StudentIndeksRepository studentIndeksRepository) {
         if(req == null) return null;
 
@@ -111,7 +124,6 @@ public class StudentIndexAktivnostConverter {
         );
     }
 
-
     public static StudijskiTokAktivnostiResponse toStudijskiTokAktivnostiResponse(StudijskiTokAktivnosti si) {
         if(si == null) return null;
         return new StudijskiTokAktivnostiResponse(
@@ -129,13 +141,10 @@ public class StudentIndexAktivnostConverter {
 
         List<StudijskiTokAktivnosti> resList = new ArrayList<>();
         if (siList != null) {
-            siList.forEach(si -> {
-                resList.add(toStudijskiTokAktivnosti(si, studentIndeksRepository));
-            });
+            siList.forEach(si -> resList.add(toStudijskiTokAktivnosti(si, studentIndeksRepository)));
         }
         return resList;
     }
-
 
     public static List<StudijskiTokAktivnostiResponse> toStudijskiTokAktivnostiResponseList(List<StudijskiTokAktivnosti> siList) {
         List<StudijskiTokAktivnostiResponse> resList = new ArrayList<>();

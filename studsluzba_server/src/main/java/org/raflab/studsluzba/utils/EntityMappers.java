@@ -44,7 +44,7 @@ public class EntityMappers {
         response.setVaziOd(si.getVaziOd());
         response.setOstvarenoEspb(si.getOstvarenoEspb());
         //response.setStudijskiProgramResponse(si.getStudijskiProgram());
-        response.setStudent(si.getStudent());
+        response.setStudent(fromStudentPodaciToResponse(si.getStudent()));
         return response;
     }
 
