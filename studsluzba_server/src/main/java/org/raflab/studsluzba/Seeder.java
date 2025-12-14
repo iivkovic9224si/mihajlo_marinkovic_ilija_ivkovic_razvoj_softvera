@@ -853,7 +853,6 @@ public class Seeder implements CommandLineRunner {
                 }
 
             }
-            SlusaPredmet slusaPredmet = slusaPredmetRepository.findById(1L).orElseThrow();
             Predmet predmet = predmetRepository.findBySifra("PR001").orElseThrow();
 
 // Lista ocena koju želimo da podelimo po ispitima
