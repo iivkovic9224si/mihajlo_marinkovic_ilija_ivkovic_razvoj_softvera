@@ -604,20 +604,14 @@ public class Seeder implements CommandLineRunner {
 
                 studentPodaciRepository.save(student);
 
-                if(i == 0 || i == 5 || i == 12) {
-                    StudentIndeks noviIndeks = new StudentIndeks();
-                    noviIndeks.setBroj(i + 100);
-                    noviIndeks.setGodina(2022);
-                    noviIndeks.setStudent(student);
-                    studentIndeksRepository.save(noviIndeks);
-                }
+
             }
         }
 
 
 
+
         // ----------- StudentIndeks i StudijskiTokAktivnosti (ISPRAVLJENO) -----------
-        if(studentIndeksRepository.count() == 0) {
             List<StudentPodaci> studenti = studentPodaciRepository.findAll();
             List<StudijskiProgram> studProgrami = (List<StudijskiProgram>) studijskiProgramRepository.findAll();
             List<Predmet> predmeti = (List<Predmet>) predmetRepository.findAll();
@@ -672,7 +666,7 @@ public class Seeder implements CommandLineRunner {
                     studijskiTokAktivnostiRepository.save(upis);
                 }
             }
-        }if (studijskiTokAktivnostiRepository.count() > 0) {
+        if (studijskiTokAktivnostiRepository.count() > 0) {
             List<StudentIndeks> sviIndeksi = studentIndeksRepository.findAll();
             List<Predmet> sviPredmeti = (List<Predmet>) predmetRepository.findAll();
 
@@ -853,7 +847,6 @@ public class Seeder implements CommandLineRunner {
                 }
 
             }
-            SlusaPredmet slusaPredmet = slusaPredmetRepository.findById(1L).orElseThrow();
             Predmet predmet = predmetRepository.findBySifra("PR001").orElseThrow();
 
 // Lista ocena koju želimo da podelimo po ispitima
