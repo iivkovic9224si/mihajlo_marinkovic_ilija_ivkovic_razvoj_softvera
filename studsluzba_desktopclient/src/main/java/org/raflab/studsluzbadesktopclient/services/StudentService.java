@@ -5,8 +5,7 @@ import org.raflab.studsluzbadesktopclient.dtos.PageResultDTO;
 import org.raflab.studsluzbadesktopclient.dtos.StudentDTO;
 import org.raflab.studsluzbadesktopclient.dtos.StudentIndexDTO;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -27,15 +26,20 @@ public class StudentService {
 
     public int update(Long id, StudentDTO student) {
         try {
-            // PUT REST poziv na backend
-            restTemplate.put(
-                    createURL("updateujStudenta/" + id),
-                    student // ovo će biti serijalizovano u JSON
-            );
-            return 1; // uspešno
+            String url = createURL("updateujStudenta/" + id);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            HttpEntity<StudentDTO> entity = new HttpEntity<>(student, headers);
+
+            // možeš koristiti exchange za PUT
+            restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
+
+            return 1;
         } catch (Exception e) {
             e.printStackTrace();
-            return 0; // neuspešno
+            return 0;
         }
     }
 
@@ -89,20 +93,19 @@ public class StudentService {
                 .bodyToMono(new ParameterizedTypeReference<PageResultDTO<StudentDTO>>() {});
     }
     // ----------------- Dobavljanje svih indeksa studenta -----------------
-    public List<String> getIndeksiForStudent(Long studentId) {
-        // Poziv REST API-ja: /api/student/indeksi/all/{studentId}
+    public List<StudentIndexDTO> getIndeksiForStudent(Long studentId) {
         ResponseEntity<StudentIndexDTO[]> response = restTemplate.getForEntity(
                 baseUrl + "/student/indeksi/" + studentId,
                 StudentIndexDTO[].class
         );
 
-        if(response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-            // Mapiramo na format broj/godinaStudProgramOznaka
-            return List.of(response.getBody()).stream()
-                    .map(i -> i.getBroj() + "/" + i.getGodina() + i.getStudProgramOznaka().toUpperCase())
-                    .toList();
-        } else return List.of();
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            return List.of(response.getBody());
+        } else {
+            return List.of();
+        }
     }
+
 
 
     // ----------------- Snimanje studenta -----------------
