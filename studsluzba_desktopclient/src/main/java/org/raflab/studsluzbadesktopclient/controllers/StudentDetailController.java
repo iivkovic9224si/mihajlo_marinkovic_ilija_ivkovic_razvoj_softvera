@@ -17,7 +17,6 @@ import java.util.Map;
 
 @Data
 @Component
-@AllArgsConstructor
 public class StudentDetailController {
 
     @FXML
@@ -29,12 +28,15 @@ public class StudentDetailController {
     @FXML
     private Button sacuvajBtn;
 
+    @FXML
+    private StudentAktivnostiController studentAktivnostiController;
+
     private StudentDTO student;
 
     @Autowired
     private StudentService studentService;
 
-    private final Map<String, Node> polja = new HashMap<>();
+    private Map<String, Node> polja = new HashMap<>();
     private ToggleGroup polGroup;
 
     public StudentDetailController() {}
@@ -42,6 +44,10 @@ public class StudentDetailController {
     public void setStudent(StudentDTO student) {
         this.student = student;
         popuniLicnePodatke();
+
+        if (studentAktivnostiController != null) {
+            studentAktivnostiController.setStudent(student);
+        }
     }
 
     private void popuniLicnePodatke() {
@@ -68,14 +74,14 @@ public class StudentDetailController {
         // Pol
         polGroup = new ToggleGroup();
         RadioButton mButton = new RadioButton("M");
-        RadioButton zButton = new RadioButton("Z");
+        RadioButton fButton = new RadioButton("F");
         mButton.setToggleGroup(polGroup);
-        zButton.setToggleGroup(polGroup);
+        fButton.setToggleGroup(polGroup);
         if (student.getPol() != null) {
             if (student.getPol() == 'M') mButton.setSelected(true);
-            else if (student.getPol() == 'Z') zButton.setSelected(true);
+            else if (student.getPol() == 'F') fButton.setSelected(true);
         }
-        HBox polBox = new HBox(10, mButton, zButton);
+        HBox polBox = new HBox(10, mButton, fButton);
         addRowControl(osnovniPodaciGrid, "Pol:", polBox, row++);
 
         // Broj lične karte i ko je izdao
