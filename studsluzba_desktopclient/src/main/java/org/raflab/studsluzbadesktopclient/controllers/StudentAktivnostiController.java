@@ -5,10 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import lombok.Data;
-import org.raflab.studsluzbadesktopclient.dtos.DrziPredmetRequest;
-import org.raflab.studsluzbadesktopclient.dtos.DrziPredmetResponse;
-import org.raflab.studsluzbadesktopclient.dtos.StudentDTO;
-import org.raflab.studsluzbadesktopclient.dtos.StudijskiTokAktivnostiRequest;
+import org.raflab.studsluzbadesktopclient.dtos.*;
 import org.raflab.studsluzbadesktopclient.services.DrziPredmetService;
 import org.raflab.studsluzbadesktopclient.services.StudentTokAktivnostiService;
 import org.raflab.studsluzbadesktopclient.services.StudentTokAktivnostiService;
@@ -80,6 +77,15 @@ public class StudentAktivnostiController {
         godinaSpinner.getValueFactory().setValue(1);
         datumPicker.setValue(LocalDate.now());
 
+        // polja indeksa neka budu read-only
+        programTf.setEditable(false);
+        indeksGodinaTf.setEditable(false);
+        indeksBrojTf.setEditable(false);
+        // ako želiš i vizuelno da budu "siva", umesto editable možeš:
+        programTf.setDisable(true);
+        indeksGodinaTf.setDisable(true);
+        indeksBrojTf.setDisable(true);
+
         predmetiTable.setEditable(true);
         selectCol.setEditable(true);
 
@@ -88,7 +94,6 @@ public class StudentAktivnostiController {
         selectCol.setCellValueFactory(data -> data.getValue().selectedProperty());
         selectCol.setCellFactory(tc -> new CheckBoxTableCell<>());
 
-        // POVUCI PREDMETE SA SERVERA I POPUNI TABELU
         try {
             List<DrziPredmetResponse> predmeti = drziPredmetService.findAll();
             List<PredmetSelection> rows = predmeti.stream()
@@ -97,9 +102,12 @@ public class StudentAktivnostiController {
             predmetiTable.getItems().setAll(rows);
         } catch (Exception e) {
             e.printStackTrace();
-            new Alert(Alert.AlertType.ERROR, "Ne mogu da učitam listu predmeta: " + e.getMessage(), ButtonType.OK).showAndWait();
+            new Alert(Alert.AlertType.ERROR,
+                    "Ne mogu da učitam listu predmeta: " + e.getMessage(),
+                    ButtonType.OK).showAndWait();
         }
     }
+
 
     @FXML
     private void handleUpis() {
@@ -110,6 +118,17 @@ public class StudentAktivnostiController {
     private void handleObnova() {
         sacuvajAktivnost("OBNOVA");
     }
+
+    public void setIndeks(StudentIndexDTO indeks) {
+        if (indeks == null) return;
+
+        // popuni polja iz indeksa
+        programTf.setText(indeks.getStudProgramOznaka());
+        indeksGodinaTf.setText(String.valueOf(indeks.getGodina()));
+        indeksBrojTf.setText(String.valueOf(indeks.getBroj()));
+        indeksAktivanCb.setSelected(indeks.isAktivan());
+    }
+
 
     private void sacuvajAktivnost(String tip) {
         if (student == null) {

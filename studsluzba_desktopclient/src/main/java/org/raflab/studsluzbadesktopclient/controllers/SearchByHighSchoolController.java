@@ -15,6 +15,8 @@ import org.raflab.studsluzbadesktopclient.dtos.StudentDTO;
 import org.raflab.studsluzbadesktopclient.dtos.StudentIndexDTO;
 import org.raflab.studsluzbadesktopclient.services.StudentService;
 import org.springframework.stereotype.Component;
+import org.springframework.context.ApplicationContext;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,8 @@ public class SearchByHighSchoolController {
     private int currentPage = 0;
     private int pageSize = 15;
     private int totalPages = 1;
+    private final ApplicationContext applicationContext;
+
 
     @FXML
     private TextField srednjaSkolaSifraTf;
@@ -45,8 +49,9 @@ public class SearchByHighSchoolController {
 
     private List<StudentDTO> trenutniRezultati =  new ArrayList<>();
 
-    public SearchByHighSchoolController(StudentService studentService) {
+    public SearchByHighSchoolController(StudentService studentService, ApplicationContext applicationContext) {
         this.studentService = studentService;
+        this.applicationContext = applicationContext;
     }
 
     @FXML
@@ -148,14 +153,14 @@ public class SearchByHighSchoolController {
             try {
                 FXMLLoader loader =
                         new FXMLLoader(getClass().getResource("/fxml/studentDetailView.fxml"));
+                loader.setControllerFactory(applicationContext::getBean);
                 Parent root = loader.load();
 
-                StudentDetailController controller = loader.getController();
-                controller.setStudent(student);
+                int idx = indeksiZaPrikaz.indexOf(selected);
+                StudentIndexDTO izabraniIndeks = indeksDtoList.get(idx);
 
-                // ako ti zatreba konkretan indeks DTO:
-                // int idx = indeksiZaPrikaz.indexOf(selected);
-                // StudentIndexDTO izabraniIndeks = indeksDtoList.get(idx);
+                StudentDetailController controller = loader.getController();
+                controller.setStudentAndIndex(student, izabraniIndeks);
 
                 Stage stage = new Stage();
                 stage.setTitle("Detalji studenta");
@@ -166,6 +171,7 @@ public class SearchByHighSchoolController {
                 e.printStackTrace();
             }
         });
+
     }
 
 }

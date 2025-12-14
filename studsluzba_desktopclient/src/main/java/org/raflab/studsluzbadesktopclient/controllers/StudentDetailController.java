@@ -8,6 +8,7 @@ import javafx.scene.layout.HBox;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.raflab.studsluzbadesktopclient.dtos.StudentDTO;
+import org.raflab.studsluzbadesktopclient.dtos.StudentIndexDTO;
 import org.raflab.studsluzbadesktopclient.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -41,14 +42,16 @@ public class StudentDetailController {
 
     public StudentDetailController() {}
 
-    public void setStudent(StudentDTO student) {
+    public void setStudentAndIndex(StudentDTO student, StudentIndexDTO indeks) {
         this.student = student;
         popuniLicnePodatke();
 
         if (studentAktivnostiController != null) {
             studentAktivnostiController.setStudent(student);
+            studentAktivnostiController.setIndeks(indeks);
         }
     }
+
 
     private void popuniLicnePodatke() {
         if (student == null) return;

@@ -96,14 +96,16 @@ public class SearchStudentController {
         result.ifPresent(selected -> {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/studentDetailView.fxml"));
-                loader.setControllerFactory(clazz -> applicationContext.getBean(clazz));
+                loader.setControllerFactory(applicationContext::getBean);
                 Parent root = loader.load();
 
                 StudentDetailController controller = loader.getController();
-                controller.setStudent(student);
-                // ako ti bude trebalo, ovde možeš naći i izabrani indeks DTO:
-                // int idx = indeksiZaPrikaz.indexOf(selected);
-                // StudentIndexDTO izabraniIndeks = indeksDtoList.get(idx);
+
+                // pronađi izabrani indeks DTO po stringu iz dijaloga
+                int idx = indeksiZaPrikaz.indexOf(selected);
+                StudentIndexDTO izabraniIndeks = indeksDtoList.get(idx);
+
+                controller.setStudentAndIndex(student, izabraniIndeks);
 
                 Stage stage = new Stage();
                 stage.setTitle("Detalji studenta - " + student.getIme() + " " + student.getPrezime());
@@ -114,6 +116,7 @@ public class SearchStudentController {
                 e.printStackTrace();
             }
         });
+
     }
 
 
