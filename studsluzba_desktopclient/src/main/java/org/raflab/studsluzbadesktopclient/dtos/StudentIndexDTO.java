@@ -14,7 +14,7 @@ public class StudentIndexDTO {
     private String nacinFinansiranja;
     private boolean aktivan;
     private LocalDate vaziOd;
-    private StudentDTO studentDTO;
+    private StudentDTO student;
     private StudProgramDTO studProgramDTO;
     private Integer ostvarenoEspb;
 }

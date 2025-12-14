@@ -105,17 +105,22 @@ public class StudentController {
                 .collect(Collectors.toList());
     }
 
-	//Vraca Student Indeks preko stringa oblika si9224
-    @GetMapping(path="/fastsearch")  // salje se string oblika rn1923 - smer godina broj
+    @GetMapping(path="/fastsearch")
     public StudentIndeksResponse fastSearch(@RequestParam String indeksShort) {
-      String[] parsedData = ParseUtils.parseIndeks(indeksShort);
-      if(parsedData!=null) {
-    	  StudentIndeks si = studentIndeksRepository.findStudentIndeks(parsedData[0], 2000+Integer.parseInt(parsedData[1]),Integer.parseInt(parsedData[2]));
-    	  return entityMappers.fromStudentIndexToResponse(si);
-      }else return null;
+        String[] parsedData = ParseUtils.parseIndeks(indeksShort);
+        if (parsedData != null) {
+            String oznaka = parsedData[0];
+            int godina = 2000 + Integer.parseInt(parsedData[1]);
+            int broj = Integer.parseInt(parsedData[2]);
+
+            StudentIndeks si = studentIndeksRepository.findStudentIndeksWithStudent(oznaka, godina, broj);
+            return entityMappers.fromStudentIndexToResponse(si); // koristiš postojeći mapper
+        }
+        return null;
     }
 
-	//Vraca Student Indeks preko stringa oblika iivkovic9224si@raf.rs
+
+    //Vraca Student Indeks preko stringa oblika iivkovic9224si@raf.rs
     @GetMapping(path="/emailsearch")  // salje se email studenta
     public StudentIndeksResponse emailSearch(@RequestParam String studEmail) {
       String[] parsedData = ParseUtils.parseEmail(studEmail);
@@ -202,11 +207,18 @@ public class StudentController {
 		return studentIndeksService.getStudentPodaciByStudentIndeks(studProgramOznaka, godina, broj);
 	}
 
-	//selekcija svih upisanih studenata koji su završili određenu srednju školu
-	@GetMapping(path = "/srednjaskola")
-	public List<StudentPodaciResponse> nadjiStudenteBySrednjaSkola(@RequestParam String srednjaSkolaSifra){
-		return studentIndeksService.getStudentPodaciBySrednjaSkola(srednjaSkolaSifra);
-	}
+    @GetMapping(path = "/srednjaskola")
+    public Page<StudentPodaciResponse> nadjiStudenteBySrednjaSkola(
+            @RequestParam String srednjaSkolaSifra,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return studentIndeksService.getStudentPodaciBySrednjaSkola(
+                srednjaSkolaSifra,
+                page,
+                size
+        );
+    }
 
 	@PostMapping(path = "/obrisiStudentIndeks")
 	public void obrisiStudentIndeks(@RequestBody StudentIndeksRequest request) {
