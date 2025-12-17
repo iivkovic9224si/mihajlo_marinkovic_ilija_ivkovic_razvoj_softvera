@@ -2,7 +2,6 @@ package org.raflab.studsluzbadesktopclient;
 
 import java.io.IOException;
 import java.util.Objects;
-
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -10,7 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
 import org.springframework.stereotype.Component;
 
 @Component
@@ -55,13 +53,9 @@ public class MainView {
         }
     }
 
-    public void openModal(String fxml) {
-        openModal(fxml, "", 400, 300);
-    }
+    public void openModal(String fxml) { openModal(fxml, "", 400, 300); }
 
-    public void openModal(String fxml, String title) {
-        openModal(fxml, title, 400, 300);
-    }
+    public void openModal(String fxml, String title) { openModal(fxml, title, 400, 300); }
 
     public void openModal(String fxml, String title, int width, int height) {
         try {

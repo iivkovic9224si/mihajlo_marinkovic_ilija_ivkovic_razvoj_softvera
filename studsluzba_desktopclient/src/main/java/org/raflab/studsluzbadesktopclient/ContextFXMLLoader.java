@@ -1,7 +1,6 @@
 package org.raflab.studsluzbadesktopclient;
 
 import java.net.URL;
-
 import javafx.fxml.FXMLLoader;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
@@ -17,7 +16,7 @@ public class ContextFXMLLoader {
 
     public FXMLLoader getLoader(URL url) {
         FXMLLoader loader = new FXMLLoader(url);
-        loader.setControllerFactory(context::getBean);
+        loader.setControllerFactory(context::getBean); // Spring bean factory
         return loader;
     }
 

@@ -5,7 +5,6 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.raflab.studsluzbadesktopclient.dtos.StudentDTO;
 import org.raflab.studsluzbadesktopclient.dtos.StudentIndexDTO;
@@ -33,6 +32,7 @@ public class StudentDetailController {
     private StudentAktivnostiController studentAktivnostiController;
 
     private StudentDTO student;
+    private StudentIndexDTO studentIndex;   // ⬅⬅⬅ BITNO
 
     @Autowired
     private StudentService studentService;
@@ -42,16 +42,29 @@ public class StudentDetailController {
 
     public StudentDetailController() {}
 
-    public void setStudentAndIndex(StudentDTO student, StudentIndexDTO indeks) {
+    public void setStudentAndIndex(StudentDTO student, StudentIndexDTO index) {
+        this.student = student;
+        this.studentIndex = index;
+
+        popuniLicnePodatke();
+
+        if (studentAktivnostiController != null) {
+            studentAktivnostiController.setStudent(student);
+            studentAktivnostiController.setIzabraniIndeks(index);
+        }
+    }
+
+    // ostaje ako negde koristiš samo studenta
+    public void setStudent(StudentDTO student) {
         this.student = student;
         popuniLicnePodatke();
 
         if (studentAktivnostiController != null) {
             studentAktivnostiController.setStudent(student);
-            studentAktivnostiController.setIndeks(indeks);
         }
     }
 
+    // =========================================================
 
     private void popuniLicnePodatke() {
         if (student == null) return;
@@ -62,41 +75,37 @@ public class StudentDetailController {
 
         int row = 0;
 
-        // --- Osnovni podaci ---
         addRowEditable(osnovniPodaciGrid, "Ime:", student.getIme(), row++);
         addRowEditable(osnovniPodaciGrid, "Prezime:", student.getPrezime(), row++);
         addRowEditable(osnovniPodaciGrid, "Srednje ime:", student.getSrednjeIme(), row++);
         addRowEditable(osnovniPodaciGrid, "JMBG:", student.getJmbg(), row++);
 
-        DatePicker datumPicker = new DatePicker();
-        if (student.getDatumRodjenja() != null) datumPicker.setValue(student.getDatumRodjenja());
+        DatePicker datumPicker = new DatePicker(student.getDatumRodjenja());
         addRowControl(osnovniPodaciGrid, "Datum rođenja:", datumPicker, row++);
 
         addRowEditable(osnovniPodaciGrid, "Mesto rođenja:", student.getMestoRodjenja(), row++);
 
-        // Pol
         polGroup = new ToggleGroup();
-        RadioButton mButton = new RadioButton("M");
-        RadioButton fButton = new RadioButton("F");
-        mButton.setToggleGroup(polGroup);
-        fButton.setToggleGroup(polGroup);
-        if (student.getPol() != null) {
-            if (student.getPol() == 'M') mButton.setSelected(true);
-            else if (student.getPol() == 'F') fButton.setSelected(true);
-        }
-        HBox polBox = new HBox(10, mButton, fButton);
-        addRowControl(osnovniPodaciGrid, "Pol:", polBox, row++);
+        RadioButton m = new RadioButton("M");
+        RadioButton f = new RadioButton("F");
+        m.setToggleGroup(polGroup);
+        f.setToggleGroup(polGroup);
 
-        // Broj lične karte i ko je izdao
+        if (student.getPol() != null) {
+            if (student.getPol() == 'M') m.setSelected(true);
+            else f.setSelected(true);
+        }
+
+        addRowControl(osnovniPodaciGrid, "Pol:", new HBox(10, m, f), row++);
+
         addRowEditable(osnovniPodaciGrid, "Broj lične karte:", student.getBrojLicneKarte(), row++);
         addRowEditable(osnovniPodaciGrid, "Licnu kartu izdao:", student.getLicnuKartuIzdao(), row++);
 
-        // --- Kontakt i adresa ---
         row = 0;
         addRowEditable(kontaktPodaciGrid, "Mesto prebivališta:", student.getMestoPrebivalista(), row++);
         addRowEditable(kontaktPodaciGrid, "Adresa:", student.getAdresa(), row++);
-        addRowEditable(kontaktPodaciGrid, "Broj telefona (mobilni):", student.getBrojTelefonaMobilni(), row++);
-        addRowEditable(kontaktPodaciGrid, "Broj telefona (fiksni):", student.getBrojTelefonaFiksni(), row++);
+        addRowEditable(kontaktPodaciGrid, "Mobilni:", student.getBrojTelefonaMobilni(), row++);
+        addRowEditable(kontaktPodaciGrid, "Fiksni:", student.getBrojTelefonaFiksni(), row++);
         addRowEditable(kontaktPodaciGrid, "Email:", student.getEmail(), row++);
         addRowEditable(kontaktPodaciGrid, "Mesto stanovanja:", student.getMestoStanovanja(), row++);
         addRowEditable(kontaktPodaciGrid, "Adresa stanovanja:", student.getAdresaStanovanja(), row++);
@@ -131,27 +140,8 @@ public class StudentDetailController {
         RadioButton selected = (RadioButton) polGroup.getSelectedToggle();
         if (selected != null) student.setPol(selected.getText().charAt(0));
 
-        student.setMestoRodjenja(((TextField) polja.get("Mesto rođenja:")).getText());
-        student.setBrojLicneKarte(((TextField) polja.get("Broj lične karte:")).getText());
-        student.setLicnuKartuIzdao(((TextField) polja.get("Licnu kartu izdao:")).getText());
+        studentService.update(student.getId(), student);
 
-        student.setMestoPrebivalista(((TextField) polja.get("Mesto prebivališta:")).getText());
-        student.setAdresa(((TextField) polja.get("Adresa:")).getText());
-        student.setBrojTelefonaMobilni(((TextField) polja.get("Broj telefona (mobilni):")).getText());
-        student.setBrojTelefonaFiksni(((TextField) polja.get("Broj telefona (fiksni):")).getText());
-        student.setEmail(((TextField) polja.get("Email:")).getText());
-        student.setMestoStanovanja(((TextField) polja.get("Mesto stanovanja:")).getText());
-        student.setAdresaStanovanja(((TextField) polja.get("Adresa stanovanja:")).getText());
-
-        // Poziv REST API-ja za update
-        int result = studentService.update(student.getId(), student);
-        if(result == 1) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Student uspešno sačuvan!", ButtonType.OK);
-            alert.showAndWait();
-        } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Došlo je do greške prilikom čuvanja studenta.", ButtonType.OK);
-            alert.showAndWait();
-        }
+        new Alert(Alert.AlertType.INFORMATION, "Student sačuvan").showAndWait();
     }
-
 }
