@@ -8,13 +8,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import lombok.Data;
-import org.raflab.studsluzbadesktopclient.dtos.DrziPredmetRequest;
-import org.raflab.studsluzbadesktopclient.dtos.StudentDTO;
-import org.raflab.studsluzbadesktopclient.dtos.StudentIndexDTO;
-import org.raflab.studsluzbadesktopclient.dtos.StudijskiTokAktivnostiRequest;
 import org.raflab.studsluzbadesktopclient.services.StudentTokAktivnostiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import request.DrziPredmetRequest;
+import request.StudijskiTokAktivnostiRequest;
+import response.StudentIndeksResponse;
+import response.StudentPodaciResponse;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -47,8 +47,8 @@ public class StudentAktivnostiController {
     @FXML
     private TextArea napomenaTa;
 
-    private StudentDTO student;
-    private StudentIndexDTO izabraniIndeks;
+    private StudentPodaciResponse student;
+    private StudentIndeksResponse izabraniIndeks;
 
     @FXML
     private TableView<PredmetSelection> predmetiTable;
@@ -82,12 +82,12 @@ public class StudentAktivnostiController {
         selectCol.setCellFactory(tc -> new CheckBoxTableCell<>());
     }
 
-    public void setStudent(StudentDTO student) {
+    public void setStudent(StudentPodaciResponse student) {
         this.student = student;
         postaviIzabraniIndeksUI();
     }
 
-    public void setIzabraniIndeks(StudentIndexDTO izabraniIndeks) {
+    public void setIzabraniIndeks(StudentIndeksResponse izabraniIndeks) {
         this.izabraniIndeks = izabraniIndeks;
         postaviIzabraniIndeksUI();
     }
@@ -118,15 +118,17 @@ public class StudentAktivnostiController {
         }
 
         try {
-            StudijskiTokAktivnostiRequest req = new StudijskiTokAktivnostiRequest();
-            req.setTip(tip);
-            req.setGodina(godinaSpinner.getValue());
-            req.setDatum(datumPicker.getValue());
-            req.setNapomena(napomenaTa.getText());
-            req.setIndeksAktivan(indeksAktivanCb.isSelected());
-
-            // koristimo postojeći indeks
-            req.setId(izabraniIndeks.getId());
+            // Konstruktor zahteva sva polja
+            StudijskiTokAktivnostiRequest req = new StudijskiTokAktivnostiRequest(
+                    tip,
+                    godinaSpinner.getValue(),                       // godina aktivnosti
+                    datumPicker.getValue(),                         // datum aktivnosti
+                    napomenaTa.getText(),                           // napomena
+                    indeksAktivanCb.isSelected(),                  // indeksAktivan
+                    izabraniIndeks.getGodina(),                     // indeksGodina
+                    izabraniIndeks.getBroj(),                       // indeksBroj
+                    izabraniIndeks.getStudProgramOznaka()          // indeksStudProgramOznaka
+            );
 
             List<DrziPredmetRequest> izabraniPredmeti = predmetiTable.getItems().stream()
                     .filter(PredmetSelection::isSelected)
@@ -156,6 +158,7 @@ public class StudentAktivnostiController {
             new Alert(Alert.AlertType.ERROR, "Greška: " + ex.getMessage(), ButtonType.OK).showAndWait();
         }
     }
+
 
     @Data
     public static class PredmetSelection {

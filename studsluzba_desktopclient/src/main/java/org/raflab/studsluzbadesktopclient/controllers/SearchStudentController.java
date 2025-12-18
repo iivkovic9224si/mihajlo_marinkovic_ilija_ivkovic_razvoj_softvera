@@ -8,13 +8,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import org.raflab.studsluzbadesktopclient.dtos.PageResultDTO;
-import org.raflab.studsluzbadesktopclient.dtos.StudentDTO;
-import org.raflab.studsluzbadesktopclient.dtos.StudentIndexDTO;
 import org.raflab.studsluzbadesktopclient.services.StudentService;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import org.springframework.context.ApplicationContext;
+import response.StudentIndeksResponse;
+import response.StudentPodaciResponse;
 
 
 import java.util.List;
@@ -37,7 +36,7 @@ public class SearchStudentController {
     private TextField prezimeStudentaTf;
 
     @FXML
-    private TableView<StudentDTO> tabelaStudenti;
+    private TableView<StudentPodaciResponse> tabelaStudenti;
 
     @FXML
     private Button prethodnaBtn;
@@ -58,10 +57,10 @@ public class SearchStudentController {
         updateButtons();
 
         tabelaStudenti.setRowFactory(tv -> {
-            javafx.scene.control.TableRow<StudentDTO> row = new javafx.scene.control.TableRow<>();
+            javafx.scene.control.TableRow<StudentPodaciResponse> row = new javafx.scene.control.TableRow<>();
             row.setOnMouseClicked(event -> {
                 if(event.getClickCount() == 2 && !row.isEmpty()) {
-                    StudentDTO student = row.getItem();
+                    StudentPodaciResponse student = row.getItem();
                     showIndexSelection(student);  // poziv metode
                 }
             });
@@ -69,9 +68,9 @@ public class SearchStudentController {
         });
     }
 
-    private void showIndexSelection(StudentDTO student) {
+    private void showIndexSelection(StudentPodaciResponse student) {
         // 1. Povuci DTO-ove
-        List<StudentIndexDTO> indeksDtoList = studentService.getIndeksiForStudent(student.getId());
+        List<StudentIndeksResponse> indeksDtoList = studentService.getIndeksiForStudent(student.getId());
 
         if (indeksDtoList.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -103,7 +102,7 @@ public class SearchStudentController {
 
                 // pronađi izabrani indeks DTO po stringu iz dijaloga
                 int idx = indeksiZaPrikaz.indexOf(selected);
-                StudentIndexDTO izabraniIndeks = indeksDtoList.get(idx);
+                StudentIndeksResponse izabraniIndeks = indeksDtoList.get(idx);
 
                 controller.setStudentAndIndex(student, izabraniIndeks);
 

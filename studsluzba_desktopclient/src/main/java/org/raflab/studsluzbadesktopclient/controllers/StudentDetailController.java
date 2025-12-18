@@ -3,14 +3,16 @@ package org.raflab.studsluzbadesktopclient.controllers;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import request.StudentIndeksRequest;
+import response.StudentIndeksResponse;
+import response.StudentPodaciResponse;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import lombok.Data;
-import org.raflab.studsluzbadesktopclient.dtos.StudentDTO;
-import org.raflab.studsluzbadesktopclient.dtos.StudentIndexDTO;
 import org.raflab.studsluzbadesktopclient.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,8 +33,8 @@ public class StudentDetailController {
     @FXML
     private StudentAktivnostiController studentAktivnostiController;
 
-    private StudentDTO student;
-    private StudentIndexDTO studentIndex;   // ⬅⬅⬅ BITNO
+    private StudentPodaciResponse student;
+    private StudentIndeksResponse studentIndex;   // ⬅⬅⬅ BITNO
 
     @Autowired
     private StudentService studentService;
@@ -42,7 +44,7 @@ public class StudentDetailController {
 
     public StudentDetailController() {}
 
-    public void setStudentAndIndex(StudentDTO student, StudentIndexDTO index) {
+    public void setStudentAndIndex(StudentPodaciResponse student, StudentIndeksResponse index) {
         this.student = student;
         this.studentIndex = index;
 
@@ -55,7 +57,7 @@ public class StudentDetailController {
     }
 
     // ostaje ako negde koristiš samo studenta
-    public void setStudent(StudentDTO student) {
+    public void setStudent(StudentPodaciResponse student) {
         this.student = student;
         popuniLicnePodatke();
 

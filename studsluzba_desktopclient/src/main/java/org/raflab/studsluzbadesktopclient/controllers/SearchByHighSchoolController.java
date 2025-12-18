@@ -9,13 +9,12 @@ import javafx.scene.control.*;
 import javafx.scene.control.TableRow;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
-
-import org.raflab.studsluzbadesktopclient.dtos.PageResultDTO;
-import org.raflab.studsluzbadesktopclient.dtos.StudentDTO;
-import org.raflab.studsluzbadesktopclient.dtos.StudentIndexDTO;
 import org.raflab.studsluzbadesktopclient.services.StudentService;
 import org.springframework.stereotype.Component;
 import org.springframework.context.ApplicationContext;
+import pomocniDTO.PageResultDTO;
+import response.StudentIndeksResponse;
+import response.StudentPodaciResponse;
 
 
 import java.util.ArrayList;
@@ -36,7 +35,7 @@ public class SearchByHighSchoolController {
     private TextField srednjaSkolaSifraTf;
 
     @FXML
-    private TableView<StudentDTO> tabelaStudenti;
+    private TableView<StudentPodaciResponse> tabelaStudenti;
 
     @FXML
     private Button prethodnaBtn;
@@ -47,7 +46,7 @@ public class SearchByHighSchoolController {
     @FXML
     private Label pageInfoLabel;
 
-    private List<StudentDTO> trenutniRezultati =  new ArrayList<>();
+    private List<StudentPodaciResponse> trenutniRezultati =  new ArrayList<>();
 
     public SearchByHighSchoolController(StudentService studentService, ApplicationContext applicationContext) {
         this.studentService = studentService;
@@ -59,7 +58,7 @@ public class SearchByHighSchoolController {
         updateButtons();
 
         tabelaStudenti.setRowFactory(tv -> {
-            TableRow<StudentDTO> row = new TableRow<>();
+            TableRow<StudentPodaciResponse> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && !row.isEmpty()) {
                     showIndexSelection(row.getItem());
@@ -108,7 +107,7 @@ public class SearchByHighSchoolController {
                         error -> error.printStackTrace());
     }
 
-    private void updateTable(PageResultDTO<StudentDTO> result) {
+    private void updateTable(pomocniDTO.PageResultDTO<StudentPodaciResponse> result) {
         tabelaStudenti.setItems(
                 FXCollections.observableArrayList(result.getContent())
         );
@@ -124,9 +123,9 @@ public class SearchByHighSchoolController {
     }
 
 
-    private void showIndexSelection(StudentDTO student) {
+    private void showIndexSelection(StudentPodaciResponse student) {
         // 1. Povuci listu indeks DTO-ova
-        List<StudentIndexDTO> indeksDtoList = studentService.getIndeksiForStudent(student.getId());
+        List<StudentIndeksResponse> indeksDtoList = studentService.getIndeksiForStudent(student.getId());
 
         if (indeksDtoList.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -157,7 +156,7 @@ public class SearchByHighSchoolController {
                 Parent root = loader.load();
 
                 int idx = indeksiZaPrikaz.indexOf(selected);
-                StudentIndexDTO izabraniIndeks = indeksDtoList.get(idx);
+                StudentIndeksResponse izabraniIndeks = indeksDtoList.get(idx);
 
                 StudentDetailController controller = loader.getController();
                 controller.setStudentAndIndex(student, izabraniIndeks);

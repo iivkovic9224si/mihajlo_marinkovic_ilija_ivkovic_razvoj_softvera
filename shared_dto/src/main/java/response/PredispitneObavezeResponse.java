@@ -3,10 +3,9 @@ package response;
 import enums.VrstaPredispitneObaveze;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-
-import javax.validation.constraints.NotNull;
 
 @Data
 public class PredispitneObavezeResponse {

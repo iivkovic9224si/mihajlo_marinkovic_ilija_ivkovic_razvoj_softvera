@@ -1,16 +1,16 @@
 package org.raflab.studsluzbadesktopclient.services;
 
 import lombok.AllArgsConstructor;
-import org.raflab.studsluzbadesktopclient.dtos.PageResultDTO;
-import org.raflab.studsluzbadesktopclient.dtos.StudentDTO;
-import org.raflab.studsluzbadesktopclient.dtos.StudentIndexDTO;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.reactive.function.client.WebClient;
+import pomocniDTO.PageResultDTO;
 import reactor.core.publisher.Mono;
+import response.StudentIndeksResponse;
+import response.StudentPodaciResponse;
 
 import java.util.List;
 
@@ -24,14 +24,14 @@ public class StudentService {
 
     private final String STUDENT_URL_PATH = "/student";
 
-    public int update(Long id, StudentDTO student) {
+    public int update(Long id, StudentPodaciResponse student) {
         try {
             String url = createURL("updateujStudenta/" + id);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            HttpEntity<StudentDTO> entity = new HttpEntity<>(student, headers);
+            HttpEntity<StudentPodaciResponse> entity = new HttpEntity<>(student, headers);
 
             // možeš koristiti exchange za PUT
             restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
@@ -49,10 +49,10 @@ public class StudentService {
     }
 
     // ----------------- Dobavljanje svih studenata -----------------
-    public List<StudentDTO> sviStudenti() {
-        ResponseEntity<StudentDTO[]> response = restTemplate.getForEntity(
+    public List<StudentPodaciResponse> sviStudenti() {
+        ResponseEntity<StudentPodaciResponse[]> response = restTemplate.getForEntity(
                 createURL("all"),
-                StudentDTO[].class
+                StudentPodaciResponse[].class
         );
         if(response.getStatusCode().is2xxSuccessful() && response.getBody() != null)
             return List.of(response.getBody());
@@ -60,12 +60,12 @@ public class StudentService {
     }
 
     // ----------------- Pretraga studenta po imenu -----------------
-    public List<StudentDTO> searchStudent(String ime) {
+    public List<StudentPodaciResponse> searchStudent(String ime) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(createURL("imeandorprezime"))
                 .queryParam("ime", ime);
-        ResponseEntity<StudentDTO[]> response = restTemplate.getForEntity(
+        ResponseEntity<StudentPodaciResponse[]> response = restTemplate.getForEntity(
                 builder.toUriString(),
-                StudentDTO[].class
+                StudentPodaciResponse[].class
         );
         if(response.getStatusCode().is2xxSuccessful() && response.getBody() != null)
             return List.of(response.getBody());
@@ -73,7 +73,7 @@ public class StudentService {
     }
 
     // ----------------- Asinkrona pretraga po srednjoj školi sa paginacijom -----------------
-    public Mono<PageResultDTO<StudentDTO>> searchStudentsByHighSchoolPaged(
+    public Mono<PageResultDTO<StudentPodaciResponse>> searchStudentsByHighSchoolPaged(
             String srednjaSkolaSifra,
             int page,
             int size
@@ -87,12 +87,12 @@ public class StudentService {
                         .build()
                 )
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<PageResultDTO<StudentDTO>>() {});
+                .bodyToMono(new ParameterizedTypeReference<>() {});
     }
 
 
     // ----------------- Asinkrona pretraga studenta sa paginacijom -----------------
-    public Mono<PageResultDTO<StudentDTO>> searchStudentsPaged(String ime, String prezime, int page, int size) {
+    public Mono<PageResultDTO<StudentPodaciResponse>> searchStudentsPaged(String ime, String prezime, int page, int size) {
         return webClient.get()
                 .uri(uriBuilder -> {
                     uriBuilder.path(STUDENT_URL_PATH + "/imeandorprezime")
@@ -109,13 +109,13 @@ public class StudentService {
                     return uriBuilder.build();
                 })
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<PageResultDTO<StudentDTO>>() {});
+                .bodyToMono(new ParameterizedTypeReference<PageResultDTO<StudentPodaciResponse>>() {});
     }
     // ----------------- Dobavljanje svih indeksa studenta -----------------
-    public List<StudentIndexDTO> getIndeksiForStudent(Long studentId) {
-        ResponseEntity<StudentIndexDTO[]> response = restTemplate.getForEntity(
+    public List<StudentIndeksResponse> getIndeksiForStudent(Long studentId) {
+        ResponseEntity<StudentIndeksResponse[]> response = restTemplate.getForEntity(
                 baseUrl + "/student/indeksi/" + studentId,
-                StudentIndexDTO[].class
+                StudentIndeksResponse[].class
         );
 
         if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
@@ -127,7 +127,7 @@ public class StudentService {
 
     // ----------------- Asinkrona pretraga po broju indeksa -----------------
     // Asinhrona pretraga po broju indeksa
-    public Mono<StudentIndexDTO> searchStudentByIndex(String indeksShort) {
+    public Mono<StudentIndeksResponse> searchStudentByIndex(String indeksShort) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(STUDENT_URL_PATH + "/fastsearch")
@@ -135,7 +135,7 @@ public class StudentService {
                         .build()
                 )
                 .retrieve()
-                .bodyToMono(StudentIndexDTO.class);
+                .bodyToMono(StudentIndeksResponse.class);
     }
 
 
@@ -143,7 +143,7 @@ public class StudentService {
 
 
     // ----------------- Snimanje studenta -----------------
-    public Long saveStudent(StudentDTO studentDTO) {
+    public Long saveStudent(StudentPodaciResponse studentDTO) {
         ResponseEntity<Long> response = restTemplate.postForEntity(
                 createURL("add"),
                 new HttpEntity<>(studentDTO),

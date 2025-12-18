@@ -1,10 +1,10 @@
 package org.raflab.studsluzbadesktopclient.services;
 
-import org.raflab.studsluzbadesktopclient.dtos.StudijskiTokAktivnostiRequest;
-import org.raflab.studsluzbadesktopclient.dtos.DrziPredmetRequest;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import request.DrziPredmetRequest;
+import request.StudijskiTokAktivnostiRequest;
 
 import java.util.List;
 

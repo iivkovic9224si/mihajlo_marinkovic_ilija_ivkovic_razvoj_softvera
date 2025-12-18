@@ -13,9 +13,9 @@ import org.raflab.studsluzbadesktopclient.MainView;
 import org.raflab.studsluzbadesktopclient.coder.CoderFactory;
 import org.raflab.studsluzbadesktopclient.coder.CoderType;
 import org.raflab.studsluzbadesktopclient.coder.SimpleCode;
-import org.raflab.studsluzbadesktopclient.dtos.StudentDTO;
 import org.raflab.studsluzbadesktopclient.services.StudentService;
 import org.springframework.stereotype.Component;
+import response.StudentPodaciResponse;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -110,32 +110,37 @@ public class StudentController {
     }
 
     public void handleSaveStudent(ActionEvent event) {
-        StudentDTO studentDTO = new StudentDTO();
-
-        studentDTO.setIme(imeTf.getText());
-        studentDTO.setPrezime(prezimeTf.getText());
-        studentDTO.setSrednjeIme(srednjeImeTf.getText());
-        studentDTO.setPol(muski.isSelected() ? 'M' : 'Ž');
-        studentDTO.setAdresa(adresaTf.getText());
-        studentDTO.setJmbg(jmbgTf.getText());
-        studentDTO.setDatumRodjenja(
-                LocalDate.from(datumRodjenjaDp.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
-        studentDTO.setMestoRodjenja(mestoRodjenjaCb.getValue().getCode());
-        studentDTO.setEmail(emailFakultetTf.getText());
-        studentDTO.setBrojTelefonaMobilni(brojTelefonaTf.getText());
-        studentDTO.setMestoStanovanja(mestoStanovanjaCb.getValue().getCode());
-
-        studentDTO.setDrzavaRodjenja(drzavaRodjenjaCb.getValue().getCode());
-        studentDTO.setDrzavljanstvo(drzavljanstvoCb.getValue().getCode());
-        studentDTO.setNacionalnost(nacionalnostTf.getText());
+        StudentPodaciResponse studentDTO = new StudentPodaciResponse(
+                0L, // id, ako se radi novi unos može 0 ili null
+                imeTf.getText(),
+                prezimeTf.getText(),
+                srednjeImeTf.getText(),
+                jmbgTf.getText(),
+                datumRodjenjaDp.getValue(), // LocalDate
+                mestoRodjenjaCb.getValue() != null ? mestoRodjenjaCb.getValue().getCode() : null,
+                mestoStanovanjaCb.getValue() != null ? mestoStanovanjaCb.getValue().getCode() : null, // mestoPrebivalista
+                drzavaRodjenjaCb.getValue() != null ? drzavaRodjenjaCb.getValue().getCode() : null,
+                drzavljanstvoCb.getValue() != null ? drzavljanstvoCb.getValue().getCode() : null,
+                nacionalnostTf.getText(),
+                muski.isSelected() ? 'M' : 'Ž',
+                adresaTf.getText(),
+                brojTelefonaTf.getText(),
+                null, // brojTelefonaFiksni, ako nemaš
+                emailFakultetTf.getText(),
+                brojLicneKarteTf.getText(),
+                null, // licnuKartuIzdao, ako nemaš
+                mestoStanovanjaCb.getValue() != null ? mestoStanovanjaCb.getValue().getCode() : null,
+                adresaTf.getText() // adresaStanovanja, ako je ista kao adresa
+        );
 
         studentService.saveStudent(studentDTO);
         resetForm();
     }
 
+
     public void handleIzvestaj() throws JRException {
 
-        List<StudentDTO> studenti = studentService.sviStudenti();
+        List<StudentPodaciResponse> studenti = studentService.sviStudenti();
 
         JasperReport report = JasperCompileManager.compileReport(
                 MainView.class.getResourceAsStream("/reports/sviStudenti.jrxml")

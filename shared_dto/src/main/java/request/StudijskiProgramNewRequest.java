@@ -1,13 +1,13 @@
 package request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-
-import javax.validation.constraints.NotNull;
 
 @Data
 public class StudijskiProgramNewRequest {
 
-    @NotNull private String oznaka;
+    @NotNull
+    private String oznaka;
     @NotNull private String naziv;
     @NotNull private Integer godinaAkreditacije;
     private String zvanje;

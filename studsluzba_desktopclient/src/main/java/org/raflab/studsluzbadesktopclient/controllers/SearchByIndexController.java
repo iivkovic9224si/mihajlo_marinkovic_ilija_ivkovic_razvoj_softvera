@@ -9,10 +9,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import org.raflab.studsluzbadesktopclient.dtos.StudentDTO;
-import org.raflab.studsluzbadesktopclient.dtos.StudentIndexDTO;
+
 import org.raflab.studsluzbadesktopclient.services.StudentService;
 import org.springframework.stereotype.Component;
+import response.StudentPodaciResponse;
 
 @Component
 public class SearchByIndexController {
@@ -43,7 +43,7 @@ public class SearchByIndexController {
                 }))
                 .subscribe(studentIndexDTO -> Platform.runLater(() -> {
                     if (studentIndexDTO != null && studentIndexDTO.getStudent() != null) {
-                        StudentDTO student = studentIndexDTO.getStudent();
+                        StudentPodaciResponse student = studentIndexDTO.getStudent();
                         showStudentDetail(student); // otvara novi prozor
                     } else {
                         Alert alert = new Alert(Alert.AlertType.ERROR,
@@ -53,7 +53,7 @@ public class SearchByIndexController {
                 }));
     }
 
-    private void showStudentDetail(StudentDTO student) {
+    private void showStudentDetail(StudentPodaciResponse student) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/studentDetailView.fxml"));
             Parent root = loader.load();

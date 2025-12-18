@@ -12,7 +12,6 @@ module stud_sluzba_desktop_client {
     requires static lombok;
     requires jasperreports;
     exports org.raflab.studsluzbadesktopclient;
-    exports org.raflab.studsluzbadesktopclient.dtos;
     exports org.raflab.studsluzbadesktopclient.controllers;
     exports org.raflab.studsluzbadesktopclient.services;
     opens org.raflab.studsluzbadesktopclient.services to spring.core, javafx.fxml;
@@ -28,4 +27,5 @@ module stud_sluzba_desktop_client {
     requires spring.webflux;
 
     requires reactor.core;
+    requires shared.dto;
 }
