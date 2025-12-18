@@ -1,10 +1,10 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
-import org.raflab.studsluzba.controllers.request.VisokoSkolskaUstanovaRequest;
-import org.raflab.studsluzba.controllers.response.VisokoSkolskaUstanovaResponse;
 import org.raflab.studsluzba.services.VisokoSkolskaUstanovaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import request.VisokoSkolskaUstanovaRequest;
+import response.VisokoSkolskaUstanovaResponse;
 
 import java.util.List;
 

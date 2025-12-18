@@ -1,10 +1,10 @@
 package org.raflab.studsluzba.utils.converters;
 
-import org.raflab.studsluzba.controllers.request.UplataRequest;
-import org.raflab.studsluzba.controllers.response.UplataResponse;
 import org.raflab.studsluzba.model.entity.SkolskaGodina;
 import org.raflab.studsluzba.model.entity.StudentPodaci;
 import org.raflab.studsluzba.model.entity.Uplata;
+import request.UplataRequest;
+import response.UplataResponse;
 
 public class UplataConverter {
     public static Uplata toUplata(UplataRequest request, StudentPodaci studentPodaci, SkolskaGodina skolskaGodina, Double srednjiKurs) {

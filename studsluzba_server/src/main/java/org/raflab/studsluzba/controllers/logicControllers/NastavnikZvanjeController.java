@@ -1,10 +1,10 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.NastavnikZvanjeRequest;
-import org.raflab.studsluzba.controllers.response.NastavnikZvanjeResponse;
 import org.raflab.studsluzba.services.NastavnikZvanjeService;
 import org.springframework.web.bind.annotation.*;
+import request.NastavnikZvanjeRequest;
+import response.NastavnikZvanjeResponse;
 
 import javax.validation.Valid;
 import java.time.LocalDate;

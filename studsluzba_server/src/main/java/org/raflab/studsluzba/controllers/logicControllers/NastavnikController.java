@@ -1,13 +1,14 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.NastavnikRequest;
-import org.raflab.studsluzba.controllers.response.NastavnikResponse;
-import org.raflab.studsluzba.controllers.response.NastavnikZvanjeResponse;
-import org.raflab.studsluzba.controllers.response.VisokoSkolskaUstanovaResponse;
-import org.raflab.studsluzba.controllers.response.DrziPredmetResponse;
+
 import org.raflab.studsluzba.services.NastavnikService;
 import org.springframework.web.bind.annotation.*;
+import request.NastavnikRequest;
+import response.DrziPredmetResponse;
+import response.NastavnikResponse;
+import response.NastavnikZvanjeResponse;
+import response.VisokoSkolskaUstanovaResponse;
 
 import javax.validation.Valid;
 import java.util.List;

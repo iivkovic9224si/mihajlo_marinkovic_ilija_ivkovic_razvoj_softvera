@@ -1,10 +1,10 @@
 package org.raflab.studsluzba.utils.converters;
 
-import org.raflab.studsluzba.controllers.request.PolozenPredmetAwayRequest;
-import org.raflab.studsluzba.controllers.request.PolozenPredmetHereRequest;
-import org.raflab.studsluzba.controllers.response.PolozenPredmetResponse;
 import org.raflab.studsluzba.model.entity.PolozenPredmet;
 import org.raflab.studsluzba.model.entity.VisokoSkolskaUstanova;
+import request.PolozenPredmetAwayRequest;
+import request.PolozenPredmetHereRequest;
+import response.PolozenPredmetResponse;
 
 public class PolozenPredmetConverter {
 

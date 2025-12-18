@@ -1,11 +1,10 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
 import lombok.AllArgsConstructor;
-import org.raflab.studsluzba.controllers.request.SlusaPredmetRequest;
-import org.raflab.studsluzba.controllers.response.SlusaPredmetResponse;
-import org.raflab.studsluzba.model.entity.SlusaPredmet;
 import org.raflab.studsluzba.services.SlusaPredmetService;
 import org.springframework.web.bind.annotation.*;
+import request.SlusaPredmetRequest;
+import response.SlusaPredmetResponse;
 
 import java.util.List;
 import java.util.Optional;

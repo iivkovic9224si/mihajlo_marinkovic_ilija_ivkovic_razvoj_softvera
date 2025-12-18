@@ -6,13 +6,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.raflab.studsluzba.controllers.request.*;
 import org.raflab.studsluzba.controllers.response.OstvareniPredispitniResponse;
-import org.raflab.studsluzba.controllers.response.PredispitneObavezeResponse;
-import org.raflab.studsluzba.controllers.response.SlusaPredmetResponse;
 import org.raflab.studsluzba.model.entity.*;
 import org.raflab.studsluzba.repositories.*;
-import org.raflab.studsluzba.utils.converters.OstvareniPredispitniConverter;
 
 import java.util.Arrays;
 import java.util.List;

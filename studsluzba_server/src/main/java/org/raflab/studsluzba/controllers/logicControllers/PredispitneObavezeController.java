@@ -1,10 +1,10 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.PredispitneObavezeRequest;
-import org.raflab.studsluzba.controllers.response.PredispitneObavezeResponse;
 import org.raflab.studsluzba.services.PredispitneObavezeService;
 import org.springframework.web.bind.annotation.*;
+import request.PredispitneObavezeRequest;
+import response.PredispitneObavezeResponse;
 
 import javax.validation.Valid;
 import java.util.List;

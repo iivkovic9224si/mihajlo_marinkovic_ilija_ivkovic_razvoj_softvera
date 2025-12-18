@@ -1,12 +1,12 @@
 package org.raflab.studsluzba.services;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.SrednjaSkolaRequest;
-import org.raflab.studsluzba.controllers.response.SrednjaSkolaResponse;
 import org.raflab.studsluzba.model.entity.SrednjaSkola;
 import org.raflab.studsluzba.repositories.SrednjaSkolaRepository;
 import org.raflab.studsluzba.utils.converters.SrednjaSkolaConverter;
 import org.springframework.stereotype.Service;
+import request.SrednjaSkolaRequest;
+import response.SrednjaSkolaResponse;
 
 import java.util.List;
 

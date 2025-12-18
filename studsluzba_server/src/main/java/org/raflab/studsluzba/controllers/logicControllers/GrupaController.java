@@ -1,10 +1,10 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.GrupaRequest;
-import org.raflab.studsluzba.controllers.response.GrupaResponse;
 import org.raflab.studsluzba.services.GrupaService;
 import org.springframework.web.bind.annotation.*;
+import request.GrupaRequest;
+import response.GrupaResponse;
 
 import javax.validation.Valid;
 import java.util.List;

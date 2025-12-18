@@ -1,10 +1,10 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.IzlazakNaIspitRequest;
-import org.raflab.studsluzba.controllers.response.IzlazakNaIspitResponse;
 import org.raflab.studsluzba.services.IzlazakNaIspitService;
 import org.springframework.web.bind.annotation.*;
+import request.IzlazakNaIspitRequest;
+import response.IzlazakNaIspitResponse;
 
 import java.util.List;
 

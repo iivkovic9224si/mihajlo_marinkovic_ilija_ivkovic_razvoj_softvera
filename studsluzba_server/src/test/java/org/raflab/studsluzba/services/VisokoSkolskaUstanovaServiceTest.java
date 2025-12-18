@@ -9,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.raflab.studsluzba.controllers.request.VisokoSkolskaUstanovaRequest;
 import org.raflab.studsluzba.controllers.response.VisokoSkolskaUstanovaResponse;
 import org.raflab.studsluzba.model.entity.VisokoSkolskaUstanova;
-import org.raflab.studsluzba.model.entity.VrstaVisokoSkolskihUstanova;
 import org.raflab.studsluzba.repositories.VisokoSkolskaUstanovaRepository;
 
 import java.util.Arrays;

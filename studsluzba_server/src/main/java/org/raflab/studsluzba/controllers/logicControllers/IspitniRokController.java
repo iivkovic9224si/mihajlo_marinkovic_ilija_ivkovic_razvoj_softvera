@@ -1,10 +1,10 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.IspitniRokRequest;
-import org.raflab.studsluzba.controllers.response.IspitniRokResponse;
 import org.raflab.studsluzba.services.IspitniRokService;
 import org.springframework.web.bind.annotation.*;
+import request.IspitniRokRequest;
+import response.IspitniRokResponse;
 
 import javax.validation.Valid;
 import java.util.List;

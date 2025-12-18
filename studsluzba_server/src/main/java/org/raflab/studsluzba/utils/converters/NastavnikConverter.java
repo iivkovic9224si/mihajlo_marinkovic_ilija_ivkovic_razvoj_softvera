@@ -1,8 +1,8 @@
 package org.raflab.studsluzba.utils.converters;
 
-import org.raflab.studsluzba.controllers.request.NastavnikRequest;
-import org.raflab.studsluzba.controllers.response.NastavnikResponse;
 import org.raflab.studsluzba.model.entity.Nastavnik;
+import request.NastavnikRequest;
+import response.NastavnikResponse;
 
 import java.util.ArrayList;
 import java.util.List;

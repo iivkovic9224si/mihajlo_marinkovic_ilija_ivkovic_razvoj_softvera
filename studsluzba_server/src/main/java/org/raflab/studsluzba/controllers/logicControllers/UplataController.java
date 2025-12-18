@@ -1,7 +1,6 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
-import org.raflab.studsluzba.controllers.request.UplataRequest;
-import org.raflab.studsluzba.controllers.response.UplataResponse;
+
 import org.raflab.studsluzba.model.entity.StudentPodaci;
 import org.raflab.studsluzba.model.entity.Uplata;
 import org.raflab.studsluzba.repositories.StudentPodaciRepository;
@@ -10,10 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import request.UplataRequest;
+import response.UplataResponse;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin
 @RestController

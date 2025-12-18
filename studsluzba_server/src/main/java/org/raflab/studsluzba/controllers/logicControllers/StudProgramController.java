@@ -1,12 +1,12 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
-import org.raflab.studsluzba.controllers.request.StudijskiProgramNewRequest;
-import org.raflab.studsluzba.controllers.request.StudijskiProgramRequest;
-import org.raflab.studsluzba.controllers.response.PredmetResponse;
-import org.raflab.studsluzba.controllers.response.StudijskiProgramResponse;
 import org.raflab.studsluzba.services.StudProgramService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import request.StudijskiProgramNewRequest;
+import request.StudijskiProgramRequest;
+import response.PredmetResponse;
+import response.StudijskiProgramResponse;
 
 import javax.validation.Valid;
 import java.util.List;

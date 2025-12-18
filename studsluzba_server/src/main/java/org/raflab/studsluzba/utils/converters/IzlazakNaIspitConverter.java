@@ -1,9 +1,9 @@
 package org.raflab.studsluzba.utils.converters;
 
-import org.raflab.studsluzba.controllers.request.IzlazakNaIspitRequest;
-import org.raflab.studsluzba.controllers.response.IzlazakNaIspitResponse;
 import org.raflab.studsluzba.model.entity.IzlazakNaIspit;
 import org.raflab.studsluzba.model.entity.PrijavaIspita;
+import request.IzlazakNaIspitRequest;
+import response.IzlazakNaIspitResponse;
 
 public class IzlazakNaIspitConverter {
 

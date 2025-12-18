@@ -10,7 +10,6 @@ import org.raflab.studsluzba.controllers.request.PredispitneObavezeRequest;
 import org.raflab.studsluzba.controllers.response.PredispitneObavezeResponse;
 import org.raflab.studsluzba.model.entity.PredispitneObaveze;
 import org.raflab.studsluzba.model.entity.Predmet;
-import org.raflab.studsluzba.model.entity.VrstaPredispitneObaveze;
 import org.raflab.studsluzba.repositories.PredispitneObavezeRepository;
 import org.raflab.studsluzba.repositories.PredmetRepository;
 import org.raflab.studsluzba.services.PredispitneObavezeService;

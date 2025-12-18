@@ -1,9 +1,9 @@
 package org.raflab.studsluzba.utils.converters;
 
-import org.raflab.studsluzba.controllers.request.PredmetRequest;
-import org.raflab.studsluzba.controllers.response.PredmetResponse;
 import org.raflab.studsluzba.model.entity.Predmet;
 import org.raflab.studsluzba.model.entity.StudijskiProgram;
+import request.PredmetRequest;
+import response.PredmetResponse;
 
 import java.util.ArrayList;
 import java.util.List;

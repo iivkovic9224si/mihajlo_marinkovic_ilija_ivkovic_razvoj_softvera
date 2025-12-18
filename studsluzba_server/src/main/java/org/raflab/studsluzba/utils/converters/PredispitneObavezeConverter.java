@@ -1,11 +1,11 @@
 package org.raflab.studsluzba.utils.converters;
 
-import org.raflab.studsluzba.controllers.request.PredispitneObavezeRequest;
-import org.raflab.studsluzba.controllers.response.PredispitneObavezeResponse;
-import org.raflab.studsluzba.controllers.response.PredmetResponse;
 import org.raflab.studsluzba.model.entity.PredispitneObaveze;
 import org.raflab.studsluzba.model.entity.Predmet;
 import org.raflab.studsluzba.services.PredmetService;
+import request.PredispitneObavezeRequest;
+import response.PredispitneObavezeResponse;
+import response.PredmetResponse;
 
 import java.util.ArrayList;
 import java.util.List;

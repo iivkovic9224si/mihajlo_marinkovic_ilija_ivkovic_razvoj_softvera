@@ -1,15 +1,11 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
-import org.raflab.studsluzba.controllers.request.PrijavaIspitaRequest;
-import org.raflab.studsluzba.controllers.request.StudentIndeksRequest;
-import org.raflab.studsluzba.controllers.response.PrijavaIspitaResponse;
-import org.raflab.studsluzba.controllers.response.SlusaPredmetResponse;
-import org.raflab.studsluzba.controllers.response.StudentIndeksResponse;
-import org.raflab.studsluzba.model.entity.SlusaPredmet;
-import org.raflab.studsluzba.model.entity.StudentIndeks;
 import org.raflab.studsluzba.services.PrijavaIspitaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import request.PrijavaIspitaRequest;
+import response.PrijavaIspitaResponse;
+import response.StudentIndeksResponse;
 
 import javax.validation.Valid;
 import java.util.List;

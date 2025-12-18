@@ -1,8 +1,8 @@
 package org.raflab.studsluzba.utils.converters;
 
-import org.raflab.studsluzba.controllers.request.VisokoSkolskaUstanovaRequest;
-import org.raflab.studsluzba.controllers.response.VisokoSkolskaUstanovaResponse;
 import org.raflab.studsluzba.model.entity.VisokoSkolskaUstanova;
+import request.VisokoSkolskaUstanovaRequest;
+import response.VisokoSkolskaUstanovaResponse;
 
 import java.util.ArrayList;
 import java.util.List;

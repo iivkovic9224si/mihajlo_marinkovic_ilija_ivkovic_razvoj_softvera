@@ -1,5 +1,9 @@
 package org.raflab.studsluzba;
 
+import enums.VrstaPredispitneObaveze;
+import enums.VrstaSrednjeSkole;
+import enums.VrstaStudijskeAktivnosti;
+import enums.VrstaVisokoSkolskihUstanova;
 import org.raflab.studsluzba.model.entity.*;
 import org.raflab.studsluzba.repositories.*;
 import org.springframework.boot.CommandLineRunner;

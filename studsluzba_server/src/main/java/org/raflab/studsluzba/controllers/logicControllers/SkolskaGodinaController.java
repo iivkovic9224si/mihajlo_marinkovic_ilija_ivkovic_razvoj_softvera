@@ -1,11 +1,10 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
-import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.SkolskaGodinaRequest;
-import org.raflab.studsluzba.controllers.response.SkolskaGodinaResponse;
 import org.raflab.studsluzba.services.SkolskaGodinaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import request.SkolskaGodinaRequest;
+import response.SkolskaGodinaResponse;
 
 import javax.validation.Valid;
 import java.util.List;

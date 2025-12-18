@@ -1,12 +1,9 @@
 package org.raflab.studsluzba.utils.converters;
 
-import org.raflab.studsluzba.controllers.request.GrupaRequest;
-import org.raflab.studsluzba.controllers.response.GrupaResponse;
-import org.raflab.studsluzba.controllers.response.PredmetResponse;
-import org.raflab.studsluzba.controllers.response.StudijskiProgramResponse;
 import org.raflab.studsluzba.model.entity.Grupa;
-import org.raflab.studsluzba.model.entity.Predmet;
-import org.raflab.studsluzba.model.entity.StudijskiProgram;
+import response.GrupaResponse;
+import response.PredmetResponse;
+import response.StudijskiProgramResponse;
 
 import java.util.ArrayList;
 import java.util.List;

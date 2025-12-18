@@ -1,8 +1,5 @@
 package org.raflab.studsluzba.services;
 
-import lombok.AllArgsConstructor;
-import org.raflab.studsluzba.controllers.request.UplataRequest;
-import org.raflab.studsluzba.controllers.response.UplataResponse;
 import org.raflab.studsluzba.model.entity.SkolskaGodina;
 import org.raflab.studsluzba.model.entity.StudentPodaci;
 import org.raflab.studsluzba.model.entity.Uplata;
@@ -13,6 +10,8 @@ import org.raflab.studsluzba.utils.converters.UplataConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import request.UplataRequest;
+import response.UplataResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;

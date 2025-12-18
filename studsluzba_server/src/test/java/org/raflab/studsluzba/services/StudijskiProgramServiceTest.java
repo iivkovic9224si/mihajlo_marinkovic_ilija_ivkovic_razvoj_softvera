@@ -13,7 +13,6 @@ import org.raflab.studsluzba.controllers.response.StudijskiProgramResponse;
 import org.raflab.studsluzba.model.entity.Predmet;
 import org.raflab.studsluzba.model.entity.StudijskiProgram;
 import org.raflab.studsluzba.repositories.StudijskiProgramRepository;
-import org.raflab.studsluzba.utils.converters.PredmetConverter;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,7 +1,5 @@
 package org.raflab.studsluzba.services;
 
-import org.raflab.studsluzba.controllers.request.StudentPodaciRequest;
-import org.raflab.studsluzba.controllers.response.StudentPodaciResponse;
 import org.raflab.studsluzba.model.entity.StudentIndeks;
 import org.raflab.studsluzba.model.dtos.StudentProfileDTO;
 import org.raflab.studsluzba.model.dtos.StudentWebProfileDTO;
@@ -13,11 +11,11 @@ import org.raflab.studsluzba.utils.converters.StudentPodaciConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import request.StudentPodaciRequest;
+import response.StudentPodaciResponse;
 
 import java.util.List;
 import java.util.Optional;

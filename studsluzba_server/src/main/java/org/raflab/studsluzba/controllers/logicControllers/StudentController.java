@@ -1,32 +1,27 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
-import org.raflab.studsluzba.controllers.request.StudentIndeksRequest;
-import org.raflab.studsluzba.controllers.request.StudentPodaciRequest;
-import org.raflab.studsluzba.controllers.response.PredmetResponse;
-import org.raflab.studsluzba.controllers.response.StudentIndeksResponse;
-import org.raflab.studsluzba.controllers.response.StudentPodaciResponse;
 import org.raflab.studsluzba.model.entity.StudentIndeks;
-import org.raflab.studsluzba.model.entity.StudentPodaci;
-import org.raflab.studsluzba.model.entity.StudijskiProgram;
-import org.raflab.studsluzba.model.dtos.StudentDTO;
 import org.raflab.studsluzba.model.dtos.StudentProfileDTO;
 import org.raflab.studsluzba.model.dtos.StudentWebProfileDTO;
 import org.raflab.studsluzba.repositories.StudentIndeksRepository;
-import org.raflab.studsluzba.repositories.StudentPodaciRepository;
 import org.raflab.studsluzba.repositories.StudijskiProgramRepository;
 import org.raflab.studsluzba.services.StudentIndeksService;
 import org.raflab.studsluzba.services.StudentPodaciService;
 import org.raflab.studsluzba.utils.EntityMappers;
 import org.raflab.studsluzba.utils.ParseUtils;
-import org.raflab.studsluzba.utils.converters.StudentIndexAktivnostConverter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.data.domain.Pageable;
+import request.StudentIndeksRequest;
+import request.StudentPodaciRequest;
+import response.PredmetResponse;
+import response.StudentIndeksResponse;
+import response.StudentPodaciResponse;
+
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;

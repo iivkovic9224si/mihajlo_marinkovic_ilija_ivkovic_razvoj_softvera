@@ -1,16 +1,15 @@
 package org.raflab.studsluzba.services;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.PredispitneObavezeRequest;
-import org.raflab.studsluzba.controllers.response.PredispitneObavezeResponse;
 import org.raflab.studsluzba.model.entity.PredispitneObaveze;
 import org.raflab.studsluzba.model.entity.Predmet;
 import org.raflab.studsluzba.repositories.PredispitneObavezeRepository;
 import org.raflab.studsluzba.repositories.PredmetRepository;
 import org.raflab.studsluzba.utils.converters.PredispitneObavezeConverter;
 import org.springframework.stereotype.Service;
+import request.PredispitneObavezeRequest;
+import response.PredispitneObavezeResponse;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

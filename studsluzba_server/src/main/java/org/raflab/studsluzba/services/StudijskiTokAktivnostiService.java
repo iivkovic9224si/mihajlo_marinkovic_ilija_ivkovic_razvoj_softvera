@@ -1,9 +1,7 @@
 package org.raflab.studsluzba.services;
 
+import enums.VrstaStudijskeAktivnosti;
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.DrziPredmetRequest;
-import org.raflab.studsluzba.controllers.request.StudijskiTokAktivnostiRequest;
-import org.raflab.studsluzba.controllers.response.StudijskiTokAktivnostiResponse;
 import org.raflab.studsluzba.model.entity.*;
 import org.raflab.studsluzba.repositories.*;
 import org.raflab.studsluzba.utils.converters.SlusaPredmetConverter;
@@ -13,6 +11,9 @@ import org.raflab.studsluzba.model.entity.StudijskiTokAktivnosti;
 import org.raflab.studsluzba.repositories.StudijskiTokAktivnostiRepository;
 import org.raflab.studsluzba.utils.converters.StudentIndexAktivnostConverter;
 import org.springframework.stereotype.Service;
+import request.DrziPredmetRequest;
+import request.StudijskiTokAktivnostiRequest;
+import response.StudijskiTokAktivnostiResponse;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,11 +1,10 @@
 package org.raflab.studsluzba.utils.converters;
 
-import org.raflab.studsluzba.controllers.request.SlusaPredmetRequest;
-import org.raflab.studsluzba.controllers.response.SlusaPredmetResponse;
 import org.raflab.studsluzba.model.entity.DrziPredmet;
 import org.raflab.studsluzba.model.entity.SkolskaGodina;
 import org.raflab.studsluzba.model.entity.SlusaPredmet;
 import org.raflab.studsluzba.model.entity.StudentIndeks;
+import response.SlusaPredmetResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;

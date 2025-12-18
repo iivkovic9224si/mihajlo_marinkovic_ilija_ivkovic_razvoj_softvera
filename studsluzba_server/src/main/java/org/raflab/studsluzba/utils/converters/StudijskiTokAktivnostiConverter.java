@@ -1,9 +1,9 @@
 package org.raflab.studsluzba.utils.converters;
 
-import org.raflab.studsluzba.controllers.request.StudijskiTokAktivnostiRequest;
+import enums.VrstaStudijskeAktivnosti;
 import org.raflab.studsluzba.model.entity.StudentIndeks;
 import org.raflab.studsluzba.model.entity.StudijskiTokAktivnosti;
-import org.raflab.studsluzba.model.entity.VrstaStudijskeAktivnosti;
+import request.StudijskiTokAktivnostiRequest;
 
 public class StudijskiTokAktivnostiConverter {
     public static StudijskiTokAktivnosti toStrudijskiTokAktivnosti(StudijskiTokAktivnostiRequest studijskiTokAktivnostiRequest, StudentIndeks studentIndeks) {

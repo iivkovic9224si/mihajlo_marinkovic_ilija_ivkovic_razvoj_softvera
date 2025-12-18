@@ -1,12 +1,12 @@
 package org.raflab.studsluzba.utils.converters;
 
-import org.raflab.studsluzba.controllers.request.PrijavaIspitaRequest;
-import org.raflab.studsluzba.controllers.response.PrijavaIspitaResponse;
-import org.raflab.studsluzba.controllers.response.IspitResponse;
-import org.raflab.studsluzba.controllers.response.SlusaPredmetResponse;
 import org.raflab.studsluzba.model.entity.Ispit;
 import org.raflab.studsluzba.model.entity.PrijavaIspita;
 import org.raflab.studsluzba.model.entity.SlusaPredmet;
+import request.PrijavaIspitaRequest;
+import response.IspitResponse;
+import response.PrijavaIspitaResponse;
+import response.SlusaPredmetResponse;
 
 public class PrijavaIspitaConverter {
 

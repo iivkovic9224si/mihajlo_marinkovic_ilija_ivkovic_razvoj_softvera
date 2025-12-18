@@ -1,7 +1,5 @@
 package org.raflab.studsluzba.repositories;
 
-import org.raflab.studsluzba.controllers.response.IspitResponse;
-import org.raflab.studsluzba.model.entity.Ispit;
 import org.raflab.studsluzba.model.entity.IzlazakNaIspit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

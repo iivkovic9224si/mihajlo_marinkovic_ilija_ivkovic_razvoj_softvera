@@ -13,7 +13,6 @@ import org.raflab.studsluzba.model.entity.StudijskiProgram;
 import org.raflab.studsluzba.repositories.PolozenPredmetRepository;
 import org.raflab.studsluzba.repositories.PredmetRepository;
 import org.raflab.studsluzba.repositories.StudijskiProgramRepository;
-import org.raflab.studsluzba.services.PredmetService;
 
 import java.util.List;
 import java.util.Optional;

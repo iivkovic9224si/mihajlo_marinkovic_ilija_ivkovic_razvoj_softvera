@@ -1,13 +1,13 @@
 package org.raflab.studsluzba.services;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.SkolskaGodinaRequest;
-import org.raflab.studsluzba.controllers.response.SkolskaGodinaResponse;
 import org.raflab.studsluzba.model.entity.SkolskaGodina;
 import org.raflab.studsluzba.repositories.SkolskaGodinaRepository;
 import org.raflab.studsluzba.utils.converters.SkolskaGodinaConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import request.SkolskaGodinaRequest;
+import response.SkolskaGodinaResponse;
 
 import java.util.List;
 

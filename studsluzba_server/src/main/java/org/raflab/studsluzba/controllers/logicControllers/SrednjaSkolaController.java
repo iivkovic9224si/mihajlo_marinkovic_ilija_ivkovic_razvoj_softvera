@@ -1,10 +1,10 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
-import org.raflab.studsluzba.controllers.request.SrednjaSkolaRequest;
-import org.raflab.studsluzba.controllers.response.SrednjaSkolaResponse;
 import org.raflab.studsluzba.services.SrednjaSkolaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import request.SrednjaSkolaRequest;
+import response.SrednjaSkolaResponse;
 
 import java.util.List;
 

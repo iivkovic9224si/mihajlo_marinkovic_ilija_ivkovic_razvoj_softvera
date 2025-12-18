@@ -1,14 +1,13 @@
 package org.raflab.studsluzba.utils.converters;
 
-import org.raflab.studsluzba.controllers.request.IspitRequest;
-import org.raflab.studsluzba.controllers.request.IspitniRokRequest;
-import org.raflab.studsluzba.controllers.response.DrziPredmetResponse;
-import org.raflab.studsluzba.controllers.response.IspitResponse;
-import org.raflab.studsluzba.controllers.response.IspitniRokResponse;
-import org.raflab.studsluzba.controllers.response.RezultatiIspitaResponse;
 import org.raflab.studsluzba.model.entity.DrziPredmet;
 import org.raflab.studsluzba.model.entity.Ispit;
 import org.raflab.studsluzba.model.entity.IspitniRok;
+import request.IspitRequest;
+import response.DrziPredmetResponse;
+import response.IspitResponse;
+import response.IspitniRokResponse;
+import response.RezultatiIspitaResponse;
 
 public class IspitConverter {
     public static RezultatiIspitaResponse toRezultatiIspitaResponse(Object[] row){

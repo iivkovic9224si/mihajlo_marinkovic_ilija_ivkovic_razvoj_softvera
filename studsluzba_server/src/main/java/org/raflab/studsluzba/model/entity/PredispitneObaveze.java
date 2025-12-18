@@ -1,6 +1,7 @@
 package org.raflab.studsluzba.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import enums.VrstaPredispitneObaveze;
 import lombok.Data;
 
 import javax.persistence.*;

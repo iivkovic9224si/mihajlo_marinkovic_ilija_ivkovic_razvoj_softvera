@@ -5,7 +5,6 @@ package org.raflab.studsluzba.repositories;
 import java.util.List;
 import java.util.Optional;
 
-import org.raflab.studsluzba.controllers.response.StudentPodaciResponse;
 import org.raflab.studsluzba.model.entity.SrednjaSkola;
 import org.raflab.studsluzba.model.entity.StudentIndeks;
 import org.raflab.studsluzba.model.entity.StudentPodaci;

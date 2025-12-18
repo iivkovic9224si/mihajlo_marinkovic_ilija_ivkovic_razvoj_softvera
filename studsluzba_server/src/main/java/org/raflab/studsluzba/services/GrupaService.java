@@ -1,8 +1,6 @@
 package org.raflab.studsluzba.services;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.GrupaRequest;
-import org.raflab.studsluzba.controllers.response.GrupaResponse;
 import org.raflab.studsluzba.model.entity.Grupa;
 import org.raflab.studsluzba.model.entity.Predmet;
 import org.raflab.studsluzba.model.entity.StudijskiProgram;
@@ -11,6 +9,8 @@ import org.raflab.studsluzba.repositories.PredmetRepository;
 import org.raflab.studsluzba.repositories.StudijskiProgramRepository;
 import org.raflab.studsluzba.utils.converters.GrupaConverter;
 import org.springframework.stereotype.Service;
+import request.GrupaRequest;
+import response.GrupaResponse;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;

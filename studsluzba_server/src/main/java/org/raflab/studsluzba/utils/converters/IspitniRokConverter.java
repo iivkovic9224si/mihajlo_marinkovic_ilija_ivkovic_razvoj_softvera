@@ -1,9 +1,9 @@
 package org.raflab.studsluzba.utils.converters;
 
-import org.raflab.studsluzba.controllers.request.IspitniRokRequest;
-import org.raflab.studsluzba.controllers.response.IspitniRokResponse;
 import org.raflab.studsluzba.model.entity.IspitniRok;
 import org.raflab.studsluzba.model.entity.SkolskaGodina;
+import request.IspitniRokRequest;
+import response.IspitniRokResponse;
 
 import java.util.ArrayList;
 import java.util.List;

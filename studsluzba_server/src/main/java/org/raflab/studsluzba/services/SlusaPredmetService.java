@@ -1,8 +1,6 @@
 package org.raflab.studsluzba.services;
 
 import lombok.AllArgsConstructor;
-import org.raflab.studsluzba.controllers.request.SlusaPredmetRequest;
-import org.raflab.studsluzba.controllers.response.SlusaPredmetResponse;
 import org.raflab.studsluzba.model.entity.DrziPredmet;
 import org.raflab.studsluzba.model.entity.SkolskaGodina;
 import org.raflab.studsluzba.model.entity.SlusaPredmet;
@@ -14,6 +12,8 @@ import org.raflab.studsluzba.repositories.StudentIndeksRepository;
 import org.raflab.studsluzba.utils.converters.SlusaPredmetConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import request.SlusaPredmetRequest;
+import response.SlusaPredmetResponse;
 
 import javax.transaction.Transactional;
 import java.util.List;

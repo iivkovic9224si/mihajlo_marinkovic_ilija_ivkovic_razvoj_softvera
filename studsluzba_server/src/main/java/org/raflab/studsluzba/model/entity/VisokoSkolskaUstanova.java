@@ -1,5 +1,6 @@
 package org.raflab.studsluzba.model.entity;
 
+import enums.VrstaVisokoSkolskihUstanova;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.minidev.json.annotate.JsonIgnore;

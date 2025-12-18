@@ -14,8 +14,6 @@ import org.raflab.studsluzba.model.entity.Uplata;
 import org.raflab.studsluzba.repositories.SkolskaGodinaRepository;
 import org.raflab.studsluzba.repositories.StudentPodaciRepository;
 import org.raflab.studsluzba.repositories.UplataRepository;
-import org.raflab.studsluzba.utils.converters.UplataConverter;
-import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.util.Collections;

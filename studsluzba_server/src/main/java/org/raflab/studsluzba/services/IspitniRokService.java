@@ -1,8 +1,6 @@
 package org.raflab.studsluzba.services;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.IspitniRokRequest;
-import org.raflab.studsluzba.controllers.response.IspitniRokResponse;
 import org.raflab.studsluzba.model.entity.IspitniRok;
 import org.raflab.studsluzba.model.entity.SkolskaGodina;
 import org.raflab.studsluzba.repositories.IspitniRokRepository;
@@ -10,6 +8,8 @@ import org.raflab.studsluzba.repositories.SkolskaGodinaRepository;
 import org.raflab.studsluzba.utils.converters.IspitniRokConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import request.IspitniRokRequest;
+import response.IspitniRokResponse;
 
 import java.util.List;
 

@@ -1,8 +1,8 @@
 package org.raflab.studsluzba.utils.converters;
 
-import org.raflab.studsluzba.controllers.request.SrednjaSkolaRequest;
-import org.raflab.studsluzba.controllers.response.SrednjaSkolaResponse;
 import org.raflab.studsluzba.model.entity.SrednjaSkola;
+import request.SrednjaSkolaRequest;
+import response.SrednjaSkolaResponse;
 
 import java.util.ArrayList;
 import java.util.List;

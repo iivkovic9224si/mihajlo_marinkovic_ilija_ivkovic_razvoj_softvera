@@ -1,5 +1,6 @@
 package org.raflab.studsluzba.model.entity;
 
+import enums.VrstaStudijskeAktivnosti;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

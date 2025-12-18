@@ -1,16 +1,16 @@
 package org.raflab.studsluzba.utils.converters;
 
-import org.raflab.studsluzba.controllers.request.StudentIndeksRequest;
-import org.raflab.studsluzba.controllers.request.StudentPodaciRequest;
-import org.raflab.studsluzba.controllers.request.StudijskiTokAktivnostiRequest;
-import org.raflab.studsluzba.controllers.response.StudentIndeksResponse;
-import org.raflab.studsluzba.controllers.response.StudentPodaciResponse;
-import org.raflab.studsluzba.controllers.response.StudijskiTokAktivnostiResponse;
+import enums.VrstaStudijskeAktivnosti;
 import org.raflab.studsluzba.model.entity.StudentIndeks;
 import org.raflab.studsluzba.model.entity.StudentPodaci;
 import org.raflab.studsluzba.model.entity.StudijskiTokAktivnosti;
-import org.raflab.studsluzba.model.entity.VrstaStudijskeAktivnosti;
 import org.raflab.studsluzba.repositories.StudentIndeksRepository;
+import request.StudentIndeksRequest;
+import request.StudentPodaciRequest;
+import request.StudijskiTokAktivnostiRequest;
+import response.StudentIndeksResponse;
+import response.StudentPodaciResponse;
+import response.StudijskiTokAktivnostiResponse;
 
 import java.util.ArrayList;
 import java.util.List;

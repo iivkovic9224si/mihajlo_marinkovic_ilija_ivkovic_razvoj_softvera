@@ -1,7 +1,7 @@
 package org.raflab.studsluzba.repositories;
 
+import enums.VrstaSrednjeSkole;
 import org.raflab.studsluzba.model.entity.SrednjaSkola;
-import org.raflab.studsluzba.model.entity.VrstaSrednjeSkole;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

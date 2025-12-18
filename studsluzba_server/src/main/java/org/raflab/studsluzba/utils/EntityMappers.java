@@ -1,11 +1,11 @@
 package org.raflab.studsluzba.utils;
 
-import org.raflab.studsluzba.controllers.response.StudentIndeksResponse;
-import org.raflab.studsluzba.controllers.response.StudentPodaciResponse;
 import org.raflab.studsluzba.model.entity.StudentIndeks;
 import org.raflab.studsluzba.model.entity.StudentPodaci;
 import org.raflab.studsluzba.model.dtos.StudentDTO;
 import org.springframework.stereotype.Component;
+import response.StudentIndeksResponse;
+import response.StudentPodaciResponse;
 
 @Component
 public class EntityMappers {

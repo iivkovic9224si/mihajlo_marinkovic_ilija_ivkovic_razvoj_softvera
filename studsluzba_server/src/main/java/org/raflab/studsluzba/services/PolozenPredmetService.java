@@ -1,9 +1,6 @@
 package org.raflab.studsluzba.services;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.PolozenPredmetAwayRequest;
-import org.raflab.studsluzba.controllers.request.PolozenPredmetHereRequest;
-import org.raflab.studsluzba.controllers.response.PolozenPredmetResponse;
 import org.raflab.studsluzba.model.entity.PolozenPredmet;
 import org.raflab.studsluzba.model.entity.StudentIndeks;
 import org.raflab.studsluzba.model.entity.Predmet;
@@ -14,9 +11,11 @@ import org.raflab.studsluzba.repositories.VisokoSkolskaUstanovaRepository;
 import org.raflab.studsluzba.repositories.PredmetRepository;
 import org.raflab.studsluzba.utils.converters.PolozenPredmetConverter;
 import org.springframework.stereotype.Service;
+import request.PolozenPredmetAwayRequest;
+import request.PolozenPredmetHereRequest;
+import response.PolozenPredmetResponse;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

@@ -2,9 +2,7 @@ package org.raflab.studsluzba.repositories;
 
 
 import java.util.List;
-import java.util.Optional;
 
-import org.raflab.studsluzba.controllers.response.PredmetResponse;
 import org.raflab.studsluzba.model.entity.Predmet;
 import org.raflab.studsluzba.model.entity.StudijskiProgram;
 import org.springframework.data.jpa.repository.Query;

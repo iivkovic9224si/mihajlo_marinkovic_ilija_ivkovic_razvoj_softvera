@@ -1,11 +1,6 @@
 package org.raflab.studsluzba.services;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.NastavnikRequest;
-import org.raflab.studsluzba.controllers.response.DrziPredmetResponse;
-import org.raflab.studsluzba.controllers.response.NastavnikResponse;
-import org.raflab.studsluzba.controllers.response.NastavnikZvanjeResponse;
-import org.raflab.studsluzba.controllers.response.VisokoSkolskaUstanovaResponse;
 import org.raflab.studsluzba.model.entity.DrziPredmet;
 import org.raflab.studsluzba.model.entity.Nastavnik;
 import org.raflab.studsluzba.model.entity.NastavnikZvanje;
@@ -19,6 +14,11 @@ import org.raflab.studsluzba.utils.converters.NastavnikConverter;
 import org.raflab.studsluzba.utils.converters.VisokoSkolskaUstanovaConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import request.NastavnikRequest;
+import response.DrziPredmetResponse;
+import response.NastavnikResponse;
+import response.NastavnikZvanjeResponse;
+import response.VisokoSkolskaUstanovaResponse;
 
 import java.util.ArrayList;
 import java.util.List;

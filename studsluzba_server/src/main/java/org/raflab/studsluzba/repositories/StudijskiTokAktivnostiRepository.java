@@ -1,8 +1,8 @@
 package org.raflab.studsluzba.repositories;
 
+import enums.VrstaStudijskeAktivnosti;
 import org.raflab.studsluzba.model.entity.StudentIndeks;
 import org.raflab.studsluzba.model.entity.StudijskiTokAktivnosti;
-import org.raflab.studsluzba.model.entity.VrstaStudijskeAktivnosti;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

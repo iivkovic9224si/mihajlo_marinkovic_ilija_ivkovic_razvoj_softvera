@@ -1,11 +1,11 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.PolozenPredmetAwayRequest;
-import org.raflab.studsluzba.controllers.request.PolozenPredmetHereRequest;
-import org.raflab.studsluzba.controllers.response.PolozenPredmetResponse;
 import org.raflab.studsluzba.services.PolozenPredmetService;
 import org.springframework.web.bind.annotation.*;
+import request.PolozenPredmetAwayRequest;
+import request.PolozenPredmetHereRequest;
+import response.PolozenPredmetResponse;
 
 import java.util.List;
 

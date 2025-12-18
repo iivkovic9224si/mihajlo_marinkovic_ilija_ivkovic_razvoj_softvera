@@ -1,9 +1,6 @@
 package org.raflab.studsluzba.services;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.PrijavaIspitaRequest;
-import org.raflab.studsluzba.controllers.response.PrijavaIspitaResponse;
-import org.raflab.studsluzba.controllers.response.StudentIndeksResponse;
 import org.raflab.studsluzba.model.entity.Ispit;
 import org.raflab.studsluzba.model.entity.PrijavaIspita;
 import org.raflab.studsluzba.model.entity.SlusaPredmet;
@@ -15,6 +12,9 @@ import org.raflab.studsluzba.repositories.StudentIndeksRepository;
 import org.raflab.studsluzba.utils.converters.PrijavaIspitaConverter;
 import org.raflab.studsluzba.utils.converters.StudentIndexAktivnostConverter;
 import org.springframework.stereotype.Service;
+import request.PrijavaIspitaRequest;
+import response.PrijavaIspitaResponse;
+import response.StudentIndeksResponse;
 
 import java.util.ArrayList;
 import java.util.List;

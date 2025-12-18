@@ -1,13 +1,11 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.IspitRequest;
-import org.raflab.studsluzba.controllers.response.IspitResponse;
-import org.raflab.studsluzba.controllers.response.RezultatiIspitaResponse;
-import org.raflab.studsluzba.model.entity.Ispit;
 import org.raflab.studsluzba.services.IspitService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import request.IspitRequest;
+import response.IspitResponse;
+import response.RezultatiIspitaResponse;
 
 import java.util.List;
 import java.util.Optional;

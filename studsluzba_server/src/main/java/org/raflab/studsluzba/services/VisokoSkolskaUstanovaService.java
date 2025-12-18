@@ -1,13 +1,13 @@
 package org.raflab.studsluzba.services;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.VisokoSkolskaUstanovaRequest;
-import org.raflab.studsluzba.controllers.response.VisokoSkolskaUstanovaResponse;
 import org.raflab.studsluzba.model.entity.VisokoSkolskaUstanova;
 import org.raflab.studsluzba.repositories.VisokoSkolskaUstanovaRepository;
 import org.raflab.studsluzba.utils.converters.VisokoSkolskaUstanovaConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import request.VisokoSkolskaUstanovaRequest;
+import response.VisokoSkolskaUstanovaResponse;
 
 import java.util.List;
 

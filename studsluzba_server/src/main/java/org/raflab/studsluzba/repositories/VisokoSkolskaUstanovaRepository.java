@@ -1,7 +1,7 @@
 package org.raflab.studsluzba.repositories;
 
+import enums.VrstaVisokoSkolskihUstanova;
 import org.raflab.studsluzba.model.entity.VisokoSkolskaUstanova;
-import org.raflab.studsluzba.model.entity.VrstaVisokoSkolskihUstanova;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

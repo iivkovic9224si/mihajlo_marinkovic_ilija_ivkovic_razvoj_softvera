@@ -1,10 +1,6 @@
 package org.raflab.studsluzba.services;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.IspitRequest;
-import org.raflab.studsluzba.controllers.request.IspitniRokRequest;
-import org.raflab.studsluzba.controllers.response.IspitResponse;
-import org.raflab.studsluzba.controllers.response.RezultatiIspitaResponse;
 import org.raflab.studsluzba.model.entity.DrziPredmet;
 import org.raflab.studsluzba.model.entity.Ispit;
 import org.raflab.studsluzba.model.entity.IspitniRok;
@@ -16,6 +12,9 @@ import org.raflab.studsluzba.repositories.SkolskaGodinaRepository;
 import org.raflab.studsluzba.repositories.IzlazakNaIspitRepository;
 import org.raflab.studsluzba.utils.converters.IspitConverter;
 import org.springframework.stereotype.Service;
+import request.IspitRequest;
+import response.IspitResponse;
+import response.RezultatiIspitaResponse;
 
 import java.util.ArrayList;
 import java.util.List;

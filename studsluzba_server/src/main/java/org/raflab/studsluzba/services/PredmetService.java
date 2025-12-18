@@ -1,8 +1,6 @@
 package org.raflab.studsluzba.services;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.PredmetRequest;
-import org.raflab.studsluzba.controllers.response.PredmetResponse;
 import org.raflab.studsluzba.model.entity.Predmet;
 import org.raflab.studsluzba.model.entity.StudijskiProgram;
 import org.raflab.studsluzba.repositories.PolozenPredmetRepository;
@@ -10,6 +8,8 @@ import org.raflab.studsluzba.repositories.PredmetRepository;
 import org.raflab.studsluzba.repositories.StudijskiProgramRepository;
 import org.raflab.studsluzba.utils.converters.PredmetConverter;
 import org.springframework.stereotype.Service;
+import request.PredmetRequest;
+import response.PredmetResponse;
 
 import java.util.List;
 

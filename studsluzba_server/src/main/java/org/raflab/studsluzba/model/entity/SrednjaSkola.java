@@ -1,5 +1,6 @@
 package org.raflab.studsluzba.model.entity;
 
+import enums.VrstaSrednjeSkole;
 import lombok.Data;
 import net.minidev.json.annotate.JsonIgnore;
 

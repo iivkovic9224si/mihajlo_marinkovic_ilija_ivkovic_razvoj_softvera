@@ -1,12 +1,12 @@
 package org.raflab.studsluzba.services;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.OstvareniPredispitniRequest;
-import org.raflab.studsluzba.controllers.response.OstvareniPredispitniResponse;
 import org.raflab.studsluzba.model.entity.*;
 import org.raflab.studsluzba.repositories.*;
 import org.raflab.studsluzba.utils.converters.OstvareniPredispitniConverter;
 import org.springframework.stereotype.Service;
+import request.OstvareniPredispitniRequest;
+import response.OstvareniPredispitniResponse;
 
 import java.util.List;
 import java.util.Optional;

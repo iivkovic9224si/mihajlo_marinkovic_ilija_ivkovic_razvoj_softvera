@@ -1,8 +1,8 @@
     package org.raflab.studsluzba.utils.converters;
 
-    import org.raflab.studsluzba.controllers.request.SkolskaGodinaRequest;
-    import org.raflab.studsluzba.controllers.response.SkolskaGodinaResponse;
     import org.raflab.studsluzba.model.entity.SkolskaGodina;
+    import request.SkolskaGodinaRequest;
+    import response.SkolskaGodinaResponse;
 
     import java.util.ArrayList;
     import java.util.List;

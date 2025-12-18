@@ -1,18 +1,17 @@
 package org.raflab.studsluzba.utils.converters;
 
-import org.raflab.studsluzba.controllers.request.OstvareniPredispitniRequest;
-import org.raflab.studsluzba.controllers.response.OstvareniPredispitniResponse;
-import org.raflab.studsluzba.controllers.response.PredispitneObavezeResponse;
-import org.raflab.studsluzba.controllers.response.SlusaPredmetResponse;
 import org.raflab.studsluzba.model.entity.OstvareniPredispitni;
 import org.raflab.studsluzba.model.entity.PredispitneObaveze;
 import org.raflab.studsluzba.model.entity.SlusaPredmet;
 import org.raflab.studsluzba.services.PredispitneObavezeService;
 import org.raflab.studsluzba.services.SlusaPredmetService;
+import request.OstvareniPredispitniRequest;
+import response.OstvareniPredispitniResponse;
+import response.PredispitneObavezeResponse;
+import response.SlusaPredmetResponse;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class OstvareniPredispitniConverter {
 

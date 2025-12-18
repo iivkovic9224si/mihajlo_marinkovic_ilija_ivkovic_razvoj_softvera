@@ -1,8 +1,6 @@
 package org.raflab.studsluzba.services;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.IzlazakNaIspitRequest;
-import org.raflab.studsluzba.controllers.response.IzlazakNaIspitResponse;
 import org.raflab.studsluzba.model.entity.IzlazakNaIspit;
 import org.raflab.studsluzba.model.entity.PolozenPredmet;
 import org.raflab.studsluzba.model.entity.PrijavaIspita;
@@ -11,6 +9,8 @@ import org.raflab.studsluzba.repositories.PolozenPredmetRepository;
 import org.raflab.studsluzba.repositories.PrijavaIspitaRepository;
 import org.raflab.studsluzba.utils.converters.IzlazakNaIspitConverter;
 import org.springframework.stereotype.Service;
+import request.IzlazakNaIspitRequest;
+import response.IzlazakNaIspitResponse;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

@@ -1,15 +1,14 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.DrziPredmetRequest;
-import org.raflab.studsluzba.controllers.request.StudijskiTokAktivnostiRequest;
-import org.raflab.studsluzba.controllers.request.UpisStudentaRequest;
-import org.raflab.studsluzba.controllers.response.StudijskiTokAktivnostiResponse;
 import org.raflab.studsluzba.model.entity.StudijskiTokAktivnosti;
 import org.raflab.studsluzba.repositories.StudentIndeksRepository;
 import org.raflab.studsluzba.services.StudijskiTokAktivnostiService;
 import org.raflab.studsluzba.utils.converters.StudentIndexAktivnostConverter;
 import org.springframework.web.bind.annotation.*;
+import request.StudijskiTokAktivnostiRequest;
+import request.UpisStudentaRequest;
+import response.StudijskiTokAktivnostiResponse;
 
 import javax.transaction.Transactional;
 import java.util.List;

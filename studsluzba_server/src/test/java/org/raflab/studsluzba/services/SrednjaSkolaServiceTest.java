@@ -9,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.raflab.studsluzba.controllers.request.SrednjaSkolaRequest;
 import org.raflab.studsluzba.controllers.response.SrednjaSkolaResponse;
 import org.raflab.studsluzba.model.entity.SrednjaSkola;
-import org.raflab.studsluzba.model.entity.VrstaSrednjeSkole;
 import org.raflab.studsluzba.repositories.SrednjaSkolaRepository;
 
 import java.util.Arrays;

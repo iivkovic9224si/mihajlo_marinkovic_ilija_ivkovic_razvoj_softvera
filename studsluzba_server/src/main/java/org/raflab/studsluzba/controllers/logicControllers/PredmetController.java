@@ -1,10 +1,10 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
-import org.raflab.studsluzba.controllers.request.PredmetRequest;
-import org.raflab.studsluzba.controllers.response.PredmetResponse;
 import org.raflab.studsluzba.services.PredmetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import request.PredmetRequest;
+import response.PredmetResponse;
 
 import javax.validation.Valid;
 import java.util.List;

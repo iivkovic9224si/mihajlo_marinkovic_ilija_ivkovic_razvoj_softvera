@@ -1,8 +1,6 @@
 package org.raflab.studsluzba.services;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.controllers.request.NastavnikZvanjeRequest;
-import org.raflab.studsluzba.controllers.response.NastavnikZvanjeResponse;
 import org.raflab.studsluzba.model.entity.Nastavnik;
 import org.raflab.studsluzba.model.entity.NastavnikZvanje;
 import org.raflab.studsluzba.repositories.NastavnikRepository;
@@ -11,9 +9,10 @@ import org.raflab.studsluzba.utils.converters.NastavnikConverter;
 import org.raflab.studsluzba.utils.converters.NastavnikZvanjeConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import request.NastavnikZvanjeRequest;
+import response.NastavnikZvanjeResponse;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

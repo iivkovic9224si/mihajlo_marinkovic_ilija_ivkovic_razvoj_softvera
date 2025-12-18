@@ -1,11 +1,5 @@
 package org.raflab.studsluzba.services;
 
-import org.raflab.studsluzba.controllers.request.StudentIndeksRequest;
-import org.raflab.studsluzba.controllers.request.StudentPodaciRequest;
-import org.raflab.studsluzba.controllers.request.StudijskiTokAktivnostiRequest;
-import org.raflab.studsluzba.controllers.response.PredmetResponse;
-import org.raflab.studsluzba.controllers.response.StudentIndeksResponse;
-import org.raflab.studsluzba.controllers.response.StudentPodaciResponse;
 import org.raflab.studsluzba.model.entity.*;
 import org.raflab.studsluzba.repositories.*;
 import org.raflab.studsluzba.utils.converters.PredmetConverter;
@@ -20,6 +14,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.data.domain.Pageable;
+import request.StudentIndeksRequest;
+import response.PredmetResponse;
+import response.StudentIndeksResponse;
+import response.StudentPodaciResponse;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;

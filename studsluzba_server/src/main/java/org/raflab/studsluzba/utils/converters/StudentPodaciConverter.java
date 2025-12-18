@@ -1,10 +1,10 @@
 package org.raflab.studsluzba.utils.converters;
 
-import org.raflab.studsluzba.controllers.request.StudentPodaciRequest;
-import org.raflab.studsluzba.controllers.response.StudentPodaciResponse;
 import org.raflab.studsluzba.model.entity.StudentPodaci;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import request.StudentPodaciRequest;
+import response.StudentPodaciResponse;
 
 import java.util.List;
 import java.util.Optional;

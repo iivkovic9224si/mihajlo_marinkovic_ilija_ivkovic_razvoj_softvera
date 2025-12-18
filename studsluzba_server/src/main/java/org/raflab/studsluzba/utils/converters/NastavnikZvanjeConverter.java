@@ -3,9 +3,9 @@
 // =====================
 package org.raflab.studsluzba.utils.converters;
 
-import org.raflab.studsluzba.controllers.request.NastavnikZvanjeRequest;
-import org.raflab.studsluzba.controllers.response.NastavnikZvanjeResponse;
 import org.raflab.studsluzba.model.entity.NastavnikZvanje;
+import request.NastavnikZvanjeRequest;
+import response.NastavnikZvanjeResponse;
 
 public class NastavnikZvanjeConverter {
     public static NastavnikZvanje toNastavnikZvanje(NastavnikZvanjeRequest request) {
