@@ -14,9 +14,6 @@ import request.StudijskiProgramRequest;
 import response.PredmetResponse;
 import response.StudijskiProgramResponse;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Component
 public class StudProgramiPredmetiController {
 
@@ -37,9 +34,7 @@ public class StudProgramiPredmetiController {
     @FXML private TableColumn<PredmetResponse, String> espbCol;
     @FXML private TableColumn<PredmetResponse, String> obavezanCol;
 
-    @FXML private TableView<Map<String, Object>> prosekTable;
-    @FXML private TableColumn<Map<String, Object>, String> prosekNazivCol;
-    @FXML private TableColumn<Map<String, Object>, String> prosekCol;
+    @FXML private Label prosekLabel;
 
     @FXML private TextField sifraTf, nazivTf, espbTf, opisTf;
     @FXML private CheckBox obavezanCb;
@@ -71,11 +66,8 @@ public class StudProgramiPredmetiController {
                 new SimpleStringProperty(cell.getValue().isObavezan() ? "Da" : "Ne")
         );
 
-        // Postavi kolone za tabelu proseka
-        prosekNazivCol.setCellValueFactory(cell -> new SimpleStringProperty((String) cell.getValue().get("naziv")));
-        prosekCol.setCellValueFactory(cell ->
-                new SimpleStringProperty(String.valueOf(cell.getValue().get("prosek")))
-        );
+        // Inicijalizuj prosek label
+        prosekLabel.setText("---");
 
         studProgramService.getAll()
                 .doOnSubscribe(s -> System.out.println("Fetching all studijski programi..."))
@@ -104,6 +96,7 @@ public class StudProgramiPredmetiController {
     private void loadPredmeti() {
         if (selectedProgram == null) {
             System.out.println("No program selected, skipping loadPredmeti.");
+            predmetTable.setItems(FXCollections.observableArrayList());
             return;
         }
 
@@ -131,24 +124,68 @@ public class StudProgramiPredmetiController {
             return;
         }
 
-        PredmetRequest req = new PredmetRequest();
-        req.setSifra(sifraTf.getText());
-        req.setNaziv(nazivTf.getText());
-        req.setEspb(Integer.parseInt(espbTf.getText()));
-        req.setOpis(opisTf.getText());
-        req.setObavezan(obavezanCb.isSelected());
-        req.setOznakaStudProgram(selectedProgram.getOznaka());
+        try {
+            PredmetRequest req = new PredmetRequest();
+            req.setSifra(sifraTf.getText());
+            req.setNaziv(nazivTf.getText());
+            req.setEspb(Integer.parseInt(espbTf.getText()));
+            req.setOpis(opisTf.getText());
+            req.setObavezan(obavezanCb.isSelected());
+            req.setOznakaStudProgram(selectedProgram.getOznaka());
 
-        System.out.println("Saving predmet: " + req.getNaziv());
+            // ✅ OPTIMISTIČKI: Kreiraj PredmetResponse ODMAH za tabelu
+            PredmetResponse newPredmet = new PredmetResponse();
+            newPredmet.setSifra(req.getSifra());
+            newPredmet.setNaziv(req.getNaziv());
+            newPredmet.setEspb(req.getEspb());
+            newPredmet.setOpis(req.getOpis());
+            newPredmet.setObavezan(req.isObavezan());
 
-        predmetService.save(req)
-                .doOnError(err -> System.out.println("Error saving predmet: " + err))
-                .subscribeOn(Schedulers.boundedElastic())
-                .subscribe(v -> {
-                    System.out.println("Predmet saved, reloading predmeti...");
-                    loadPredmeti();
-                });
+            System.out.println("Saving predmet: " + req.getNaziv());
+
+            // 🚀 SAVE NA BACKEND (pozadina)
+            predmetService.save(req)
+                    .subscribeOn(Schedulers.boundedElastic())
+                    .subscribe(
+                            v -> System.out.println("Backend saved: " + req.getNaziv()),
+                            err -> System.out.println("Backend error: " + err)
+                    );
+
+            // ✅ INSTANT UI UPDATE - ODMAH!
+            Platform.runLater(() -> {
+                var items = predmetTable.getItems();
+                if (items == null) {
+                    items = FXCollections.observableArrayList();
+                    predmetTable.setItems(items);
+                }
+
+                // Proveri duplikate
+                boolean exists = items.stream()
+                        .anyMatch(p -> p.getSifra().equals(newPredmet.getSifra()));
+
+                if (!exists) {
+                    items.add(newPredmet);
+                    predmetTable.refresh();  // ✅ Refresh prikaz
+                    System.out.println("ADDED TO TABLE: " + newPredmet.getNaziv());
+                } else {
+                    System.out.println("⚠Already exists: " + newPredmet.getSifra());
+                }
+
+                // Očisti forme
+                sifraTf.clear();
+                nazivTf.clear();
+                espbTf.clear();
+                opisTf.clear();
+                obavezanCb.setSelected(false);
+
+                System.out.println("Forms cleared!");
+            });
+
+        } catch (NumberFormatException e) {
+            System.out.println("Greška: Nevalidan ESPB broj!");
+        }
     }
+
 
     @FXML
     public void handleProsek() {
@@ -157,26 +194,30 @@ public class StudProgramiPredmetiController {
             return;
         }
 
-        int od = Integer.parseInt(godinaOdTf.getText());
-        int doG = Integer.parseInt(godinaDoTf.getText());
+        try {
+            int od = Integer.parseInt(godinaOdTf.getText());
+            int doG = Integer.parseInt(godinaDoTf.getText());
 
-        System.out.println("Fetching prosek for predmet: " + selectedPredmet.getNaziv());
+            System.out.println("📊 Calculating prosek for: " + selectedPredmet.getNaziv() +
+                    " (" + od + " - " + doG + ")");
 
-        predmetService.getProsecnaOcena(selectedPredmet.getSifra(), od, doG)
-                .doOnError(err -> System.out.println("Error fetching prosek: " + err))
-                .subscribeOn(Schedulers.boundedElastic())
-                .subscribe(prosek -> {
-                    System.out.println("Prosek received: " + prosek);
-                    Map<String, Object> row = new HashMap<>();
-                    row.put("naziv", selectedPredmet.getNaziv());
-                    row.put("prosek", prosek);
-
-                    Platform.runLater(() -> prosekTable.setItems(FXCollections.observableArrayList(row)));
-                });
+            predmetService.getProsecnaOcena(selectedPredmet.getSifra(), od, doG)
+                    .doOnError(err -> System.out.println("Error fetching prosek: " + err))
+                    .subscribeOn(Schedulers.boundedElastic())
+                    .subscribe(prosek -> {
+                        System.out.println("Prosek received: " + prosek);
+                        Platform.runLater(() -> {
+                            prosekLabel.setText(String.format("%.2f", prosek));
+                        });
+                    });
+        } catch (NumberFormatException e) {
+            System.out.println("Greška: Nevalidne godine!");
+            prosekLabel.setText("Greška");
+        }
     }
 
     @FXML
     public void handleIzvestaj() {
-        System.out.println("Izvestaj clicked.");
+        System.out.println("📄 Izvestaj clicked.");
     }
 }
