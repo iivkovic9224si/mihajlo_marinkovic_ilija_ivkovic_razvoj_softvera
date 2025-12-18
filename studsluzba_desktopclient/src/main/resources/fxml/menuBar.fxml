@@ -33,10 +33,11 @@
 
         <Menu text="Predmeti">
             <items>
-                <MenuItem text="Studijski programi"/>
-                <MenuItem text="Predmeti"/>
+                <MenuItem text="Studijski programi i predmeti"
+                          onAction="#openStudProgramiPredmeti"/>
             </items>
         </Menu>
+
 
         <Menu text="Nastava i ispiti">
             <items>

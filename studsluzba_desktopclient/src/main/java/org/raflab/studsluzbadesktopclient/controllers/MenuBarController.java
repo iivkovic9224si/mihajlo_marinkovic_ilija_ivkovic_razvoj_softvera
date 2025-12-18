@@ -23,19 +23,16 @@ public class MenuBarController {
 
     @FXML
     public void searchByNameSurname() {
-        System.out.println("Pretraga po imenu/prezimenu");
         mainView.changeRoot("searchStudent");
     }
 
     @FXML
     public void searchByHighSchool() {
-        System.out.println("Pretraga po srednjoj školi");
         mainView.changeRoot("searchByHighSchoolStudent");
     }
 
     @FXML
     public void searchByIndex() {
-        System.out.println("Pretraga po indeksu");
         mainView.changeRoot("searchStudentByIndex");
     }
 
@@ -45,7 +42,10 @@ public class MenuBarController {
     }
 
     @FXML
-    public void initialize() {
-        // dodatna inicijalizacija ako je potrebna
+    public void openStudProgramiPredmeti() {
+        mainView.changeRoot("studProgramiPredmeti");
     }
+
+    @FXML
+    public void initialize() {}
 }

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<BorderPane xmlns="http://javafx.com/javafx/11"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.raflab.studsluzbadesktopclient.controllers.StudProgramiPredmetiController">
+
+    <top>
+        <Label text="Studijski programi i predmeti"
+               style="-fx-font-size:18px;">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+        </Label>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.35">
+
+            <!-- STUDIJSKI PROGRAMI -->
+            <VBox spacing="5">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+                <Label text="Studijski programi"/>
+                <TableView fx:id="studProgramTable">
+                    <columns>
+                        <TableColumn text="Oznaka" fx:id="oznakaCol"/>
+                        <TableColumn text="Naziv" fx:id="nazivCol"/>
+                        <TableColumn text="Godina" fx:id="godinaCol"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <!-- PREDMETI -->
+            <VBox spacing="10">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+                <Label text="Predmeti programa"/>
+
+                <TableView fx:id="predmetTable">
+                    <columns>
+                        <TableColumn text="Šifra" fx:id="sifraCol"/>
+                        <TableColumn text="Naziv" fx:id="nazivPredmetCol"/>
+                        <TableColumn text="ESPB" fx:id="espbCol"/>
+                        <TableColumn text="Obavezan" fx:id="obavezanCol"/>
+                    </columns>
+                </TableView>
+
+                <Separator/>
+
+                <!-- DODAVANJE PREDMETA -->
+                <GridPane hgap="10" vgap="5">
+                    <Label text="Šifra:" GridPane.rowIndex="0"/>
+                    <TextField fx:id="sifraTf" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                    <Label text="Naziv:" GridPane.rowIndex="1"/>
+                    <TextField fx:id="nazivTf" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                    <Label text="ESPB:" GridPane.rowIndex="2"/>
+                    <TextField fx:id="espbTf" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                    <Label text="Opis:" GridPane.rowIndex="3"/>
+                    <TextField fx:id="opisTf" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                    <CheckBox text="Obavezan" fx:id="obavezanCb"
+                              GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                    <Button text="Sačuvaj predmet"
+                            onAction="#handleSavePredmet"
+                            GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                </GridPane>
+
+                <Separator/>
+
+                <!-- PROSEČNA OCENA -->
+                <HBox spacing="10">
+                    <TextField fx:id="godinaOdTf" promptText="Godina od"/>
+                    <TextField fx:id="godinaDoTf" promptText="Godina do"/>
+                    <Button text="Izračunaj" onAction="#handleProsek"/>
+                    <Button text="Štampaj izveštaj" onAction="#handleIzvestaj"/>
+                </HBox>
+
+                <TableView fx:id="prosekTable">
+                    <columns>
+                        <TableColumn text="Predmet" fx:id="prosekNazivCol"/>
+                        <TableColumn text="Prosečna ocena" fx:id="prosekCol"/>
+                    </columns>
+                </TableView>
+
+            </VBox>
+        </SplitPane>
+    </center>
+
+</BorderPane>
