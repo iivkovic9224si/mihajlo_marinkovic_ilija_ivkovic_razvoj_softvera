@@ -1,9 +1,12 @@
 package response;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 
 @Data
+@NoArgsConstructor
 public class IspitniRokResponse {
     private Long id;
     private LocalDate pocetak;
