@@ -21,6 +21,7 @@ public class MenuBarController {
         this.mainView = mainView;
     }
 
+    // ---------------- STUDENTI ----------------
     @FXML
     public void searchByNameSurname() {
         mainView.changeRoot("searchStudent");
@@ -46,6 +47,15 @@ public class MenuBarController {
         mainView.changeRoot("studProgramiPredmeti");
     }
 
+    // ---------------- ISPITI ----------------
     @FXML
-    public void initialize() {}
+    public void openIspitniRokovi() {
+        mainView.changeRoot("ispitView");
+    }
+
+    // ---------------- OSTALO ----------------
+    @FXML
+    public void initialize() {
+        // inicijalizacija ako je potrebna
+    }
 }

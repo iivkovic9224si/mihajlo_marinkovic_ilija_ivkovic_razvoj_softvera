@@ -9,12 +9,7 @@
             fx:controller="org.raflab.studsluzbadesktopclient.controllers.StudProgramiPredmetiController">
 
     <top>
-        <Label text="Studijski programi i predmeti"
-               style="-fx-font-size:18px; -fx-font-weight: bold;">
-            <padding>
-                <Insets top="15" right="15" bottom="15" left="15"/>
-            </padding>
-        </Label>
+        <fx:include source="menuBar.fxml"/>
     </top>
 
     <center>

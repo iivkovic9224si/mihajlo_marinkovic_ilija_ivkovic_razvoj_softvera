@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.raflab.studsluzbadesktopclient.controllers.IspitController">
+
+    <!-- ===================== MENU ===================== -->
+    <top>
+        <fx:include source="menuBar.fxml"/>
+    </top>
+
+    <!-- ===================== CONTENT ===================== -->
+    <center>
+        <TabPane fx:id="tabPane">
+
+            <!-- ================= ISPITNI ROKOVI ================= -->
+            <Tab fx:id="rokoviTab" text="Ispitni rokovi" closable="false">
+                <HBox spacing="15">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15"/>
+                    </padding>
+
+                    <!-- LEVI PANEL: TableView sa rokovima -->
+                    <VBox spacing="10" HBox.hgrow="NEVER" prefWidth="330">
+                        <Label text="Ispitni rokovi" style="-fx-font-size:14px; -fx-font-weight:bold;"/>
+                        <TableView fx:id="rokoviTable" VBox.vgrow="ALWAYS" prefHeight="400" prefWidth="250">
+                            <columns>
+                                <TableColumn fx:id="colGodina" text="Godina" prefWidth="110"/>
+                                <TableColumn fx:id="colPocetak" text="Početak" prefWidth="110"/>
+                                <TableColumn fx:id="colKraj" text="Kraj" prefWidth="110"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+
+
+                    <!-- DESNI PANEL -->
+                    <VBox spacing="20" alignment="TOP_LEFT" HBox.hgrow="ALWAYS">
+
+                        <!-- GORNJI DEO: Dodavanje ispita i rokova u HBox -->
+                        <HBox spacing="20" alignment="TOP_LEFT">
+                            <!-- Dodavanje novog ispitnog roka -->
+                            <VBox spacing="10" alignment="TOP_LEFT">
+                                <Label text="Dodaj novi ispitni rok" style="-fx-font-size:14px; -fx-font-weight:bold;"/>
+                                <VBox spacing="5">
+                                    <DatePicker fx:id="rokPocetak" promptText="Početak"/>
+                                    <DatePicker fx:id="rokKraj" promptText="Kraj"/>
+                                </VBox>
+                                <Button text="Sačuvaj rok" onAction="#sacuvajRok"/>
+                            </VBox>
+
+                            <!-- Dodavanje novog ispita -->
+                            <VBox spacing="10" alignment="TOP_LEFT">
+                                <Label text="Dodaj novi ispit" style="-fx-font-size:14px; -fx-font-weight:bold;"/>
+                                <GridPane hgap="10" vgap="10">
+                                    <columnConstraints>
+                                        <ColumnConstraints minWidth="120"/>
+                                        <ColumnConstraints minWidth="200"/>
+                                    </columnConstraints>
+
+                                    <Label text="Datum ispita:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                                    <DatePicker fx:id="ispitDatum" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                                    <Label text="Vreme početka (HH:mm):" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                                    <TextField fx:id="ispitVreme" promptText="09:00" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                                    <Label text="Trajanje (min):" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                                    <TextField fx:id="trajanjeField" promptText="90" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                                    <Label text="Email nastavnika:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                                    <TextField fx:id="nastavnikEmail" promptText="nastavnik@mail.com" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                                    <Label text="Šifra predmeta:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                                    <TextField fx:id="sifraPredmeta" promptText="PRG101" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                                    <Button text="Sačuvaj ispit" onAction="#sacuvajIspit" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                                </GridPane>
+                            </VBox>
+                        </HBox>
+
+                        <!-- DONJI DEO: TableView sa ispitima u izabranom isp. roku -->
+                        <VBox spacing="10">
+                            <Label text="Pregled ispita u izabranom isp. roku" style="-fx-font-size:14px; -fx-font-weight:bold;"/>
+                            <TableView fx:id="ispitiTable" VBox.vgrow="ALWAYS" prefHeight="300">
+                                <columns>
+                                    <TableColumn fx:id="colSifraPredmeta" text="Šifra predmeta" prefWidth="100"/>
+                                    <TableColumn fx:id="colEmailNastavnika" text="Email nastavnika" prefWidth="150"/>
+                                    <TableColumn fx:id="colDatum" text="Datum" prefWidth="100"/>
+                                    <TableColumn fx:id="colVremePocetka" text="Vreme početka" prefWidth="100"/>
+                                    <TableColumn fx:id="colTrajanje" text="Trajanje" prefWidth="80"/>
+                                </columns>
+                            </TableView>
+                        </VBox>
+
+                    </VBox>
+
+                </HBox>
+            </Tab>
+
+            <!-- ================= REZULTATI ================= -->
+            <Tab fx:id="rezultatiTab" text="Rezultati" closable="false">
+                <VBox spacing="10">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15"/>
+                    </padding>
+                    <Label text="Pregled rezultata ispita" style="-fx-font-size:14px; -fx-font-weight:bold;"/>
+                    <TableView fx:id="rezultatiTable" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colStudent" text="Student"/>
+                            <TableColumn fx:id="colIspit" text="Ispit"/>
+                            <TableColumn fx:id="colOcena" text="Ocena"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </Tab>
+
+        </TabPane>
+    </center>
+</BorderPane>

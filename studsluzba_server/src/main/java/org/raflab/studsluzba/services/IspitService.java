@@ -73,6 +73,14 @@ public class IspitService {
         return Optional.of(IspitConverter.toIspitResponse(saved));
     }
 
+    // U okviru IspitService klase
+    public List<IspitResponse> findAllByIspitniRokId(Long ispitniRokId) {
+        return ispitRepository.findByIspitniRokId(ispitniRokId)
+                .stream()
+                .map(IspitConverter::toIspitResponse)
+                .collect(Collectors.toList());
+    }
+
     public List<IspitResponse> findAll() {
         return ((List<Ispit>) ispitRepository.findAll())
                 .stream()

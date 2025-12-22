@@ -4,13 +4,21 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
 
-<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+<VBox xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.raflab.studsluzbadesktopclient.controllers.MenuBarController">
+
+    <padding>
+        <Insets top="5" right="5" bottom="5" left="5"/>
+    </padding>
+
     <MenuBar fx:id="menuBar" style="-fx-background-color: #ADD8E6;">
+
+        <!-- STUDENTI -->
         <Menu text="Studenti">
             <items>
-                <!-- Pretraži sa podmenijima -->
                 <Menu text="Pretraži">
                     <items>
                         <MenuItem text="Po imenu/prezimenu" onAction="#searchByNameSurname"/>
@@ -18,12 +26,12 @@
                         <MenuItem text="Po indeksu" onAction="#searchByIndex"/>
                     </items>
                 </Menu>
-
                 <MenuItem text="Novi" onAction="#openNewStudent"/>
                 <MenuItem text="Grupe"/>
             </items>
         </Menu>
 
+        <!-- NASTAVNICI -->
         <Menu text="Nastavnici">
             <items>
                 <MenuItem text="Pretraži"/>
@@ -31,25 +39,21 @@
             </items>
         </Menu>
 
+        <!-- PREDMETI -->
         <Menu text="Predmeti">
             <items>
-                <MenuItem text="Studijski programi i predmeti"
-                          onAction="#openStudProgramiPredmeti"/>
+                <MenuItem text="Studijski programi i predmeti" onAction="#openStudProgramiPredmeti"/>
             </items>
         </Menu>
 
-
-        <Menu text="Nastava i ispiti">
+        <!-- NASTAVA I ISPITI -->
+        <Menu text="Ispiti">
             <items>
-                <MenuItem text="Raspodela nastave"/>
-                <MenuItem text="Raspodela nastave - studenti"/>
-                <MenuItem text="Ispitni rokovi"/>
-                <MenuItem text="Ispiti - unos"/>
-                <MenuItem text="Ispiti - prijave"/>
-                <MenuItem text="Ispiti - rezultati"/>
+                <MenuItem text="Ispitni rokovi" onAction="#openIspitniRokovi"/>
             </items>
         </Menu>
 
+        <!-- ADMINISTRACIJA -->
         <Menu text="Administracija">
             <items>
                 <MenuItem text="Šifarnici"/>
@@ -57,5 +61,6 @@
                 <MenuItem text="Korisnici"/>
             </items>
         </Menu>
+
     </MenuBar>
 </VBox>

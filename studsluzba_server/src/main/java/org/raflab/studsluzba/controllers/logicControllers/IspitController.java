@@ -28,6 +28,11 @@ public class IspitController {
         return ispitService.findAll();
     }
 
+    @GetMapping("/byRok/{rokId}")
+    public List<IspitResponse> findAllByIspitniRok(@PathVariable Long rokId) {
+        return ispitService.findAllByIspitniRokId(rokId);
+    }
+
     @GetMapping("/findById/{id}")
     public Optional<IspitResponse> findById(@PathVariable Long id) {
         return ispitService.findById(id);
