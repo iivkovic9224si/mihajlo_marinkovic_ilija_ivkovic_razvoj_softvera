@@ -3,19 +3,24 @@ package org.raflab.studsluzbadesktopclient.controllers;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import org.raflab.studsluzbadesktopclient.ContextFXMLLoader;
+import org.raflab.studsluzbadesktopclient.services.IspitService;
+import org.raflab.studsluzbadesktopclient.services.IspitniRokService;
 import org.springframework.stereotype.Component;
 import request.DrziPredmetRequest;
 import request.IspitRequest;
 import request.IspitniRokRequest;
 import response.IspitResponse;
 import response.IspitniRokResponse;
-import org.raflab.studsluzbadesktopclient.services.IspitService;
-import org.raflab.studsluzbadesktopclient.services.IspitniRokService;
 
-import java.sql.SQLOutput;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -25,10 +30,12 @@ public class IspitController {
 
     private final IspitService ispitService;
     private final IspitniRokService ispitniRokService;
+    private final ContextFXMLLoader contextFXMLLoader;
 
-    public IspitController(IspitService ispitService, IspitniRokService ispitniRokService) {
+    public IspitController(IspitService ispitService, IspitniRokService ispitniRokService, ContextFXMLLoader contextFXMLLoader) {
         this.ispitService = ispitService;
         this.ispitniRokService = ispitniRokService;
+        this.contextFXMLLoader = contextFXMLLoader;
     }
 
     // TABOVI
@@ -57,96 +64,125 @@ public class IspitController {
     @FXML private TableColumn<IspitResponse, String> colVremePocetka;
     @FXML private TableColumn<IspitResponse, String> colTrajanje;
 
-    // REZULTATI
-    @FXML private TableView<?> rezultatiTable;
-
-    // Selekcija trenutnog isp. roka
     private IspitniRokResponse selectedRok;
 
-    // INIT
     @FXML
     private void initialize() {
-        // TableView kolone za ispitne rokove
-        colGodina.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getGodina()));
-        colPocetak.setCellValueFactory(data -> new SimpleStringProperty(
-                data.getValue().getPocetak() != null ? data.getValue().getPocetak().toString() : ""
-        ));
-        colKraj.setCellValueFactory(data -> new SimpleStringProperty(
-                data.getValue().getKraj() != null ? data.getValue().getKraj().toString() : ""
-        ));
+        colGodina.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getGodina()));
+        colPocetak.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getPocetak().toString()));
+        colKraj.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getKraj().toString()));
 
         loadIspitniRokovi();
 
-        // Listener za selekciju isp. roka u tabeli
-        rokoviTable.getSelectionModel().selectedItemProperty().addListener((obs, oldRok, newRok) -> {
-            selectedRok = newRok;
-            if (selectedRok != null) {
-                loadIspitiByRok(selectedRok.getId());
-            } else {
-                ispitiTable.getItems().clear();
-            }
+        rokoviTable.getSelectionModel().selectedItemProperty().addListener((o, old, rok) -> {
+            selectedRok = rok;
+            if (rok != null) loadIspitiByRok(rok);
         });
 
-        // Kolone za ispite
-        colSifraPredmeta.setCellValueFactory(data -> new SimpleStringProperty(
-                data.getValue().getDrziPredmetResponse() != null ?
-                        data.getValue().getDrziPredmetResponse().getPredmetSifra() : ""
-        ));
-        colEmailNastavnika.setCellValueFactory(data -> new SimpleStringProperty(
-                data.getValue().getDrziPredmetResponse() != null ?
-                        data.getValue().getDrziPredmetResponse().getNastavnikEmail() : ""
-        ));
-        colDatum.setCellValueFactory(data -> new SimpleStringProperty(
-                data.getValue().getDatumIspita() != null ? data.getValue().getDatumIspita().toString() : ""
-        ));
-        colVremePocetka.setCellValueFactory(data -> new SimpleStringProperty(
-                data.getValue().getVremePocetkaIspita() != null ? data.getValue().getVremePocetkaIspita().toString() : ""
-        ));
-        colTrajanje.setCellValueFactory(data -> new SimpleStringProperty(
-                ""
-        ));
+        colSifraPredmeta.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getDrziPredmetResponse().getPredmetSifra()));
+        colEmailNastavnika.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getDrziPredmetResponse().getNastavnikEmail()));
+        colDatum.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getDatumIspita().toString()));
+        colVremePocetka.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getVremePocetkaIspita().toString()));
+        colTrajanje.setCellValueFactory(d -> new SimpleStringProperty(""));
+
+        // DVOKLIK: otvaranje prijavljenih studenata
+        ispitiTable.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                IspitResponse ispit = ispitiTable.getSelectionModel().getSelectedItem();
+                if (ispit != null) {
+                    openPrijavljeniStudentiView(ispit);
+                }
+            }
+        });
     }
 
-    // TAB ACTIONS
-    @FXML private void openIspitniRokovi() {
-        tabPane.getSelectionModel().select(rokoviTab);
-    }
-
-    @FXML private void openRezultati() {
-        tabPane.getSelectionModel().select(rezultatiTab);
-    }
-
-    // ISPITNI ROKOVI
     @FXML
     private void sacuvajRok() {
+        if (rokPocetak.getValue() == null || rokKraj.getValue() == null) {
+            showAlert(Alert.AlertType.ERROR, "Greška", "Morate uneti i početak i kraj isp. roka.");
+            return;
+        }
+
+        if (rokPocetak.getValue().isAfter(rokKraj.getValue())) {
+            showAlert(Alert.AlertType.ERROR, "Greška", "Početak isp. roka ne može biti posle kraja.");
+            return;
+        }
+
+        String godina = extractSkolskaGodina(rokPocetak.getValue(), rokKraj.getValue());
+
         IspitniRokRequest request = new IspitniRokRequest();
         request.setPocetak(rokPocetak.getValue());
         request.setKraj(rokKraj.getValue());
+        request.setGodina(godina);
+
         new Thread(() -> {
-            ispitniRokService.save(request);
-            Platform.runLater(this::loadIspitniRokovi);
+            try {
+                ispitniRokService.save(request);
+                Platform.runLater(() -> {
+                    loadIspitniRokovi();
+                    showAlert(Alert.AlertType.INFORMATION, "Uspeh", "Ispitni rok je uspešno dodat za školsku godinu: " + godina);
+                });
+            } catch (Exception e) {
+                String message = "Ne moguće dodati ispitni rok u nepostojeću školsku godinu: " + godina;
+                Platform.runLater(() -> showAlert(Alert.AlertType.ERROR, "Greška", message));
+            }
         }).start();
+    }
+
+    private String extractSkolskaGodina(LocalDate pocetak, LocalDate kraj) {
+        int startYear = pocetak.getYear();
+        int endYear = (pocetak.getMonthValue() >= 9) ? startYear + 1 : startYear;
+        return startYear + "/" + endYear;
+    }
+
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     private void loadIspitniRokovi() {
         new Thread(() -> {
             List<IspitniRokResponse> rokovi = ispitniRokService.findAll();
-            ObservableList<IspitniRokResponse> data = FXCollections.observableArrayList(rokovi);
-            Platform.runLater(() -> rokoviTable.setItems(data));
+            Platform.runLater(() -> rokoviTable.setItems(FXCollections.observableArrayList(rokovi)));
         }).start();
     }
 
     @FXML
     private void sacuvajIspit() {
         if (selectedRok == null) {
-            System.out.println("Nije izabran ispitni rok!");
+            showError("Morate izabrati ispitni rok.");
+            return;
+        }
+
+        LocalDate datum = ispitDatum.getValue();
+        if (datum == null || datum.isBefore(selectedRok.getPocetak()) || datum.isAfter(selectedRok.getKraj())) {
+            showError("Datum ispita mora biti u okviru izabranog ispitnog roka.");
+            return;
+        }
+
+        LocalTime vreme;
+        try {
+            vreme = LocalTime.parse(ispitVreme.getText());
+        } catch (Exception e) {
+            showError("Vreme mora biti u formatu HH:mm.");
+            return;
+        }
+
+        int trajanje;
+        try {
+            trajanje = Integer.parseInt(trajanjeField.getText());
+        } catch (Exception e) {
+            showError("Trajanje mora biti broj.");
             return;
         }
 
         IspitRequest request = new IspitRequest();
-        request.setDatumIspita(ispitDatum.getValue());
-        request.setVremePocetkaIspita(LocalTime.parse(ispitVreme.getText()));
-        request.setTrajanjeUMinutama(Integer.parseInt(trajanjeField.getText()));
+        request.setDatumIspita(datum);
+        request.setVremePocetkaIspita(vreme);
+        request.setTrajanjeUMinutama(trajanje);
 
         DrziPredmetRequest dp = new DrziPredmetRequest();
         dp.setPredmetSifra(sifraPredmeta.getText());
@@ -156,22 +192,51 @@ public class IspitController {
 
         IspitniRokRequest ir = new IspitniRokRequest();
         ir.setId(selectedRok.getId());
-        ir.setGodina(selectedRok.getGodina());
-        ir.setKraj(selectedRok.getKraj());
-        ir.setPocetak(selectedRok.getPocetak());
         request.setIspitniRokRequest(ir);
+
         new Thread(() -> {
             Optional<IspitResponse> saved = ispitService.save(request);
-            Platform.runLater(() -> loadIspitiByRok(selectedRok.getId()));
+            Platform.runLater(() -> {
+                if (saved.isEmpty()) {
+                    showError("Greška prilikom čuvanja ispita.");
+                } else {
+                    loadIspitiByRok(selectedRok);
+                }
+            });
         }).start();
     }
 
-
-    private void loadIspitiByRok(Long rokId) {
+    private void loadIspitiByRok(IspitniRokResponse rok) {
         new Thread(() -> {
-            List<IspitResponse> ispiti = ispitniRokService.findIspitiByRokId(rokId);
-            ObservableList<IspitResponse> data = FXCollections.observableArrayList(ispiti);
-            Platform.runLater(() -> ispitiTable.setItems(data));
+            List<IspitResponse> ispiti = ispitniRokService.findIspitiByRokId(rok.getId());
+            Platform.runLater(() -> ispitiTable.setItems(FXCollections.observableArrayList(ispiti)));
         }).start();
+    }
+
+    private void showError(String msg) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Greška");
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
+    }
+
+    private void openPrijavljeniStudentiView(IspitResponse ispit) {
+        try {
+            FXMLLoader loader = contextFXMLLoader.getLoader("/fxml/prijavljeniStudentiZaIspitView.fxml");
+            Parent root = loader.load();
+
+            PrijavljeniStudentiZaIspitController controller = loader.getController();
+            controller.postaviIspit(ispit);
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Prijavljeni studenti za ispit");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Ne mogu otvoriti prikaz prijavljenih studenata.");
+        }
     }
 }
