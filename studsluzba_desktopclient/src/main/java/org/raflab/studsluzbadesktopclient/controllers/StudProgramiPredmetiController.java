@@ -54,19 +54,14 @@ public class StudProgramiPredmetiController {
         // Postavi kolone za TableView studijskih programa
         oznakaCol.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getOznaka()));
         nazivCol.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getNaziv()));
-        godinaCol.setCellValueFactory(cell ->
-                new SimpleStringProperty(String.valueOf(cell.getValue().getGodinaAkreditacije()))
-        );
+        godinaCol.setCellValueFactory(cell -> new SimpleStringProperty(String.valueOf(cell.getValue().getGodinaAkreditacije())));
 
         // Postavi kolone za TableView predmeta
         sifraCol.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getSifra()));
         nazivPredmetCol.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getNaziv()));
         espbCol.setCellValueFactory(cell -> new SimpleStringProperty(String.valueOf(cell.getValue().getEspb())));
-        obavezanCol.setCellValueFactory(cell ->
-                new SimpleStringProperty(cell.getValue().isObavezan() ? "Da" : "Ne")
-        );
+        obavezanCol.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().isObavezan() ? "Da" : "Ne"));
 
-        // Inicijalizuj prosek label
         prosekLabel.setText("---");
 
         studProgramService.getAll()
@@ -77,6 +72,10 @@ public class StudProgramiPredmetiController {
                 .subscribe(list -> Platform.runLater(() -> {
                     System.out.println("Received studijski programi: " + list.size());
                     studProgramTable.setItems(FXCollections.observableArrayList(list));
+                    // ❌ Po default-u NE selektuj ništa
+                    studProgramTable.getSelectionModel().clearSelection();
+                    selectedProgram = null;
+                    predmetTable.setItems(FXCollections.observableArrayList());
                 }));
 
         studProgramTable.getSelectionModel().selectedItemProperty()
@@ -120,7 +119,12 @@ public class StudProgramiPredmetiController {
     @FXML
     public void handleSavePredmet() {
         if (selectedProgram == null) {
-            System.out.println("No program selected, cannot save predmet.");
+            // ⚠ Dodaj upozorenje ako nije selektovan studijski program
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Greška");
+            alert.setHeaderText("Nije selektovan studijski program");
+            alert.setContentText("Molimo izaberite studijski program pre dodavanja predmeta.");
+            alert.showAndWait();
             return;
         }
 
@@ -133,7 +137,6 @@ public class StudProgramiPredmetiController {
             req.setObavezan(obavezanCb.isSelected());
             req.setOznakaStudProgram(selectedProgram.getOznaka());
 
-            // ✅ OPTIMISTIČKI: Kreiraj PredmetResponse ODMAH za tabelu
             PredmetResponse newPredmet = new PredmetResponse();
             newPredmet.setSifra(req.getSifra());
             newPredmet.setNaziv(req.getNaziv());
@@ -143,7 +146,6 @@ public class StudProgramiPredmetiController {
 
             System.out.println("Saving predmet: " + req.getNaziv());
 
-            // 🚀 SAVE NA BACKEND (pozadina)
             predmetService.save(req)
                     .subscribeOn(Schedulers.boundedElastic())
                     .subscribe(
@@ -151,7 +153,6 @@ public class StudProgramiPredmetiController {
                             err -> System.out.println("Backend error: " + err)
                     );
 
-            // ✅ INSTANT UI UPDATE - ODMAH!
             Platform.runLater(() -> {
                 var items = predmetTable.getItems();
                 if (items == null) {
@@ -159,19 +160,17 @@ public class StudProgramiPredmetiController {
                     predmetTable.setItems(items);
                 }
 
-                // Proveri duplikate
                 boolean exists = items.stream()
                         .anyMatch(p -> p.getSifra().equals(newPredmet.getSifra()));
 
                 if (!exists) {
                     items.add(newPredmet);
-                    predmetTable.refresh();  // ✅ Refresh prikaz
+                    predmetTable.refresh();
                     System.out.println("ADDED TO TABLE: " + newPredmet.getNaziv());
                 } else {
                     System.out.println("⚠Already exists: " + newPredmet.getSifra());
                 }
 
-                // Očisti forme
                 sifraTf.clear();
                 nazivTf.clear();
                 espbTf.clear();
@@ -183,9 +182,13 @@ public class StudProgramiPredmetiController {
 
         } catch (NumberFormatException e) {
             System.out.println("Greška: Nevalidan ESPB broj!");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Greška");
+            alert.setHeaderText("Nevalidan ESPB");
+            alert.setContentText("Unesite validan broj ESPB bodova.");
+            alert.showAndWait();
         }
     }
-
 
     @FXML
     public void handleProsek() {
@@ -204,12 +207,8 @@ public class StudProgramiPredmetiController {
             predmetService.getProsecnaOcena(selectedPredmet.getSifra(), od, doG)
                     .doOnError(err -> System.out.println("Error fetching prosek: " + err))
                     .subscribeOn(Schedulers.boundedElastic())
-                    .subscribe(prosek -> {
-                        System.out.println("Prosek received: " + prosek);
-                        Platform.runLater(() -> {
-                            prosekLabel.setText(String.format("%.2f", prosek));
-                        });
-                    });
+                    .subscribe(prosek -> Platform.runLater(() -> prosekLabel.setText(String.format("%.2f", prosek))));
+
         } catch (NumberFormatException e) {
             System.out.println("Greška: Nevalidne godine!");
             prosekLabel.setText("Greška");
