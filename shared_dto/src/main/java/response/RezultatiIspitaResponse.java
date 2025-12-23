@@ -1,7 +1,10 @@
 package response;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Data
+@NoArgsConstructor
 public class RezultatiIspitaResponse {
     private String imeStudenta;
     private String prezimeStudenta;

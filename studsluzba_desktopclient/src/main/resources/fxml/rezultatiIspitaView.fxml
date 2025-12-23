@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.raflab.studsluzbadesktopclient.controllers.RezultatiIspitaController"
+      spacing="10">
+    <padding>
+        <Insets top="15" right="15" bottom="15" left="15"/>
+    </padding>
+    <Label text="Rezultati ispita" style="-fx-font-size:14px; -fx-font-weight:bold;"/>
+
+    <TableView fx:id="rezultatiTable" VBox.vgrow="ALWAYS" prefHeight="400">
+        <columns>
+            <TableColumn fx:id="colIme" text="Ime"/>
+            <TableColumn fx:id="colPrezime" text="Prezime"/>
+            <TableColumn fx:id="colStudProgram" text="Studijski program"/>
+            <TableColumn fx:id="colGodinaUpisa" text="Godina upisa"/>
+            <TableColumn fx:id="colBrojIndeksa" text="Broj indeksa"/>
+            <TableColumn fx:id="colUkupnoPoena" text="Ukupno poena"/>
+        </columns>
+    </TableView>
+</VBox>

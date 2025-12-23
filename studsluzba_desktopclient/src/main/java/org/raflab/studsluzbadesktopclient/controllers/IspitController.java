@@ -38,11 +38,6 @@ public class IspitController {
         this.contextFXMLLoader = contextFXMLLoader;
     }
 
-    // TABOVI
-    @FXML private TabPane tabPane;
-    @FXML private Tab rokoviTab;
-    @FXML private Tab rezultatiTab;
-
     // ISPITNI ROKOVI
     @FXML private DatePicker rokPocetak;
     @FXML private DatePicker rokKraj;
@@ -63,6 +58,8 @@ public class IspitController {
     @FXML private TableColumn<IspitResponse, String> colDatum;
     @FXML private TableColumn<IspitResponse, String> colVremePocetka;
     @FXML private TableColumn<IspitResponse, String> colTrajanje;
+
+    @FXML private Button prikaziRezultateBtn;
 
     private IspitniRokResponse selectedRok;
 
@@ -239,4 +236,31 @@ public class IspitController {
             showError("Ne mogu otvoriti prikaz prijavljenih studenata.");
         }
     }
+
+    @FXML
+    private void prikaziRezultate() {
+        IspitResponse selektovaniIspit = ispitiTable.getSelectionModel().getSelectedItem();
+        if (selektovaniIspit == null) {
+            showError("Morate izabrati ispit da biste videli rezultate.");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = contextFXMLLoader.getLoader("/fxml/rezultatiIspitaView.fxml");
+            Parent root = loader.load();
+
+            RezultatiIspitaController controller = loader.getController();
+            controller.setIspitId(selektovaniIspit.getId()); // prosleđujemo id ispita
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Rezultati ispita");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Ne mogu otvoriti prikaz rezultata.");
+        }
+    }
+
 }
