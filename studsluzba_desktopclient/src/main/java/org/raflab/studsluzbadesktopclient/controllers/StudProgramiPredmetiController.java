@@ -49,8 +49,6 @@ public class StudProgramiPredmetiController {
 
     @FXML
     public void initialize() {
-        System.out.println("Initialize controller...");
-
         // Postavi kolone za TableView studijskih programa
         oznakaCol.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getOznaka()));
         nazivCol.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getNaziv()));

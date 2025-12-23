@@ -53,6 +53,12 @@ public class MenuBarController {
         mainView.changeRoot("ispitView");
     }
 
+    // Dodaj back/forward dugmad (ili shortcut)
+    @FXML
+    private void goBack() { mainView.goBack(); }
+
+    @FXML
+    private void goForward() { mainView.goForward(); }
     // ---------------- OSTALO ----------------
     @FXML
     public void initialize() {

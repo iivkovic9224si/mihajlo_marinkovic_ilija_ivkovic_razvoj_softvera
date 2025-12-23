@@ -6,6 +6,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.geometry.Insets?>
 
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
 <VBox xmlns="http://javafx.com/javafx/11.0.1"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.raflab.studsluzbadesktopclient.controllers.MenuBarController">
@@ -13,6 +15,10 @@
     <padding>
         <Insets top="5" right="5" bottom="5" left="5"/>
     </padding>
+    <HBox spacing="5">
+        <Button text="Nazad" onAction="#goBack"/>
+        <Button text="Napred" onAction="#goForward"/>
+    </HBox>
 
     <MenuBar fx:id="menuBar" style="-fx-background-color: #ADD8E6;">
 
