@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.raflab.studsluzbadesktopclient.controllers.StudentUplateController"
+      spacing="15">
+
+    <padding>
+        <Insets top="15" right="15" bottom="15" left="15"/>
+    </padding>
+
+    <!-- DUGOVANJE -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Školska godina:"/>
+        <TextField fx:id="skolskaGodinaTf" promptText="2025/2026" prefWidth="120"/>
+        <Button text="Osveži dug"
+                style="-fx-background-color: #007bff; -fx-text-fill: white;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label text="Duguje:"/>
+        <Label fx:id="dugujeLabel" text="0.00 RSD" style="-fx-font-weight: bold; -fx-text-fill: red;"/>
+    </HBox>
+
+    <Separator/>
+
+    <!-- FORMA -->
+    <GridPane hgap="10" vgap="10" style="-fx-background-color: #f0f2f5; -fx-background-radius: 8; -fx-padding: 15;">
+        <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" minWidth="100"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+        <Label text="Datum uplate:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <DatePicker fx:id="datumUplateDp" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+        <Label text="Iznos (RSD):" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <TextField fx:id="iznosUplateTf" GridPane.columnIndex="1" GridPane.rowIndex="1"
+                   promptText="15000" onAction="#handleSacuvajUplatu"/>
+        <Button text="Sačuvaj uplatu" GridPane.columnIndex="1" GridPane.rowIndex="2"
+                style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold;"
+                onAction="#handleSacuvajUplatu"/>
+    </GridPane>
+
+    <Separator/>
+
+    <!-- ✅ ISTORIJA - SAMO IZNOS -->
+    <VBox>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Istorija uplata" style="-fx-font-weight: bold; -fx-font-size: 14;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+        </HBox>
+        <TableView fx:id="uplateTable" prefHeight="200">
+            <columns>
+                <TableColumn fx:id="datumCol" text="Datum uplate" prefWidth="120"/>
+                <TableColumn fx:id="iznosRsdCol" text="Iznos (RSD)" prefWidth="120"/>
+                <TableColumn fx:id="iznosEurCol" text="Iznos (EUR)" prefWidth="120"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+</VBox>
