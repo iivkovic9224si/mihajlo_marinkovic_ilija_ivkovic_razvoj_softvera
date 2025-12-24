@@ -64,4 +64,9 @@ public class UplataController {
         uplataService.delete(id);
     }
 
+    @GetMapping("/student/{jmbg}")
+    public List<UplataResponse> getUplateZaStudenta(@PathVariable String jmbg) {
+        return uplataService.findAllByStudentJmbg(jmbg);
+    }
+
 }

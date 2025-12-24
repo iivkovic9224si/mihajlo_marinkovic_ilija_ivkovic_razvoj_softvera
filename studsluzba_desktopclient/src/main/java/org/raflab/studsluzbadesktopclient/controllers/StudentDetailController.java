@@ -3,7 +3,7 @@ package org.raflab.studsluzbadesktopclient.controllers;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import request.StudentIndeksRequest;
+import javafx.scene.layout.VBox;
 import response.StudentIndeksResponse;
 import response.StudentPodaciResponse;
 import javafx.scene.layout.GridPane;
@@ -34,7 +34,14 @@ public class StudentDetailController {
     private StudentAktivnostiController studentAktivnostiController;
 
     private StudentPodaciResponse student;
-    private StudentIndeksResponse studentIndex;   // ⬅⬅⬅ BITNO
+    private StudentIndeksResponse studentIndex;
+
+    @FXML
+    private VBox uplateInclude;   // root node (opciono)
+
+    @FXML
+    private StudentUplateController uplateIncludeController;
+
 
     @Autowired
     private StudentService studentService;
@@ -43,6 +50,13 @@ public class StudentDetailController {
     private ToggleGroup polGroup;
 
     public StudentDetailController() {}
+
+    @FXML
+    public void initialize() {
+        System.out.println("🎯 StudentDetailController INITIALIZE");
+        System.out.println("uplateIncludeController = " +
+                (uplateIncludeController != null ? "✅ OK" : "❌ NULL"));
+    }
 
     public void setStudentAndIndex(StudentPodaciResponse student, StudentIndeksResponse index) {
         this.student = student;
@@ -54,7 +68,13 @@ public class StudentDetailController {
             studentAktivnostiController.setStudent(student);
             studentAktivnostiController.setIzabraniIndeks(index);
         }
+
+        if (uplateIncludeController != null) {
+            System.out.println("📤 Pozivam uplateIncludeController.setSelectedStudent()");
+            uplateIncludeController.setSelectedStudent(student);
+        }
     }
+
 
     // ostaje ako negde koristiš samo studenta
     public void setStudent(StudentPodaciResponse student) {

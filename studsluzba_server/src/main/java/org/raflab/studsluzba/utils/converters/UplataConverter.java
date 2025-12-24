@@ -20,9 +20,11 @@ public class UplataConverter {
     public static UplataResponse toUplataResponse(Uplata uplata, Double iznosUEurima) {
         UplataResponse response = new UplataResponse();
         if (uplata.getStudentPodaci() != null) {
-            response.setStudent_jmbg(uplata.getStudentPodaci().getJmbg());
+            response.setStudentJmbg(uplata.getStudentPodaci().getJmbg());
         }
         response.setIznosUDinarima(uplata.getIznosUDinarima());
+        response.setIznosUEurima(iznosUEurima);
+        response.setDatumUplate(uplata.getDatumUplate());
         response.setIznosUEurima(iznosUEurima);
         return response;
     }

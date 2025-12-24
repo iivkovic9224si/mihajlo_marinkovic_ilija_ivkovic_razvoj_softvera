@@ -86,5 +86,11 @@
                 </padding>
             </VBox>
         </Tab>
+
+        <Tab text="Uplate">
+            <fx:include fx:id="uplateInclude"
+                        source="student_uplate.fxml"/>
+        </Tab>
+
     </tabs>
 </TabPane>
