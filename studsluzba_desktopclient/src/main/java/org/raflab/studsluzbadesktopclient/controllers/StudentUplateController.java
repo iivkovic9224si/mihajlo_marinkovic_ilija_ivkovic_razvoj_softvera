@@ -115,18 +115,16 @@ public class StudentUplateController {
         dugujeLabel.setText("Učitavam...");
 
         uplataService.dugujeZaStudenta(jmbg)
-                .doOnSubscribe(s -> System.out.println("🚀 WebClient START"))
                 .subscribeOn(Schedulers.boundedElastic())
                 .subscribe(
                         resp -> {
-                            System.out.println("✅ RESPONSE: " + resp.getIznosUDinarima());
                             Platform.runLater(() -> {
                                 trenutniDug = resp.getIznosUDinarima() != null ? resp.getIznosUDinarima() : 0.0;
                                 dugujeLabel.setText(String.format("Dug: %.2f RSD", trenutniDug));
                             });
                         },
                         err -> {
-                            System.err.println("💥 ERROR dugujeZaStudenta: " + err.getMessage());
+                            System.err.println("ERROR dugujeZaStudenta: " + err.getMessage());
                             Platform.runLater(() -> dugujeLabel.setText("GREŠKA: " + err.getMessage()));
                         }
                 );
@@ -192,14 +190,13 @@ public class StudentUplateController {
                     .subscribeOn(Schedulers.boundedElastic())
                     .subscribe(
                             id -> {
-                                System.out.println("✅ UPLATA USPJEŠNA! ID: " + id);
                                 Platform.runLater(() -> {
                                     handleOsveziDug();
                                     ucitajIstorijuUplata();
                                 });
                             },
                             err -> {
-                                System.err.println("💥 UPLATA ERROR: " + err.getMessage());
+                                System.err.println("UPLATA ERROR: " + err.getMessage());
                                 Platform.runLater(() -> {
                                     trenutniDug = stariDug; // Vrati nazad
                                     dugujeLabel.setText(String.format("Dug: %.2f RSD", stariDug));

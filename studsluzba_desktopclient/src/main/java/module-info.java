@@ -20,6 +20,8 @@ module stud_sluzba_desktop_client {
     requires reactor.core;
     requires org.reactivestreams;
     requires shared.dto;
+    requires com.fasterxml.jackson.databind;
+    requires com.fasterxml.jackson.datatype.jsr310;
 
     exports org.raflab.studsluzbadesktopclient;
     exports org.raflab.studsluzbadesktopclient.controllers;

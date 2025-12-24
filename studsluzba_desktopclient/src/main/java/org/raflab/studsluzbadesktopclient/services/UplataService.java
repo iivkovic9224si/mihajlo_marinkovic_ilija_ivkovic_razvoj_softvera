@@ -17,34 +17,28 @@ public class UplataService {
     }
 
     public Mono<Long> dodajUplatu(UplataRequest req) {
-        System.out.println("UplataService.dodajUplatu: " + req.getIznosUDinarima());
         return webClient.post()
                 .uri("/dodaj")
                 .bodyValue(req)
                 .retrieve()
                 .bodyToMono(Long.class)
-                .doOnError(err -> System.err.println("dodajUplatu error: " + err.getMessage()))
-                .doOnNext(id -> System.out.println("✅ Uplata ID: " + id));
+                .doOnError(err -> System.err.println("dodajUplatu error: " + err.getMessage()));
     }
 
     public Mono<UplataResponse> dugujeZaStudenta(String jmbg) {
-        System.out.println("🔄 dugujeZaStudenta: " + jmbg);
         return webClient.get()
                 .uri("/duguje/{jmbg}", jmbg)
                 .retrieve()
                 .bodyToMono(UplataResponse.class)
-                .doOnError(err -> System.err.println("dug error: " + err.getMessage()))
-                .doOnNext(resp -> System.out.println("Dug: " + resp.getIznosUDinarima()));
+                .doOnError(err -> System.err.println("dug error: " + err.getMessage()));
     }
 
     // ✅ NOVO: Istorija uplata
     public Flux<UplataResponse> getUplateZaStudenta(String jmbg) {
-        System.out.println("📋 getUplateZaStudenta: " + jmbg);
         return webClient.get()
                 .uri("/student/{jmbg}", jmbg)
                 .retrieve()
                 .bodyToFlux(UplataResponse.class)
-                .doOnError(err -> System.err.println("uplate error: " + err.getMessage()))
-                .doOnNext(u -> System.out.println("Uplata: " + u.getIznosUDinarima()));
+                .doOnError(err -> System.err.println("uplate error: " + err.getMessage()));
     }
 }

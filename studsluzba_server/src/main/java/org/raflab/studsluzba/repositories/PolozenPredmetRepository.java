@@ -43,4 +43,21 @@ public interface PolozenPredmetRepository extends JpaRepository<PolozenPredmet, 
     Double getProsecnaOcenaZaPredmetIzmedju(@Param("predmet") Predmet predmet,
                                             @Param("donjaGodina") Integer donjaGodina,
                                             @Param("gornjaGodina") Integer gornjaGodina);
+
+    @Query("SELECT pp FROM PolozenPredmet pp WHERE pp.studentIndeks = :studentIndeks AND pp.ocena >= 6")
+    Page<PolozenPredmet> findPolozeniByStudentIndeks(
+            @Param("studentIndeks") StudentIndeks studentIndeks,
+            Pageable pageable
+    );
+
+    @Query("select coalesce(sum(pp.predmet.espb), 0) " +
+            "from PolozenPredmet pp " +
+            "where pp.studentIndeks.id = :studentIndeksId and pp.ocena is not null")
+    Integer sumEspbZaStudenta(@Param("studentIndeksId") Long studentIndeksId);
+
+    @Query("select coalesce(avg(pp.ocena), 0) " +
+            "from PolozenPredmet pp " +
+            "where pp.studentIndeks.id = :studentIndeksId and pp.ocena is not null")
+    Double avgOcenaZaStudenta(@Param("studentIndeksId") Long studentIndeksId);
+
 }

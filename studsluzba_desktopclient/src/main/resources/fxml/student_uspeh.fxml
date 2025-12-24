@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.raflab.studsluzbadesktopclient.controllers.StudentUspehController"
+      spacing="15">
+
+    <padding>
+        <Insets top="15" right="15" bottom="15" left="15"/>
+    </padding>
+
+    <!-- ESPB + PROSEK (ukrašen) -->
+    <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-background-color: #e9ecef; -fx-background-radius: 6; -fx-padding: 15;">
+        <Label text="ESPB:" style="-fx-font-weight: bold; -fx-font-size: 13px;"/>
+        <Label fx:id="ukupnoEspbLabel" text="0"
+               style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #28a745;"/>
+
+        <Label text="Prosek:" style="-fx-font-weight: bold; -fx-font-size: 13px;"/>
+        <Label fx:id="prosecnaOcenaLabel" text="0.00"
+               style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #28a745;"/>
+    </HBox>
+
+    <Separator/>
+
+    <!-- Grid sa dva TableView-a -->
+    <GridPane hgap="10" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="NEVER"/>
+        </rowConstraints>
+
+        <!-- POLOŽENI - broj pored naslova -->
+        <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2">
+            <HBox fx:id="polozeniHeader" spacing="5" alignment="CENTER_LEFT">
+                <Label text="✅ Položeni predmeti"
+                       style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #28a745;"/>
+                <Label fx:id="brojPolozenihLabel" text="(0)" style="-fx-font-weight: bold;"/>
+            </HBox>
+            <TableView fx:id="polozeniPredmetiTable">
+                <columns>
+                    <TableColumn fx:id="polozeniSifraCol" text="Šifra" prefWidth="80"/>
+                    <TableColumn fx:id="polozeniNazivCol" text="Naziv" prefWidth="200"/>
+                    <TableColumn fx:id="polozeniOcenaCol" text="Ocena" prefWidth="60"/>
+                    <TableColumn fx:id="polozeniPoeniCol" text="Poeni" prefWidth="70"/>
+                    <TableColumn fx:id="polozeniEspbCol" text="ESP/B" prefWidth="60"/>
+                </columns>
+            </TableView>
+        </VBox>
+
+        <!-- Nepoloženi predmeti -->
+        <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">
+            <HBox fx:id="nepolozeniHeader" spacing="5" alignment="CENTER_LEFT">
+                <Label text="❌ Nepoloženi predmeti"
+                       style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #dc3545;"/>
+                <Label fx:id="brojNepolozenihLabel" text="(0)" style="-fx-font-weight: bold;"/>
+            </HBox>
+            <TableView fx:id="nepolozeniPredmetiTable">
+                <columns>
+                    <TableColumn fx:id="nepolozeniSifraCol" text="Šifra" prefWidth="80"/>
+                    <TableColumn fx:id="nepolozeniNazivCol" text="Naziv" prefWidth="250"/>
+                    <TableColumn fx:id="nepolozeniEspbCol" text="ESP/B" prefWidth="70"/>
+                </columns>
+            </TableView>
+        </VBox>
+
+        <!-- REFRESH DUGME - U SREDINI WINDOW-A -->
+        <HBox GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="2"
+              spacing="10" alignment="CENTER">
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="refreshBtn" text="🔄 Osveži uspeh"
+                    style="-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 12 24 12 24;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+        </HBox>
+    </GridPane>
+
+</VBox>

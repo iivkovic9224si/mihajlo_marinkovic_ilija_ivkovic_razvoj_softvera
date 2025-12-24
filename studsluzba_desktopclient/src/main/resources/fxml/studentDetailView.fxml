@@ -77,14 +77,8 @@
             </VBox>
         </Tab>
 
-
-
         <Tab text="Uspeh">
-            <VBox spacing="10">
-                <padding>
-                    <Insets top="10" right="10" bottom="10" left="10"/>
-                </padding>
-            </VBox>
+            <fx:include fx:id="uspehInclude" source="student_uspeh.fxml"/>
         </Tab>
 
         <Tab text="Uplate">

@@ -10,10 +10,15 @@ import org.raflab.studsluzba.repositories.StudentIndeksRepository;
 import org.raflab.studsluzba.repositories.VisokoSkolskaUstanovaRepository;
 import org.raflab.studsluzba.repositories.PredmetRepository;
 import org.raflab.studsluzba.utils.converters.PolozenPredmetConverter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import request.PolozenPredmetAwayRequest;
 import request.PolozenPredmetHereRequest;
+import request.StudentIndeksRequest;
 import response.PolozenPredmetResponse;
+import response.PolozeniUspehRowResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -144,6 +149,56 @@ public class PolozenPredmetService {
 
         polozenPredmetRepository.save(pp);
         return PolozenPredmetConverter.toResponse(pp);
+    }
+    public Page<PolozenPredmetResponse> findPolozeniUspeh(StudentIndeksRequest request, int page, int size) {
+        StudentIndeks si = studentIndeksRepository
+                .findByGodinaAndBrojAndStudProgramOznakaAndAktivan(
+                        request.getGodina(),
+                        request.getBroj(),
+                        request.getStudProgramOznaka(),
+                        true)
+                .orElseThrow(() -> new RuntimeException("StudentIndeks ne postoji"));
+
+        Pageable pageable = PageRequest.of(page, size);
+        // ✅ KORISTI findPolozeniByStudentIndeks umesto findByStudentIndeksAndOcenaGreaterThanEqual
+        Page<PolozenPredmet> polozeni = polozenPredmetRepository.findPolozeniByStudentIndeks(si, pageable);
+
+        return polozeni.map(PolozenPredmetConverter::toResponse);
+    }
+
+    public Page<PolozeniUspehRowResponse> findPolozeniUspehTabela(StudentIndeksRequest request, int page, int size) {
+        StudentIndeks si = studentIndeksRepository
+                .findByGodinaAndBrojAndStudProgramOznakaAndAktivan(
+                        request.getGodina(), request.getBroj(), request.getStudProgramOznaka(), true)
+                .orElseThrow(() -> new RuntimeException("StudentIndeks ne postoji"));
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PolozenPredmet> polozeni = polozenPredmetRepository.findPolozeniByStudentIndeks(si, pageable);
+
+        return polozeni.map(pp -> new PolozeniUspehRowResponse(
+                pp.getPredmet().getSifra(),
+                pp.getPredmet().getNaziv(),
+                pp.getPredmet().getEspb(),
+                pp.getBrojPoena(),
+                pp.getOcena(),
+                pp.getDatum()
+        ));
+    }
+
+    public Integer getUkupnoEspb(StudentIndeksRequest req) {
+        StudentIndeks si = studentIndeksRepository.findStudentIndeks(
+                req.getStudProgramOznaka(), req.getGodina(), req.getBroj()
+        );
+        if (si == null) return 0;
+        return polozenPredmetRepository.sumEspbZaStudenta(si.getId());
+    }
+
+    public Double getProsecnaOcena(StudentIndeksRequest req) {
+        StudentIndeks si = studentIndeksRepository.findStudentIndeks(
+                req.getStudProgramOznaka(), req.getGodina(), req.getBroj()
+        );
+        if (si == null) return 0.0;
+        return polozenPredmetRepository.avgOcenaZaStudenta(si.getId());
     }
 
 
