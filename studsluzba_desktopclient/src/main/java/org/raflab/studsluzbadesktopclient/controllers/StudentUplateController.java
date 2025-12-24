@@ -41,7 +41,6 @@ public class StudentUplateController {
 
     public StudentUplateController(UplataService uplataService) {
         this.uplataService = uplataService;
-        System.out.println("🎯 UplataController KONSTRUKTOR - OK!");
     }
 
     @FXML
@@ -89,44 +88,30 @@ public class StudentUplateController {
     }
 
     public void setSelectedStudent(StudentPodaciResponse student) {
-        System.out.println("🚀 setSelectedStudent POZIVAN!");
         this.selectedStudent = student;
 
-        if (student != null) {
-            System.out.println("✅ STUDENT POSTOJI: " + student.getIme() + " " + student.getPrezime());
-            System.out.println("✅ JMBG: '" + student.getJmbg() + "' (dužina: " + student.getJmbg().length() + ")");
-        } else {
-            System.out.println("❌ STUDENT JE NULL!");
-        }
-
         if (student != null && student.getJmbg() != null && !student.getJmbg().trim().isEmpty()) {
-            System.out.println("🎯 OSVEŽAVAM DUG I ISTORIJU!");
             handleOsveziDug();
             ucitajIstorijuUplata();
         } else {
-            System.out.println("⏳ Student bez JMBG - čekam...");
             dugujeLabel.setText("---");
         }
     }
 
     @FXML
     private void handleOsveziDug() {
-        System.out.println("🔄 handleOsveziDug POZIVAN!");
 
         if (selectedStudent == null) {
-            System.out.println("❌ selectedStudent = null");
             dugujeLabel.setText("---");
             return;
         }
 
         String jmbg = selectedStudent.getJmbg();
         if (jmbg == null || jmbg.trim().isEmpty()) {
-            System.out.println("❌ JMBG prazan/null: '" + jmbg + "'");
             dugujeLabel.setText("---");
             return;
         }
 
-        System.out.println("📡 Šaljem GET /duguje/" + jmbg);
         dugujeLabel.setText("Učitavam...");
 
         uplataService.dugujeZaStudenta(jmbg)
@@ -153,23 +138,19 @@ public class StudentUplateController {
         }
 
         String jmbg = selectedStudent.getJmbg();
-        System.out.println("📋 Učitavam istoriju za: " + jmbg);
 
         uplataService.getUplateZaStudenta(jmbg)
                 .collectList()
                 .subscribeOn(Schedulers.boundedElastic())
                 .subscribe(list -> Platform.runLater(() -> {
-                    System.out.println("📋 Istorija: " + list.size() + " uplata");
                     uplateTable.setItems(FXCollections.observableArrayList(list));
                 }));
     }
 
     @FXML
     private void handleSacuvajUplatu() {
-        System.out.println("💾 handleSacuvajUplatu POZIVAN!");
 
         if (selectedStudent == null || selectedStudent.getJmbg() == null || selectedStudent.getJmbg().trim().isEmpty()) {
-            System.out.println("❌ Nema studenta za uplatu!");
             return;
         }
 
@@ -199,14 +180,12 @@ public class StudentUplateController {
             req.setStudentJmbg(selectedStudent.getJmbg());
             req.setSkolskaGodina(skolskaGodina);
 
-            System.out.println("📤 Šaljem POST /dodaj: " + iznos + " RSD");
 
             // OPTIMISTIČKI
             double stariDug = trenutniDug;
             double noviDug = Math.max(0, trenutniDug - iznos);
             trenutniDug = noviDug;
             dugujeLabel.setText(String.format("Dug: %.2f RSD", noviDug));
-            System.out.println("✨ Optimistički: " + stariDug + " -> " + noviDug);
 
             // BACKEND
             uplataService.dodajUplatu(req)

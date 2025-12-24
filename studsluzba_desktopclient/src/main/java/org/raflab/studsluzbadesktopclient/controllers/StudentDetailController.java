@@ -53,9 +53,6 @@ public class StudentDetailController {
 
     @FXML
     public void initialize() {
-        System.out.println("🎯 StudentDetailController INITIALIZE");
-        System.out.println("uplateIncludeController = " +
-                (uplateIncludeController != null ? "✅ OK" : "❌ NULL"));
     }
 
     public void setStudentAndIndex(StudentPodaciResponse student, StudentIndeksResponse index) {
@@ -70,7 +67,6 @@ public class StudentDetailController {
         }
 
         if (uplateIncludeController != null) {
-            System.out.println("📤 Pozivam uplateIncludeController.setSelectedStudent()");
             uplateIncludeController.setSelectedStudent(student);
         }
     }

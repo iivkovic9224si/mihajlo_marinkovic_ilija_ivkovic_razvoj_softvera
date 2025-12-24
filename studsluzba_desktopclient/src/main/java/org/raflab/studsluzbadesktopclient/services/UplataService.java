@@ -23,7 +23,7 @@ public class UplataService {
                 .bodyValue(req)
                 .retrieve()
                 .bodyToMono(Long.class)
-                .doOnError(err -> System.err.println("❌ dodajUplatu error: " + err.getMessage()))
+                .doOnError(err -> System.err.println("dodajUplatu error: " + err.getMessage()))
                 .doOnNext(id -> System.out.println("✅ Uplata ID: " + id));
     }
 
@@ -33,8 +33,8 @@ public class UplataService {
                 .uri("/duguje/{jmbg}", jmbg)
                 .retrieve()
                 .bodyToMono(UplataResponse.class)
-                .doOnError(err -> System.err.println("❌ dug error: " + err.getMessage()))
-                .doOnNext(resp -> System.out.println("💰 Dug: " + resp.getIznosUDinarima()));
+                .doOnError(err -> System.err.println("dug error: " + err.getMessage()))
+                .doOnNext(resp -> System.out.println("Dug: " + resp.getIznosUDinarima()));
     }
 
     // ✅ NOVO: Istorija uplata
@@ -44,7 +44,7 @@ public class UplataService {
                 .uri("/student/{jmbg}", jmbg)
                 .retrieve()
                 .bodyToFlux(UplataResponse.class)
-                .doOnError(err -> System.err.println("❌ uplate error: " + err.getMessage()))
+                .doOnError(err -> System.err.println("uplate error: " + err.getMessage()))
                 .doOnNext(u -> System.out.println("Uplata: " + u.getIznosUDinarima()));
     }
 }
