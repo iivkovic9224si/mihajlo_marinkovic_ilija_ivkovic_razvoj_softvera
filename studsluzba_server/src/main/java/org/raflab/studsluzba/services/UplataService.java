@@ -57,23 +57,31 @@ public class UplataService {
 
     public UplataResponse ostaloZaUplatu(StudentPodaci studentPodaci) {
         UplataResponse uplataResponse = new UplataResponse();
-        Double uplacenoUEurima = uplataRepository.uplaceno(studentPodaci);
 
-        if (uplacenoUEurima == null) {
-            uplacenoUEurima = 0.0;
-        }
-
-        uplataResponse.setIznosUEurima(3000 - uplacenoUEurima);
+        List<Uplata> uplate = uplataRepository.findByStudentPodaci(studentPodaci);
 
         RestTemplate restTemplate = new RestTemplate();
         KursResponse kursResponse = restTemplate.getForObject(KURS_API_URL, KursResponse.class);
+        Double apiKurs = kursResponse != null ? kursResponse.getExchange_middle() : 120.0;
 
-        if (kursResponse != null && kursResponse.getExchange_middle() != null) {
-            uplataResponse.setIznosUDinarima(kursResponse.getExchange_middle() * uplataResponse.getIznosUEurima());
-        }
+        double uplacenoUEurima = uplate.stream()
+                .mapToDouble(uplata -> {
+                    Double kurs = uplata.getSrednjiKurs();
+                    if (kurs == null || kurs == 0) {
+                        kurs = apiKurs;
+                    }
+                    return uplata.getIznosUDinarima() / kurs;
+                })
+                .sum();
+
+        double ostaloUEurima = 3000 - uplacenoUEurima;
+        uplataResponse.setIznosUEurima(ostaloUEurima);
+
+        uplataResponse.setIznosUDinarima(ostaloUEurima * apiKurs);
 
         return uplataResponse;
     }
+
 
     //CRUD
 
@@ -128,4 +136,36 @@ public class UplataService {
                 .orElseThrow(() -> new RuntimeException("Uplata nije pronađena za ID: " + id));
         uplataRepository.delete(uplata);
     }
+
+    public List<UplataResponse> findAllByStudentJmbg(String jmbg) {
+
+        StudentPodaci studentPodaci = studentPodaciRepository.getStudentPodaciByJmbg(jmbg);
+
+        if (studentPodaci == null) {
+            throw new RuntimeException("Student sa JMBG " + jmbg + " nije pronađen");
+        }
+
+        List<Uplata> uplate = uplataRepository.findByStudentPodaci(studentPodaci);
+
+        return uplate.stream()
+                .map(uplata -> {
+                    // fallback kurs ako je null
+                    RestTemplate restTemplate = new RestTemplate();
+                    KursResponse kursResponse = restTemplate.getForObject(KURS_API_URL, KursResponse.class);
+                    Double kurs = uplata.getSrednjiKurs();
+                    if (kurs == null || kurs == 0) {
+                        kurs = kursResponse.exchange_middle; // ili preuzmi iz API-ja ako želiš
+                    }
+
+                    double iznosEur = uplata.getIznosUDinarima() / kurs;
+
+                    // koristi iznosEur u converteru
+                    UplataResponse resp = UplataConverter.toUplataResponse(uplata, iznosEur);
+                    return resp;
+                })
+                .collect(Collectors.toList());
+    }
+
+
+
 }
