@@ -7,11 +7,6 @@
 <BorderPane xmlns="http://javafx.com/javafx/11"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.raflab.studsluzbadesktopclient.controllers.StudProgramiPredmetiController">
-
-    <top>
-        <fx:include source="menuBar.fxml"/>
-    </top>
-
     <center>
         <SplitPane dividerPositions="0.25">
 

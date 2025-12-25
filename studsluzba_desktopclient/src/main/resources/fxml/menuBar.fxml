@@ -16,9 +16,10 @@
         <Insets top="5" right="5" bottom="5" left="5"/>
     </padding>
     <HBox spacing="5">
-        <Button text="Nazad" onAction="#goBack"/>
-        <Button text="Napred" onAction="#goForward"/>
+        <Button fx:id="backBtn" text="Nazad" onAction="#goBack"/>
+        <Button fx:id="forwardBtn" text="Napred" onAction="#goForward"/>
     </HBox>
+
 
     <MenuBar fx:id="menuBar" style="-fx-background-color: #ADD8E6;">
 
