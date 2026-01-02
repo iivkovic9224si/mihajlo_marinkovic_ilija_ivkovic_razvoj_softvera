@@ -1,32 +1,171 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.text.Text?>
-<?import javafx.geometry.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 
-<BorderPane fx:id="mainPane" xmlns:fx="http://javafx.com/fxml" fx:controller="org.raflab.studsluzbadesktopclient.controllers.StudentController">
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.raflab.studsluzbadesktopclient.controllers.NoviStudentController"
+      spacing="15">
 
-    <top>
-        <fx:include source="menuBar.fxml"/>
-    </top>
+    <fx:define>
+        <ToggleGroup fx:id="polGroup"/>
+    </fx:define>
 
-    <center>
-        <BorderPane>
-            <center>
-                <fx:include source="studentPodaciTabPane.fxml"/>
-            </center>
-            <bottom>
-                <GridPane alignment="center" hgap="10" vgap="10">
-                    <padding><Insets top="20" right="0" bottom="10" left="0"/></padding>
-                    <Button  onAction="#handleSaveStudent" text="Sačuvaj"
-                             GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                    <Text text="                                " fx:id="actionTarget" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-                    <Button text="Izvestaj" GridPane.columnIndex="2" GridPane.rowIndex="3" onAction="#handleIzvestaj"/>
+    <padding>
+        <Insets top="15" right="15" bottom="15" left="15"/>
+    </padding>
+
+    <!-- Header -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Novi student" style="-fx-font-weight: bold; -fx-font-size: 16;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Poništi" onAction="#handlePonisti"/>
+        <Button text="Sačuvaj studenta" onAction="#handleSacuvaj"
+                style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold;"/>
+    </HBox>
+
+    <Separator/>
+
+    <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE">
+        <!-- TAB 1: PODACI -->
+        <Tab text="Podaci">
+            <ScrollPane fitToWidth="true">
+                <VBox spacing="15" style="-fx-padding: 5;">
+
+                    <TitledPane text="Lični podaci" expanded="true">
+                        <GridPane hgap="10" vgap="10"
+                                  style="-fx-background-color: #f0f2f5; -fx-background-radius: 8; -fx-padding: 15;">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="NEVER" minWidth="140"/>
+                                <ColumnConstraints hgrow="ALWAYS"/>
+                            </columnConstraints>
+
+                            <Label text="Ime:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                            <TextField fx:id="imeTf" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                            <Label text="Prezime:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                            <TextField fx:id="prezimeTf" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                            <Label text="Srednje ime:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                            <TextField fx:id="srednjeImeTf" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                            <Label text="JMBG:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                            <TextField fx:id="jmbgTf" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+                            <Label text="Datum rođenja:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                            <DatePicker fx:id="datumRodjenjaDp" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+
+                            <Label text="Mesto rođenja:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+                            <TextField fx:id="mestoRodjenjaTf" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+
+                            <Label text="Država rođenja:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+                            <TextField fx:id="drzavaRodjenjaTf" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+
+                            <Label text="Pol:" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+                            <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                                <RadioButton fx:id="muskiRb" text="Muški" toggleGroup="$polGroup"/>
+                                <RadioButton fx:id="zenskiRb" text="Ženski" toggleGroup="$polGroup"/>
+                            </HBox>
+
+                            <Label text="Državljanstvo:" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
+                            <TextField fx:id="drzavljanstvoTf" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+
+                            <Label text="Nacionalnost:" GridPane.columnIndex="0" GridPane.rowIndex="9"/>
+                            <TextField fx:id="nacionalnostTf" GridPane.columnIndex="1" GridPane.rowIndex="9"/>
+
+                        </GridPane>
+                    </TitledPane>
+
+                    <TitledPane text="Kontakt" expanded="true">
+                        <GridPane hgap="10" vgap="10"
+                                  style="-fx-background-color: #f0f2f5; -fx-background-radius: 8; -fx-padding: 15;">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="NEVER" minWidth="140"/>
+                                <ColumnConstraints hgrow="ALWAYS"/>
+                            </columnConstraints>
+
+                            <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                            <TextField fx:id="emailTf" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                            <Label text="Mobilni telefon:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                            <TextField fx:id="mobilniTf" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                            <Label text="Fiksni telefon:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                            <TextField fx:id="fiksniTf" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                            <Label text="Adresa:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                            <TextField fx:id="adresaTf" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+                            <Label text="Mesto prebivališta:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                            <TextField fx:id="mestoPrebivalistaTf" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                        </GridPane>
+                    </TitledPane>
+
+                    <TitledPane text="Dokumenti i tokom studija" expanded="true">
+                        <GridPane hgap="10" vgap="10"
+                                  style="-fx-background-color: #f0f2f5; -fx-background-radius: 8; -fx-padding: 15;">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="NEVER" minWidth="140"/>
+                                <ColumnConstraints hgrow="ALWAYS"/>
+                            </columnConstraints>
+
+                            <Label text="Broj lične karte:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                            <TextField fx:id="brojLicneKarteTf" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                            <Label text="Ličnu kartu izdao:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                            <TextField fx:id="licnuKartuIzdaoTf" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                            <Label text="Mesto stanovanja:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                            <TextField fx:id="mestoStanovanjaTf" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                            <Label text="Adresa stanovanja:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                            <TextField fx:id="adresaStanovanjaTf" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                        </GridPane>
+                    </TitledPane>
+
+                </VBox>
+            </ScrollPane>
+        </Tab>
+
+        <!-- TAB 2: INDEKS -->
+        <Tab text="Indeks" fx:id="indeksTab">
+            <VBox spacing="12" style="-fx-padding: 5;">
+                <Label fx:id="indeksInfoLabel" text="Prvo sačuvaj studenta u tabu Podaci."
+                       style="-fx-text-fill: #666;"/>
+
+                <GridPane hgap="10" vgap="10"
+                          style="-fx-background-color: #f0f2f5; -fx-background-radius: 8; -fx-padding: 15;">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="NEVER" minWidth="160"/>
+                        <ColumnConstraints hgrow="ALWAYS"/>
+                    </columnConstraints>
+
+                    <Label text="Stud. program (oznaka):" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <TextField fx:id="studProgramOznakaTf" GridPane.columnIndex="1" GridPane.rowIndex="0"
+                               promptText="npr. RAF_IT"/>
+
+                    <Label text="Godina upisa (YYYY):" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <TextField fx:id="godinaTf" GridPane.columnIndex="1" GridPane.rowIndex="1"
+                               promptText="npr. 2024"/>
+
+                    <Label text="Način finansiranja:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <TextField fx:id="nacinFinansiranjaTf" GridPane.columnIndex="1" GridPane.rowIndex="2"
+                               promptText="Budžet / Samofin."/>
+
+                    <Label text="Aktivan:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                    <CheckBox fx:id="aktivanCb" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+                    <Label text="Važi od:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                    <DatePicker fx:id="vaziOdDp" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
                 </GridPane>
-            </bottom>
-        </BorderPane>
-    </center>
 
-
-</BorderPane>
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Button text="Sačuvaj indeks" onAction="#handleSacuvajIndeks"
+                            style="-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                </HBox>
+            </VBox>
+        </Tab>
+    </TabPane>
+</VBox>
