@@ -5,6 +5,7 @@ request/SlusaPredmetRequest.class
 response/NastavnikResponse.class
 request/PolozenPredmetHereRequest.class
 response/StudijskiTokAktivnostiResponse.class
+pomocniDTO/PageResultDTO.class
 request/PrijavaIspitaRequest.class
 request/StudentIndeksRequest.class
 enums/VrstaVisokoSkolskihUstanova.class
@@ -30,6 +31,7 @@ response/RezultatiIspitaResponse.class
 request/OstvareniPredispitniRequest.class
 request/StudentPodaciRequest.class
 request/StudijskiProgramRequest.class
+module-info.class
 response/PolozenPredmetResponse.class
 request/UpisStudentaRequest.class
 enums/VrstaPredispitneObaveze.class
@@ -46,5 +48,6 @@ request/SkolskaGodinaRequest.class
 response/StudijskiProgramResponse.class
 response/PredmetResponse.class
 response/SrednjaSkolaResponse.class
+response/PolozeniUspehRowResponse.class
 response/UplataResponse.class
 request/UplataRequest.class

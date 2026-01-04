@@ -1,0 +1,4 @@
+--patch-module
+shared.dto=_
+--add-reads
+shared.dto=ALL-UNNAMED

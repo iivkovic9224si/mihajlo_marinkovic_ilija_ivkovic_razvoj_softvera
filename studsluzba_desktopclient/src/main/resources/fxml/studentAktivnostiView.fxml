@@ -36,13 +36,15 @@
                 <Label text="Datum:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
                 <DatePicker fx:id="datumPicker" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
-                <!-- Indeks (program, godina, broj) -->
+                <!-- Program -->
                 <Label text="Program:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
                 <TextField fx:id="programTf" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
+                <!-- Godina indeksa -->
                 <Label text="Godina indeksa:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
                 <TextField fx:id="indeksGodinaTf" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
 
+                <!-- Broj indeksa -->
                 <Label text="Broj indeksa:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
                 <TextField fx:id="indeksBrojTf" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
 
@@ -55,12 +57,24 @@
                 <TextArea fx:id="napomenaTa" prefRowCount="3"
                           GridPane.rowIndex="7" GridPane.columnIndex="1"/>
 
-                <!-- Dugmad -->
-                <HBox spacing="10" alignment="CENTER_RIGHT"
-                      GridPane.rowIndex="8" GridPane.columnIndex="1">
+                <!-- 🚀 POSEDNAJA GODINA (NOVI RED 8) -->
+                <Label text="Poslednja godina:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+                <Label fx:id="lblPoslednjaGodina" text="Nema aktivnosti"
+                       style="-fx-font-size: 14px; -fx-padding: 5; -fx-background-color: #f0f0f0;"
+                       GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+
+                <!-- UČITAJ PREDMETE (sada red 9) -->
+                <Label text="" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
+                <Button fx:id="ucitajPredmeteBtn" text="🔄 Učitaj dostupne predmete"
+                        onAction="#handleUcitajPredmete"
+                        GridPane.rowIndex="9" GridPane.columnIndex="1"/>
+
+                <!-- Dugmad (sada red 10) -->
+                <HBox spacing="10" alignment="CENTER_RIGHT" GridPane.rowIndex="10" GridPane.columnIndex="1">
                     <Button text="Upiši" onAction="#handleUpis"/>
                     <Button text="Obnova" onAction="#handleObnova"/>
                 </HBox>
+
             </GridPane>
         </content>
     </TitledPane>
@@ -71,7 +85,7 @@
                 <columns>
                     <TableColumn fx:id="selectCol" text="Izaberi" prefWidth="70"/>
                     <TableColumn fx:id="sifraCol" text="Šifra predmeta" prefWidth="150"/>
-                    <TableColumn fx:id="nastavnikCol" text="Email nastavnika" prefWidth="250"/>
+                    <TableColumn fx:id="nastavnikCol" text="Naziv predmeta" prefWidth="300"/>
                 </columns>
             </TableView>
         </content>

@@ -12,6 +12,7 @@ import request.PredmetRequest;
 import response.PredmetResponse;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -162,5 +163,11 @@ public class PredmetService {
         return prosecna;
     }
 
+    public List<PredmetResponse> getDostupniZaUpis(String indeksGodinaBroj, int maxGodina, String studProgramOznaka) {
+        return predmetRepository.findDostupniZaUpis(maxGodina, studProgramOznaka)
+                .stream()
+                .map(PredmetConverter::toPredmetResponse)
+                .collect(Collectors.toList());
+    }
 
 }

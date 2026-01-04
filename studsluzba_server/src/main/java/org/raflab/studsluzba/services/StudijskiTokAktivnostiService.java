@@ -61,69 +61,52 @@ public class StudijskiTokAktivnostiService {
         }
     }
 
-    //upis studenta na godinu (dodati novi upis za studenta i predmete koje sluša, a koji će inicijalno biti nepoloženi)
-    public void upisiStudentaNaGodinu(StudijskiTokAktivnostiRequest studijskiTokAktivnostiRequest, List<DrziPredmetRequest> drziPredmetRequests) {
-        StudentIndeks studentIndeks = studentIndeksRepository.findStudentIndeks(studijskiTokAktivnostiRequest.getIndeksStudProgramOznaka(),studijskiTokAktivnostiRequest.getIndeksGodina(),studijskiTokAktivnostiRequest.getIndeksBroj());
-        if(studentIndeks == null){
-            throw new RuntimeException("Student sa tim indeksom nije pronadjen");
+    public void upisiStudentaNaGodinu(StudijskiTokAktivnostiRequest req, List<DrziPredmetRequest> drziPredmetRequests) {
+
+        StudentIndeks studentIndeks = studentIndeksRepository.findStudentIndeks(
+                req.getIndeksStudProgramOznaka(),
+                req.getIndeksGodina(),
+                req.getIndeksBroj()
+        );
+        if (studentIndeks == null) {
+            throw new IllegalArgumentException("Student sa tim indeksom nije pronadjen");
         }
-        studijskiTokAktivnostiRepository.save(StudijskiTokAktivnostiConverter.toStrudijskiTokAktivnosti(studijskiTokAktivnostiRequest, studentIndeks));
+
+        int lastUpis = studijskiTokAktivnostiRepository.getPoslednjaGodinaByIndeksAndTip(
+                req.getIndeksBroj(),
+                req.getIndeksGodina(),
+                req.getIndeksStudProgramOznaka(),
+                VrstaStudijskeAktivnosti.UPIS
+        );
+
+        // ✅ dozvoljeno samo lastUpis + 1 (ako je lastUpis=1 -> dozvoljeno je samo 2)
+        if (!req.getGodina().equals(lastUpis + 1)) {
+            throw new IllegalArgumentException(
+                    "Dozvoljen je upis samo sledeće godine. Poslednja upisana: " + lastUpis +
+                            ", pokušavaš: " + req.getGodina()
+            );
+        }
+
+        studijskiTokAktivnostiRepository.save(
+                StudijskiTokAktivnostiConverter.toStrudijskiTokAktivnosti(req, studentIndeks)
+        );
 
         List<DrziPredmet> drziPredmets = new ArrayList<>();
-        for(DrziPredmetRequest drziPredmetRequest : drziPredmetRequests){
-            DrziPredmet drziPredmet = drziPredmetRepository.getDrziPredmetByNastavnikMailAndPredmetSifra(drziPredmetRequest.getNastavnikEmail(),drziPredmetRequest.getPredmetSifra());
-            if(drziPredmet == null){
-                throw new RuntimeException("Predmet pod sifrom "+ drziPredmetRequest.getPredmetSifra() +" koji predaje profesor "+ drziPredmetRequest.getNastavnikEmail()+", nije pronadjen");
-            }
-            drziPredmets.add(drziPredmet);
-        }
-
-        SkolskaGodina skolskaGodina = skolskaGodinaRepository.findByAktivnaTrue();
-        for(DrziPredmet drziPredmet : drziPredmets){
-            SlusaPredmet slusaPredmet = SlusaPredmetConverter.toSlusaPredmet(skolskaGodina,studentIndeks,drziPredmet);
-            slusaPredmetRepository.save(slusaPredmet);
-        }
-    }
-
-    // obnova godine za studenta (nepoloženi + izbor predmeta iz naredne godine, max 60 ESPB)
-    public void obnovaGodine(StudijskiTokAktivnostiRequest studijskiTokAktivnostiRequest,
-                             List<DrziPredmetRequest> drziPredmetRequests) {
-
-        StudentIndeks studentIndeks = studentIndeksRepository.findStudentIndeks(studijskiTokAktivnostiRequest.getIndeksStudProgramOznaka(),studijskiTokAktivnostiRequest.getIndeksGodina(),studijskiTokAktivnostiRequest.getIndeksBroj());
-        if(studentIndeks == null){
-            throw new RuntimeException("Student sa tim indeksom nije pronadjen");
-        }
-
-        studijskiTokAktivnostiRepository.save(StudijskiTokAktivnostiConverter.toStrudijskiTokAktivnosti(studijskiTokAktivnostiRequest, studentIndeks));
-
-
-        List<DrziPredmet> drziPredmets = new ArrayList<>();
-        int ukupnoESPB = 0;
-
-        for (DrziPredmetRequest drziPredmetRequest : drziPredmetRequests) {
-
-            DrziPredmet drziPredmet = drziPredmetRepository
-                    .getDrziPredmetByNastavnikMailAndPredmetSifra(
-                            drziPredmetRequest.getNastavnikEmail(),
-                            drziPredmetRequest.getPredmetSifra()
-                    );
-
+        for (DrziPredmetRequest drziReq : drziPredmetRequests) {
+            DrziPredmet drziPredmet = drziPredmetRepository.getDrziPredmetByNastavnikMailAndPredmetSifra(
+                    drziReq.getNastavnikEmail(),
+                    drziReq.getPredmetSifra()
+            );
             if (drziPredmet == null) {
-                throw new RuntimeException("Predmet pod sifrom " + drziPredmetRequest.getPredmetSifra() +
-                        " koji predaje profesor " + drziPredmetRequest.getNastavnikEmail() + " nije pronađen.");
+                throw new IllegalArgumentException(
+                        "Predmet pod sifrom " + drziReq.getPredmetSifra() +
+                                " koji predaje profesor " + drziReq.getNastavnikEmail() + ", nije pronadjen"
+                );
             }
-
-            ukupnoESPB += drziPredmet.getPredmet().getEspb();
-
-            if (ukupnoESPB > 60) {
-                throw new RuntimeException("Ukupan broj ESPB ne može preći 60! Trenutno: " + ukupnoESPB);
-            }
-
             drziPredmets.add(drziPredmet);
         }
 
         SkolskaGodina skolskaGodina = skolskaGodinaRepository.findByAktivnaTrue();
-
         for (DrziPredmet drziPredmet : drziPredmets) {
             SlusaPredmet slusaPredmet = SlusaPredmetConverter.toSlusaPredmet(
                     skolskaGodina, studentIndeks, drziPredmet
@@ -131,6 +114,75 @@ public class StudijskiTokAktivnostiService {
             slusaPredmetRepository.save(slusaPredmet);
         }
     }
+
+
+    public void obnovaGodine(StudijskiTokAktivnostiRequest req, List<DrziPredmetRequest> drziPredmetRequests) {
+
+        StudentIndeks studentIndeks = studentIndeksRepository.findStudentIndeks(
+                req.getIndeksStudProgramOznaka(),
+                req.getIndeksGodina(),
+                req.getIndeksBroj()
+        );
+        if (studentIndeks == null) {
+            throw new IllegalArgumentException("Student sa tim indeksom nije pronadjen");
+        }
+
+        int lastUpis = studijskiTokAktivnostiRepository.getPoslednjaGodinaByIndeksAndTip(
+                req.getIndeksBroj(),
+                req.getIndeksGodina(),
+                req.getIndeksStudProgramOznaka(),
+                VrstaStudijskeAktivnosti.UPIS
+        );
+
+        if (lastUpis == 0) {
+            throw new IllegalArgumentException("Ne može obnova: student nema nijednu upisanu godinu.");
+        }
+
+        // ✅ obnova samo lastUpis
+        if (!req.getGodina().equals(lastUpis)) {
+            throw new IllegalArgumentException(
+                    "Dozvoljena je obnova samo poslednje upisane godine. Poslednja upisana: " + lastUpis +
+                            ", pokušavaš: " + req.getGodina()
+            );
+        }
+
+        studijskiTokAktivnostiRepository.save(
+                StudijskiTokAktivnostiConverter.toStrudijskiTokAktivnosti(req, studentIndeks)
+        );
+
+        List<DrziPredmet> drziPredmets = new ArrayList<>();
+        int ukupnoESPB = 0;
+
+        for (DrziPredmetRequest drziReq : drziPredmetRequests) {
+            DrziPredmet drziPredmet = drziPredmetRepository.getDrziPredmetByNastavnikMailAndPredmetSifra(
+                    drziReq.getNastavnikEmail(),
+                    drziReq.getPredmetSifra()
+            );
+
+            if (drziPredmet == null) {
+                throw new IllegalArgumentException(
+                        "Predmet pod sifrom " + drziReq.getPredmetSifra() +
+                                " koji predaje profesor " + drziReq.getNastavnikEmail() + " nije pronađen."
+                );
+            }
+
+            ukupnoESPB += drziPredmet.getPredmet().getEspb();
+            if (ukupnoESPB > 60) {
+                throw new IllegalArgumentException("Ukupan broj ESPB ne može preći 60! Trenutno: " + ukupnoESPB);
+            }
+
+            drziPredmets.add(drziPredmet);
+        }
+
+        SkolskaGodina skolskaGodina = skolskaGodinaRepository.findByAktivnaTrue();
+        for (DrziPredmet drziPredmet : drziPredmets) {
+            SlusaPredmet slusaPredmet = SlusaPredmetConverter.toSlusaPredmet(
+                    skolskaGodina, studentIndeks, drziPredmet
+            );
+            slusaPredmetRepository.save(slusaPredmet);
+        }
+    }
+
 
     public StudijskiTokAktivnosti findByRequest(StudijskiTokAktivnostiRequest request) {
 
@@ -156,6 +208,4 @@ public class StudijskiTokAktivnostiService {
 
         studijskiTokAktivnostiRepository.delete(sta);
     }
-
-
 }

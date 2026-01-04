@@ -203,11 +203,26 @@ public class Seeder implements CommandLineRunner {
                     p.setObavezan(true);
                 }
 
+                // NOVO: postavi godinu studija na osnovu indeksa u listi
+                p.setGodinaStudija((i / 2) + 1); // 1,1,2,2,3,3... itd.
+
                 p.setStudProgram(sp);
                 predmetList.add(predmetRepository.save(p));
             }
         }
         }
+
+//        List<Predmet> allPredmeti = new ArrayList<>();
+//        ((Iterable<Predmet>) predmetRepository.findAll()).forEach(allPredmeti::add);
+//
+//        for (int idx = 0; idx < allPredmeti.size(); idx++) {
+//            Predmet p = allPredmeti.get(idx);
+//            if (p.getGodinaStudija() == null || p.getGodinaStudija() == 0) {
+//                p.setGodinaStudija((idx / 2) + 1);
+//                predmetRepository.save(p);
+//            }
+//        }
+//        System.out.println("✅ Backup: Popunjena godinaStudija za " + allPredmeti.size() + " predmeta!");
 
         if(visokoSkolskaUstanovaRepository.count()==0){
         List<VisokoSkolskaUstanova> vsuList = new ArrayList<>();

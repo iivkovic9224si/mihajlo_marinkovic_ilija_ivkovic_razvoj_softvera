@@ -33,7 +33,8 @@ public class PredmetConverter {
                 predmet.getOpis(),
                 predmet.getEspb(),
                 studProgramOznaka,
-                predmet.isObavezan()
+                predmet.isObavezan(),
+                predmet.getGodinaStudija()
         );
     }
 

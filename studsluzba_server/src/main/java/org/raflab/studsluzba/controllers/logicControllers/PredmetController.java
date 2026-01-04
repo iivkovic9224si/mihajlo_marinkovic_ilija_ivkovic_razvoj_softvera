@@ -61,6 +61,13 @@ public class PredmetController {
         return predmetService.getProsecnaOcena(sifraPredmeta, godinaOd, godinaDo);
     }
 
-
+    @GetMapping(path = "/dostupni")
+    public List<PredmetResponse> getDostupniPredmeti(
+            @RequestParam String indeksGodinaBroj,
+            @RequestParam int maxGodina,
+            @RequestParam String studProgramOznaka
+    ) {
+        return predmetService.getDostupniZaUpis(indeksGodinaBroj, maxGodina, studProgramOznaka);
+    }
 
 }
