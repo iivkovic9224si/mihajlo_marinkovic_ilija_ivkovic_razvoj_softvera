@@ -7,6 +7,9 @@ import enums.VrstaVisokoSkolskihUstanova;
 import org.raflab.studsluzba.model.entity.*;
 import org.raflab.studsluzba.repositories.*;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDate;
@@ -281,12 +284,16 @@ public class Seeder implements CommandLineRunner {
         }}
 
 
-        int trenutnaGodina = LocalDate.now().getYear();
-        String nazivTekuceGodine = trenutnaGodina + "/" + (trenutnaGodina + 1);
+
+        LocalDate danas = LocalDate.now();
+        int y = danas.getYear();
+        LocalDate pocetakNoveSkolske = LocalDate.of(y, 10, 1); // 1. oktobar tekuće kalendarske
+        int startGodine = danas.isBefore(pocetakNoveSkolske) ? (y - 1) : y;
+        String nazivTekuceGodine = startGodine + "/" + (startGodine + 1);
 
         skolskaGodinaRepository.deactivateAll();
 
-        for (int godina = 2016; godina <= trenutnaGodina; godina++) {
+        for (int godina = 2016; godina <= y; godina++) {  // koristi y umesto trenutnaGodina
             String nazivGodine = godina + "/" + (godina + 1);
 
             Optional<SkolskaGodina> postojiGodina = skolskaGodinaRepository.findOneByGodina(nazivGodine);
@@ -302,6 +309,7 @@ public class Seeder implements CommandLineRunner {
             sg.setAktivna(nazivGodine.equals(nazivTekuceGodine));
             skolskaGodinaRepository.save(sg);
         }
+
 
 
         if (drziPredmetRepository.count() == 0) {
@@ -885,6 +893,7 @@ public class Seeder implements CommandLineRunner {
             }
 
         }
+
         // ----------- Uplate za prvih 10 studenata -----------
         // ----------- Uplate -----------
         if(uplataRepository.count() == 0) {
@@ -913,6 +922,135 @@ public class Seeder implements CommandLineRunner {
                 uplata.setDatumUplate(datumi[i]);
                 uplataRepository.save(uplata);
             }
+        }
+        // ✅ NAJBRŽE REŠENJE - Koristi postojećeg studenta (prvi iz baze)
+        if (prijavaIspitaRepository.count() > 0) {
+            LocalDate sada = LocalDate.now();
+            Pageable pageable = PageRequest.of(0, 1);
+            Page<StudentPodaci> studentPage = studentPodaciRepository.findAll(pageable);
+            if (studentPage.getContent().isEmpty()) return;
+            StudentPodaci student = studentPage.getContent().get(0); // bilo koji student
+
+            // 1. NAPRAVI INDEKS 2025/100/RN za njega
+            StudentIndeks studentIndeks = studentIndeksRepository.findStudentIndeks("RN", 2025, 100);
+            if (studentIndeks == null) {
+                StudijskiProgram rnProgram = studijskiProgramRepository.findByOznakaSingle("RN");
+                if (rnProgram == null) return;
+                studentIndeks = new StudentIndeks();
+                studentIndeks.setStudent(student);
+                studentIndeks.setStudijskiProgram(rnProgram);
+                studentIndeks.setStudProgramOznaka("RN");
+                studentIndeks.setGodina(2025);
+                studentIndeks.setBroj(100);
+                studentIndeks.setNacinFinansiranja("Budžet");
+                studentIndeks.setAktivan(true);
+                studentIndeks.setVaziOd(LocalDate.of(2025, 9, 1));
+                studentIndeks.setOstvarenoEspb(0);
+                studentIndeks = studentIndeksRepository.save(studentIndeks);
+            }
+
+            Predmet pr001 = predmetRepository.findBySifra("PR001").orElse(null);
+            if (pr001 == null) return;
+
+            Nastavnik markoNastavnik = nastavnikRepository.findByEmail("marko.jovanović@example.com").orElse(null);
+            if (markoNastavnik == null) return;
+
+            SkolskaGodina aktivnaGodina = skolskaGodinaRepository.findByGodina("2025/2026");
+            if (aktivnaGodina == null) return;
+
+            // 2. DrziPredmet PR001 + nastavnik + 2025/2026
+            DrziPredmet dp = drziPredmetRepository
+                    .findBySkolskaGodinaGodinaAndNastavnikEmailAndPredmetSifra(
+                            "2025/2026", "marko.jovanović@example.com", "PR001")
+                    .orElseGet(() -> {
+                        DrziPredmet novi = new DrziPredmet();
+                        novi.setPredmet(pr001);
+                        novi.setNastavnik(markoNastavnik);
+                        novi.setSkolskaGodina(aktivnaGodina);
+                        return drziPredmetRepository.save(novi);
+                    });
+
+            // 3. Ispitni rok Januar 2026
+            IspitniRok januarRok = null;
+            for (IspitniRok r : ispitniRokRepository.findAll()) {
+                if (r.getSkolskaGodina().getId().equals(aktivnaGodina.getId())
+                        && r.getPocetak().equals(LocalDate.of(sada.getYear(), sada.getMonth(), 1))
+                        && r.getKraj().equals(LocalDate.of(sada.getYear(), sada.getMonth(), 31))) {
+                    januarRok = r;
+                    break;
+                }
+            }
+            if (januarRok == null) {
+                januarRok = new IspitniRok();
+                januarRok.setSkolskaGodina(aktivnaGodina);
+                januarRok.setPocetak(LocalDate.of(sada.getYear(), sada.getMonth(), 1));
+                januarRok.setKraj(LocalDate.of(sada.getYear(), sada.getMonth(), 31));
+                januarRok = ispitniRokRepository.save(januarRok);
+            }
+
+            // 4. Ispit 3.1.2026 12:00
+            Ispit ispit = null;
+            for (Ispit i : ispitRepository.findAll()) {
+                if (i.getDrziPredmet().getId().equals(dp.getId())
+                        && i.getDatumIspita().equals(LocalDate.of(sada.getYear(), sada.getMonth(), sada.getDayOfMonth()+1))
+                        && i.getVremePocetkaIspita().equals(LocalTime.of(12, 0))) {
+                    ispit = i;
+                    break;
+                }
+            }
+            if (ispit == null) {
+                ispit = new Ispit();
+                ispit.setDrziPredmet(dp);
+                ispit.setIspitniRok(januarRok);
+                ispit.setDatumIspita(LocalDate.of(sada.getYear(), sada.getMonth(), sada.getDayOfMonth()+1));
+                ispit.setVremePocetkaIspita(LocalTime.of(12, 0));
+                ispit.setZakljucen(true);
+                ispit = ispitRepository.save(ispit);
+            } else if (!ispit.isZakljucen()) {
+                ispit.setZakljucen(true);
+                ispit = ispitRepository.save(ispit);
+            }
+
+            // 5. SlusaPredmet
+            Optional<SlusaPredmet> postojeceSlusa = slusaPredmetRepository
+                    .findByStudentIndeksAndDrziPredmet(1l, 1l).stream().findFirst();
+            StudentIndeks finalStudentIndeks = studentIndeks;
+            SlusaPredmet slusaPredmet = postojeceSlusa.orElseGet(() -> {
+                SlusaPredmet novi = new SlusaPredmet();
+                novi.setStudentIndeks(finalStudentIndeks);
+                novi.setDrziPredmet(dp);
+                novi.setSkolskaGodina(aktivnaGodina);
+                return slusaPredmetRepository.save(novi);
+            });
+
+            // 6. PRIJAVA - FORSIRA
+            List<PrijavaIspita> postojecePrijave = prijavaIspitaRepository.findBySlusaPredmetAndIspit(slusaPredmet, ispit);
+            PrijavaIspita prijava;
+            if (postojecePrijave.isEmpty()) {
+                prijava = new PrijavaIspita();
+                prijava.setSlusaPredmet(slusaPredmet);
+                prijava.setIspit(ispit);
+                prijava.setDatumPrijave(LocalDate.of(2025, 12, 20));
+                prijava = prijavaIspitaRepository.save(prijava);
+            } else {
+                prijava = postojecePrijave.get(0);
+                prijava.setDatumPrijave(LocalDate.of(2025, 12, 20));
+                prijava = prijavaIspitaRepository.save(prijava);
+            }
+
+//            // 7. IZLAZAK - FORSIRA
+//            List<IzlazakNaIspit> postojeceIzlazak = izlazakNaIspitRepository.findByPrijavaIspitaId(prijava.getId());
+//            if (postojeceIzlazak.isEmpty()) {
+//                IzlazakNaIspit izlazak = new IzlazakNaIspit();
+//                izlazak.setPrijavaIspita(prijava);
+//                izlazak.setBrojPredispitnihPoena(25.0);
+//                izlazak.setBrojPoenaSaIspita(50.0);
+//                izlazak.setNapomena("Test položen za frontend");
+//                izlazak.setPonistava(false);
+//                izlazakNaIspitRepository.save(izlazak);
+//                prijava.setIzlazakNaIspita(izlazak);
+//                prijavaIspitaRepository.save(prijava);
+//            }
         }
 
 

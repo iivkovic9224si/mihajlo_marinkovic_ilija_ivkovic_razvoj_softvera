@@ -16,8 +16,10 @@ import request.PrijavaIspitaRequest;
 import response.PrijavaIspitaResponse;
 import response.StudentIndeksResponse;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +32,7 @@ public class PrijavaIspitaService {
 
     // ------------------ SAVE ------------------
     public PrijavaIspitaResponse save(PrijavaIspitaRequest prijavaIspitaRequest) {
-        Ispit ispit = ispitRepository.findById(prijavaIspitaRequest.getId())
+        Ispit ispit = ispitRepository.findById(prijavaIspitaRequest.getIspitID())
                 .orElseThrow(() -> new RuntimeException("Ispit nije pronađen"));
 
         StudentIndeks studentIndeks = studentIndeksRepository
@@ -43,6 +45,14 @@ public class PrijavaIspitaService {
         SlusaPredmet slusaPredmet = slusaPredmetRepository
                 .findByStudentIndeksAndDrziPredmet(studentIndeks.getId(), ispit.getDrziPredmet().getId())
                 .orElseThrow(() -> new RuntimeException("SlusaPredmet nije pronađen"));
+
+        if (prijavaIspitaRepository.existsPrijavaZaStudentaIspit(
+                ispit.getId(),
+                prijavaIspitaRequest.getIndeksGodina(),
+                prijavaIspitaRequest.getIndeksBroj(),
+                prijavaIspitaRequest.getIndeksStudProgramOznaka())) {
+            throw new RuntimeException("Ispit je već prijavljen u ovom roku.");
+        }
 
         PrijavaIspita prijavaIspita = PrijavaIspitaConverter
                 .toPrijavaIspita(prijavaIspitaRequest, ispit, slusaPredmet);
@@ -121,5 +131,73 @@ public class PrijavaIspitaService {
 
         return PrijavaIspitaConverter.toPrijavaIspitaResponse(prijava);
     }
+
+    public List<PrijavaIspitaResponse> findPrijaveZaStudenta(Integer godina, Integer broj, String oznaka) {
+        List<PrijavaIspita> prijave = prijavaIspitaRepository.findByStudentIndeks(godina, broj, oznaka);
+        return prijave.stream()
+                .map(PrijavaIspitaConverter::toPrijavaIspitaResponse)
+                .collect(Collectors.toList());
+    }
+
+    public List<PrijavaIspitaResponse> findAktivniDostupniIspitiZaStudenta(Integer godina, Integer broj, String oznaka) {
+        List<Ispit> ispiti = prijavaIspitaRepository
+                .findDostupniNepolozeniNepretekliIspiti(godina, broj, oznaka);
+
+        List<PrijavaIspitaResponse> responses = new ArrayList<>();
+        StudentIndeks indeks = studentIndeksRepository
+                .findByGodinaAndBrojAndStudProgramOznaka(godina, broj, oznaka).orElse(null);
+
+        for (Ispit ispit : ispiti) {
+            PrijavaIspita temp = new PrijavaIspita();
+            temp.setId(0L);
+            temp.setDatumPrijave(LocalDate.now());
+            temp.setIspit(ispit);
+
+            if (indeks != null) {
+                SlusaPredmet sp = slusaPredmetRepository
+                        .findByStudentIndeksAndDrziPredmet(indeks.getId(), ispit.getDrziPredmet().getId())
+                        .orElse(null);
+                temp.setSlusaPredmet(sp);
+            }
+
+            responses.add(PrijavaIspitaConverter.toPrijavaIspitaResponse(temp));
+        }
+        return responses;
+    }
+
+    public List<PrijavaIspitaResponse> findDostupniIspitiZaStudenta(Integer godina, Integer broj, String oznaka) {
+        List<Ispit> ispiti = prijavaIspitaRepository.findDostupniIspitiZaStudenta(godina, broj, oznaka);
+
+        List<PrijavaIspitaResponse> responses = new ArrayList<>();
+
+        for (Ispit ispit : ispiti) {
+            // 1. Pronađi StudentIndeks
+            StudentIndeks studentIndeks = studentIndeksRepository
+                    .findByGodinaAndBrojAndStudProgramOznaka(godina, broj, oznaka)
+                    .orElse(null);
+
+            if (studentIndeks == null) continue;
+
+            // 2. Pronađi SlusaPredmet za ovaj ispit
+            SlusaPredmet slusaPredmet = slusaPredmetRepository
+                    .findByStudentIndeksAndDrziPredmet(studentIndeks.getId(), ispit.getDrziPredmet().getId())
+                    .orElse(null);
+
+            if (slusaPredmet == null) continue;
+
+            // 3. Kreiraj PRAZNU PrijavaIspita (samo za konverter)
+            PrijavaIspita tempPrijava = new PrijavaIspita();
+            tempPrijava.setIspit(ispit);
+            tempPrijava.setSlusaPredmet(slusaPredmet);
+            tempPrijava.setDatumPrijave(LocalDate.now()); // dummy datum
+
+            // 4. Konvertuj u Response
+            PrijavaIspitaResponse response = PrijavaIspitaConverter.toPrijavaIspitaResponse(tempPrijava);
+            responses.add(response);
+        }
+
+        return responses;
+    }
+
 
 }

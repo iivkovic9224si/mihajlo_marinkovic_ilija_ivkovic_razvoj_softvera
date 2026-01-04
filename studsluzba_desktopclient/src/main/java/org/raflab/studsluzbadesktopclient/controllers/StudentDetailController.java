@@ -47,6 +47,8 @@ public class StudentDetailController {
     @FXML
     private StudentUspehController uspehIncludeController;
 
+    @FXML private StudentIspitiController ispitiIncludeController;
+
     @Autowired
     private StudentService studentService;
 
@@ -80,6 +82,10 @@ public class StudentDetailController {
             req.setBroj(index.getBroj());
             req.setStudProgramOznaka(index.getStudProgramOznaka());
             uspehIncludeController.loadUspehForStudent(req);
+        }
+
+        if (ispitiIncludeController != null) {
+            ispitiIncludeController.setStudentAndIndex(student, index);
         }
     }
 

@@ -54,4 +54,30 @@ public class PrijavaIspitaController {
             @RequestBody @Valid PrijavaIspitaRequest request) {
         return prijavaIspitaService.update(id, request);
     }
+
+    @GetMapping("/prijaveZaStudenta/{godina}/{broj}/{oznaka}")
+    public List<PrijavaIspitaResponse> getPrijaveZaStudenta(
+            @PathVariable Integer godina,
+            @PathVariable Integer broj,
+            @PathVariable String oznaka) {
+        return prijavaIspitaService.findPrijaveZaStudenta(godina, broj, oznaka);
+    }
+
+    // ✅ NOVO: Dostupni ispiti za studenta
+    @GetMapping("/dostupniIspiti/{godina}/{broj}/{oznaka}")
+    public List<PrijavaIspitaResponse> getDostupniIspitiZaStudenta(
+            @PathVariable Integer godina,
+            @PathVariable Integer broj,
+            @PathVariable String oznaka) {
+        return prijavaIspitaService.findDostupniIspitiZaStudenta(godina, broj, oznaka);
+    }
+
+    @GetMapping("/aktivniDostupniIspiti/{godina}/{broj}/{oznaka}")
+    public List<PrijavaIspitaResponse> getAktivniDostupniIspitiZaStudenta(
+            @PathVariable Integer godina,
+            @PathVariable Integer broj,
+            @PathVariable String oznaka) {
+        return prijavaIspitaService.findAktivniDostupniIspitiZaStudenta(godina, broj, oznaka);
+    }
+
 }

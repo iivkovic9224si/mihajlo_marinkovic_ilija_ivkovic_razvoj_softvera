@@ -1,6 +1,7 @@
 package org.raflab.studsluzba.repositories;
 
 import org.raflab.studsluzba.model.entity.IzlazakNaIspit;
+import org.raflab.studsluzba.model.entity.PrijavaIspita;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -40,5 +41,35 @@ public interface IzlazakNaIspitRepository extends JpaRepository<IzlazakNaIspit, 
     List<Object[]> getRezultatiIspitaRawByIspitId(Long ispitId);
 
     List<IzlazakNaIspit> findByPrijavaIspitaId(Long prijavaIspitaId);
+
+    @Query(
+            "select pi " +
+                    "from PrijavaIspita pi " +
+                    "join pi.slusaPredmet sp " +
+                    "join pi.ispit i " +
+                    "where sp.studentIndeks.godina = :godina " +
+                    "and sp.studentIndeks.broj = :broj " +
+                    "and sp.studentIndeks.studProgramOznaka = :oznaka " +
+                    "and i.datumIspita >= CURRENT_DATE " +
+                    "and pi.izlazakNaIspita is null"
+    )
+    List<PrijavaIspita> findPrijaveZaIzlazakZaStudenta(@Param("godina") Integer godina,
+                                                       @Param("broj") Integer broj,
+                                                       @Param("oznaka") String oznaka);
+
+
+    // 1) Svi izlasci za datog studenta
+    @Query("select ini from IzlazakNaIspit ini " +
+            "join ini.prijavaIspita pi " +
+            "join pi.slusaPredmet sp " +
+            "where sp.studentIndeks.godina = :godina " +
+            "and sp.studentIndeks.broj = :broj " +
+            "and sp.studentIndeks.studProgramOznaka = :oznaka")
+    List<IzlazakNaIspit> findIzlasciZaStudenta(@Param("godina") Integer godina,
+                                               @Param("broj") Integer broj,
+                                               @Param("oznaka") String oznaka);
+
+    // 2) Da ne može 2x izlazak za istu prijavu (najjednostavnije)
+    boolean existsByPrijavaIspitaId(Long prijavaIspitaId);
 
 }
