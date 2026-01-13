@@ -1,114 +1,135 @@
 package org.raflab.studsluzbadesktopclient;
 
-import java.io.IOException;
-import java.util.Objects;
-
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.raflab.studsluzbadesktopclient.HistoryManager;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 
 @Component
 public class MainView {
 
-    private final ContextFXMLLoader appFXMLLoader;
+    private final ContextFXMLLoader fxmlLoader;
     private final HistoryManager history = HistoryManager.getInstance();
-    private Scene scene;
-    private boolean isInitialSceneLoaded = false; // flag da ne pushujemo start scene u istoriju
 
-    public MainView(ContextFXMLLoader appFXMLLoader) {
-        this.appFXMLLoader = appFXMLLoader;
+    private BorderPane mainRoot;
+
+    // Za swipe/drag detekciju
+    private double dragStartX;
+
+    public MainView(ContextFXMLLoader fxmlLoader) {
+        this.fxmlLoader = fxmlLoader;
     }
 
     public Scene createScene() {
         try {
-            FXMLLoader loader = appFXMLLoader.getLoader("/fxml/main.fxml");
-            BorderPane borderPane = loader.load();
-            this.scene = new Scene(borderPane, 1000, 800);
-            scene.getStylesheets().add(
-                    Objects.requireNonNull(MainView.class.getResource("/css/stylesheet.css")).toExternalForm());
+            mainRoot = fxmlLoader.getLoader("/fxml/main.fxml").load();
+            Scene scene = new Scene(mainRoot, 1000, 800);
 
-            // push samo kad se stvarno navigira
-            history.push(borderPane, "main");
-            isInitialSceneLoaded = true;
+            // Početna scena
+            history.navigate((Parent) mainRoot.getCenter(), "start");
 
+            // ----------------------------------
+            // Dodavanje podrške za navigaciju
+            // ----------------------------------
+
+            // Mouse button 4 i 5
+            scene.addEventFilter(MouseEvent.MOUSE_PRESSED, this::handleMouseButton);
+
+            // Swipe preko drag-a (swing left/right)
+            scene.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> dragStartX = e.getSceneX());
+            scene.addEventFilter(MouseEvent.MOUSE_RELEASED, this::handleSwipe);
+
+            // Tastatura Ctrl+[ i Ctrl+]
+            scene.addEventFilter(KeyEvent.KEY_PRESSED, this::handleKeyNavigation);
+
+            return scene;
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return this.scene;
     }
 
-    /**
-     * Promena root node-a glavne scene i čuvanje u istoriji.
-     */
     public void changeRoot(String fxml) {
         try {
-            FXMLLoader loader = appFXMLLoader.getLoader("/fxml/" + fxml + ".fxml");
-            Parent newRoot = loader.load();
+            Parent newCenter = fxmlLoader
+                    .getLoader("/fxml/" + fxml + ".fxml")
+                    .load();
 
-            // push-uj trenutni root u istoriju SAMO ako nije prvi load
-            if (scene.getRoot() != null && isInitialSceneLoaded) {
-                history.push(scene.getRoot(), fxml);
-            }
-
-            scene.setRoot(newRoot);
-            isInitialSceneLoaded = true; // sada su sve promene validne
+            history.navigate(newCenter, fxml);
+            mainRoot.setCenter(newCenter);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
-    /**
-     * Idi nazad u istoriji.
-     */
     public void goBack() {
         HistoryManager.SceneState state = history.goBack();
         if (state != null) {
-            scene.setRoot(state.getRoot());
+            mainRoot.setCenter(state.getRoot());
         }
     }
 
-    /**
-     * Idi napred u istoriji.
-     */
     public void goForward() {
         HistoryManager.SceneState state = history.goForward();
         if (state != null) {
-            scene.setRoot(state.getRoot());
+            mainRoot.setCenter(state.getRoot());
         }
     }
 
-    public Parent loadPane(String fxml) {
-        try {
-            FXMLLoader loader = appFXMLLoader.getLoader("/fxml/" + fxml + ".fxml");
-            return loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+    public boolean canGoBack() {
+        return history.canGoBack();
+    }
+
+    public boolean canGoForward() {
+        return history.canGoForward();
+    }
+
+    // --------------------------
+    // Mouse button 4/5
+    // --------------------------
+    private void handleMouseButton(MouseEvent event) {
+        if (event.getButton() == MouseButton.BACK) { // Mouse button 4
+            goBack();
+            event.consume();
+        } else if (event.getButton() == MouseButton.FORWARD) { // Mouse button 5
+            goForward();
+            event.consume();
         }
     }
 
-    public void openModal(String fxml) { openModal(fxml, "", 400, 300); }
+    // --------------------------
+    // Swipe/drag navigacija
+    // --------------------------
+    private void handleSwipe(MouseEvent event) {
+        double deltaX = event.getSceneX() - dragStartX;
 
-    public void openModal(String fxml, String title) { openModal(fxml, title, 400, 300); }
+        // Threshold za swipe (da slučajno ne okida)
+        if (deltaX > 100) {
+            goBack();
+        } else if (deltaX < -100) {
+            goForward();
+        }
+    }
 
-    public void openModal(String fxml, String title, int width, int height) {
-        try {
-            FXMLLoader loader = appFXMLLoader.getLoader("/fxml/" + fxml + ".fxml");
-            Parent parent = loader.load();
-            Scene scene = new Scene(parent, width, height);
-            Stage stage = new Stage();
-            stage.setTitle(title);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(scene);
-            stage.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
+    // --------------------------
+    // Tastatura Ctrl+[ i Ctrl+]
+    // --------------------------
+    private void handleKeyNavigation(KeyEvent event) {
+        if (event.isControlDown()) {
+            if (event.getCode() == KeyCode.OPEN_BRACKET) { // Ctrl + [
+                goBack();
+                event.consume();
+            } else if (event.getCode() == KeyCode.CLOSE_BRACKET) { // Ctrl + ]
+                goForward();
+                event.consume();
+            }
         }
     }
 }

@@ -2,10 +2,15 @@
 
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane fx:id="mainPane" prefHeight="600" prefWidth="800" xmlns:fx="http://javafx.com/fxml"
+<?import javafx.scene.control.Label?>
+<BorderPane fx:id="mainPane" prefHeight="600" prefWidth="800"
+            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.raflab.studsluzbadesktopclient.controllers.MainWindowController">
- <center>
-     <fx:include source="searchStudent.fxml"/>
-
- </center>
+    <top>
+        <fx:include source="menuBar.fxml"/>
+    </top>
+    <center>
+        <Label text="DOBRO DOŠLI U SERVIS STUDENTSKE SLUŽBE!" style="-fx-font-size: 28px; -fx-text-fill: #007bff;" />
+    </center>
 </BorderPane>
+

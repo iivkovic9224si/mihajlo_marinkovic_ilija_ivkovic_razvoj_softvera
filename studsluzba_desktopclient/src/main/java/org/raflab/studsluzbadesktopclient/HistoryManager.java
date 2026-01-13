@@ -2,65 +2,78 @@ package org.raflab.studsluzbadesktopclient;
 
 import javafx.scene.Parent;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
-/**
- * Singleton za čuvanje istorije prikaza scena (back/forward).
- */
 public class HistoryManager {
+
+    private static int MAX_HISTORY = 20; // moze se citati iz application.properties kasnije
 
     private static HistoryManager instance;
 
-    private final Stack<SceneState> backStack = new Stack<>();
-    private final Stack<SceneState> forwardStack = new Stack<>();
+    private final Deque<SceneState> backStack = new ArrayDeque<>();
+    private final Deque<SceneState> forwardStack = new ArrayDeque<>();
 
-    private HistoryManager() { }
+    private SceneState current;
+
+    private HistoryManager() {}
 
     public static HistoryManager getInstance() {
-        if (instance == null) instance = new HistoryManager();
+        if (instance == null) {
+            instance = new HistoryManager();
+        }
         return instance;
     }
 
-    /**
-     * Dodaje novu scenu u istoriju.
-     * @param root Root node scene
-     * @param name Naziv scene (npr. ime FXML fajla)
-     */
-    public void push(Parent root, String name) {
-        backStack.push(new SceneState(root, name));
-        forwardStack.clear(); // nova scena briše "napred" istoriju
+    // Poziva se kada se ide na novu scenu
+    public void navigate(Parent root, String name) {
+        if (current != null && current.getName().equals(name)) {
+            return;
+        }
+
+        if (current != null) {
+            backStack.push(current);
+            if (backStack.size() > MAX_HISTORY) {
+                backStack.removeLast();
+            }
+        }
+
+        current = new SceneState(root, name);
+        forwardStack.clear();
     }
 
-    /**
-     * Idi nazad u istoriji.
-     */
     public SceneState goBack() {
-        if (backStack.size() > 1) { // uvek ostavi trenutnu u stacku
-            SceneState current = backStack.pop();
-            forwardStack.push(current);
-            return backStack.peek();
-        }
-        return null;
+        if (!canGoBack()) return null;
+
+        forwardStack.push(current);
+        current = backStack.pop();
+        return current;
     }
 
-    /**
-     * Idi napred u istoriji.
-     */
     public SceneState goForward() {
-        if (!forwardStack.isEmpty()) {
-            SceneState state = forwardStack.pop();
-            backStack.push(state);
-            return state;
-        }
-        return null;
+        if (!canGoForward()) return null;
+
+        backStack.push(current);
+        current = forwardStack.pop();
+        return current;
     }
 
-    public boolean canGoBack() { return backStack.size() > 1; }
-    public boolean canGoForward() { return !forwardStack.isEmpty(); }
+    public boolean canGoBack() {
+        return !backStack.isEmpty();
+    }
 
-    /**
-     * Reprezentacija stanja scene
-     */
+    public boolean canGoForward() {
+        return !forwardStack.isEmpty();
+    }
+
+    public SceneState getCurrent() {
+        return current;
+    }
+
+    public static void setMaxHistory(int maxHistory) {
+        MAX_HISTORY = maxHistory;
+    }
+
     public static class SceneState {
         private final Parent root;
         private final String name;
@@ -70,7 +83,12 @@ public class HistoryManager {
             this.name = name;
         }
 
-        public Parent getRoot() { return root; }
-        public String getName() { return name; }
+        public Parent getRoot() {
+            return root;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 }
