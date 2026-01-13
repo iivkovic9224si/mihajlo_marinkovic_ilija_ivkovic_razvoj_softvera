@@ -4,6 +4,8 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import org.raflab.studsluzbadesktopclient.services.StudentUspehClientService;
+import request.StudentIndeksRequest;
 import response.StudentIndeksResponse;
 import response.StudentPodaciResponse;
 import javafx.scene.layout.GridPane;
@@ -42,6 +44,10 @@ public class StudentDetailController {
     @FXML
     private StudentUplateController uplateIncludeController;
 
+    @FXML
+    private StudentUspehController uspehIncludeController;
+
+    @FXML private StudentIspitiController ispitiIncludeController;
 
     @Autowired
     private StudentService studentService;
@@ -68,6 +74,18 @@ public class StudentDetailController {
 
         if (uplateIncludeController != null) {
             uplateIncludeController.setSelectedStudent(student);
+        }
+
+        if (uspehIncludeController != null && index != null) {
+            StudentIndeksRequest req = new StudentIndeksRequest();
+            req.setGodina(index.getGodina());
+            req.setBroj(index.getBroj());
+            req.setStudProgramOznaka(index.getStudProgramOznaka());
+            uspehIncludeController.loadUspehForStudent(req);
+        }
+
+        if (ispitiIncludeController != null) {
+            ispitiIncludeController.setStudentAndIndex(student, index);
         }
     }
 

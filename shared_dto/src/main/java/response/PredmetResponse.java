@@ -22,6 +22,7 @@ public class PredmetResponse {
     private String oznakaStudProgram;
     @NotNull
     private boolean obavezan;
+    private Integer godinaStudija;
 
     public PredmetResponse(String sifra, String naziv, String opis, int espb, boolean obavezan) {
         this.sifra = sifra;
@@ -29,5 +30,15 @@ public class PredmetResponse {
         this.opis = opis;
         this.espb = espb;
         this.obavezan = obavezan;
+    }
+
+    public PredmetResponse(Integer espb, Integer godinaStudija, String naziv, boolean obavezan, String opis, String oznakaStudProgram, String sifra) {
+        this.espb = espb;
+        this.godinaStudija = godinaStudija;
+        this.naziv = naziv;
+        this.obavezan = obavezan;
+        this.opis = opis;
+        this.oznakaStudProgram = oznakaStudProgram;
+        this.sifra = sifra;
     }
 }

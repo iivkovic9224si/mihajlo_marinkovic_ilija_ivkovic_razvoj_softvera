@@ -7,6 +7,7 @@ import org.raflab.studsluzba.model.entity.Predmet;
 import org.raflab.studsluzba.model.entity.StudijskiProgram;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -24,4 +25,16 @@ public interface PredmetRepository extends CrudRepository<Predmet, Long> {
 
 
     List<Predmet> findByStudProgram(StudijskiProgram sp);
+
+    // 1. Dostupni predmeti za upis (godina_studija <= maxGodina + program + obavezni)
+    @Query("SELECT p FROM Predmet p WHERE " +
+            "p.godinaStudija <= :maxGodina AND " +
+            "p.studProgram.oznaka = :studProgramOznaka AND " +
+            "p.obavezan = true")
+    List<Predmet> findDostupniZaUpis(@Param("maxGodina") Integer maxGodina,
+                                     @Param("studProgramOznaka") String studProgramOznaka);
+
+    // 2. Svi predmeti za program (za filter obaveznih)
+    List<Predmet> findByStudProgramOznakaAndObavezan(String oznakaStudProgram, boolean obavezan);
+
 }

@@ -1,11 +1,19 @@
 package org.raflab.studsluzbadesktopclient.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
+import pomocniDTO.StudentUpisaneGodineRequest;
 import request.DrziPredmetRequest;
 import request.StudijskiTokAktivnostiRequest;
+import response.DrziPredmetResponse;
+import response.StudijskiTokAktivnostiResponse;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -27,21 +35,54 @@ public class StudentTokAktivnostiService {
     }
 
     private int send(String path, StudijskiTokAktivnostiRequest req, List<DrziPredmetRequest> predmeti) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
         try {
+            ResponseEntity<List<DrziPredmetResponse>> drziResp = restTemplate.exchange(
+                    "http://localhost:8090/api/drziPredmet/findAll",
+                    HttpMethod.GET,
+                    new HttpEntity<>(headers),
+                    new ParameterizedTypeReference<List<DrziPredmetResponse>>() {});
+
+            List<DrziPredmetRequest> validPredmeti = drziResp.getBody().stream()
+                    .filter(dpr -> predmeti.stream().anyMatch(p ->
+                            p.getPredmetSifra().equals(dpr.getPredmetSifra())
+                                    && p.getNastavnikEmail().equals(dpr.getNastavnikEmail())   // ✅ bitno da se poklopi i nastavnik
+                    ))
+                    .map(this::mapToRequest)
+                    .toList();
+
             String url = baseUrl + path;
+            AktivnostPayload payload = new AktivnostPayload(req, validPredmeti);
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
-            AktivnostPayload payload = new AktivnostPayload(req, predmeti);
-            HttpEntity<AktivnostPayload> entity = new HttpEntity<>(payload, headers);
-
-            restTemplate.postForEntity(url, entity, Void.class);
+            restTemplate.postForEntity(url, new HttpEntity<>(payload, headers), Void.class);
             return 1;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
+
+        } catch (RestClientResponseException e) {
+            // ✅ ovde hvataš i 400 i 500 i vadiš poruku iz tela
+            String body = e.getResponseBodyAsString(); // JSON error body [web:145][web:144]
+            throw new RuntimeException(extractMessage(body), e);
         }
+    }
+
+    private String extractMessage(String body) {
+        try {
+            JsonNode node = new ObjectMapper().readTree(body);
+            if (node.hasNonNull("message")) return node.get("message").asText();
+            return body;
+        } catch (Exception ex) {
+            return body;
+        }
+    }
+
+
+    private DrziPredmetRequest mapToRequest(DrziPredmetResponse dpr) {
+        DrziPredmetRequest req = new DrziPredmetRequest();
+        req.setPredmetSifra(dpr.getPredmetSifra());
+        req.setNastavnikEmail(dpr.getNastavnikEmail());
+        return req;
     }
 
     // omot klasa za JSON telo
@@ -69,4 +110,30 @@ public class StudentTokAktivnostiService {
             this.drziPredmetRequests = d;
         }
     }
+
+    public Integer getPoslednjaGodina(int godinaIndeksa, int brojIndeksa, String studProgramOznaka) {
+        try {
+            StudentUpisaneGodineRequest req = new StudentUpisaneGodineRequest();
+            req.setGodina(godinaIndeksa);
+            req.setBroj(brojIndeksa);
+            req.setStudProgramOznaka(studProgramOznaka);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);  // ✅ FIX
+
+            HttpEntity<StudentUpisaneGodineRequest> entity = new HttpEntity<>(req, headers);
+
+            ResponseEntity<List<Integer>> resp = restTemplate.exchange(
+                    "http://localhost:8090/api/student/upisanegodine",
+                    HttpMethod.POST, entity,  // ✅ proslijedi headers
+                    new ParameterizedTypeReference<List<Integer>>(){});
+
+            List<Integer> godine = resp.getBody();
+            return godine.isEmpty() ? null : godine.get(godine.size() - 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

@@ -1,14 +1,17 @@
 package org.raflab.studsluzba.controllers.logicControllers;
 
+import org.raflab.studsluzba.model.entity.PolozenPredmet;
 import org.raflab.studsluzba.model.entity.StudentIndeks;
 import org.raflab.studsluzba.model.dtos.StudentProfileDTO;
 import org.raflab.studsluzba.model.dtos.StudentWebProfileDTO;
 import org.raflab.studsluzba.repositories.StudentIndeksRepository;
 import org.raflab.studsluzba.repositories.StudijskiProgramRepository;
+import org.raflab.studsluzba.services.PolozenPredmetService;
 import org.raflab.studsluzba.services.StudentIndeksService;
 import org.raflab.studsluzba.services.StudentPodaciService;
 import org.raflab.studsluzba.utils.EntityMappers;
 import org.raflab.studsluzba.utils.ParseUtils;
+import org.raflab.studsluzba.utils.converters.PolozenPredmetConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,9 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
 import request.StudentIndeksRequest;
 import request.StudentPodaciRequest;
-import response.PredmetResponse;
-import response.StudentIndeksResponse;
-import response.StudentPodaciResponse;
+import response.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -41,8 +42,8 @@ public class StudentController {
 	@Autowired
 	StudentIndeksService studentIndeksService;
 
-	@Autowired
-	StudijskiProgramRepository studijskiProgramRepository;
+    @Autowired
+    PolozenPredmetService polozenPredmetService;
 
     @Autowired
     EntityMappers entityMappers;
@@ -146,25 +147,27 @@ public class StudentController {
          return null;
     }
 
-	//selekcija svih položenih ispita za broj indeksa studenta
-	@PostMapping(path="/polozenipredmeti")
-	public Page<PredmetResponse> polozeniPredmeti(
-			@RequestBody @Valid StudentIndeksRequest studentIndeksRequest,
-			@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size) {
-		return studentIndeksService.findPolozeniPredmetiByStudentIndeks(studentIndeksRequest, page, size);
-	}
+    @PostMapping(path="/uspeh/polozeni")
+    public Page<PolozenPredmetResponse> getPolozeniUspeh(
+            @RequestBody @Valid StudentIndeksRequest studentIndeksRequest,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-	//selekcija svih nepoloženih ispita za broj indeksa studenta, paginirano
-	@PostMapping(path="/nepolozenipredmeti")
-	public Page<PredmetResponse> nepolozeniPredmeti(
-			@RequestBody @Valid StudentIndeksRequest studentIndeksRequest,
-			@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size) {
-		return studentIndeksService.findNePolozeniPredmetiByStudentIndeks(studentIndeksRequest, page, size);
-	}
+        // ✅ SAMO POZOVI SERVIS
+        return polozenPredmetService.findPolozeniUspeh(studentIndeksRequest, page, size);
+    }
 
-	//pregled svih upisanih godina za broj indeksa
+    // ✅ NOVI ENDPOINT - Nepoloženi (samo predmeti kao i ranije)
+    @PostMapping(path="/uspeh/nepolozeni")
+    public Page<PredmetResponse> getNepolozeniUspeh(
+            @RequestBody @Valid StudentIndeksRequest studentIndeksRequest,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return studentIndeksService.findNePolozeniPredmetiByStudentIndeks(studentIndeksRequest, page, size);
+    }
+
+
+    //pregled svih upisanih godina za broj indeksa
 	@PostMapping(path = "/upisanegodine")
 	public List<Integer> upisaneGodine(@RequestBody @Valid StudentIndeksRequest studentIndeksRequest) {
 		return studentIndeksService.getUpisaneGodineByStudentIndeks(studentIndeksRequest);
@@ -233,6 +236,25 @@ public class StudentController {
     @GetMapping(path="/indeksi/all/{studentPodaciId}")
     public List<StudentIndeksResponse> getAllIndeksiForStudentPodaci(@PathVariable Long studentPodaciId) {
         return studentIndeksService.getAllIndeksiForStudentPodaci(studentPodaciId);
+    }
+
+    @PostMapping(path="/uspeh/polozeni-tabela")
+    public Page<PolozeniUspehRowResponse> getPolozeniUspehTabela(
+            @RequestBody @Valid StudentIndeksRequest studentIndeksRequest,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        return polozenPredmetService.findPolozeniUspehTabela(studentIndeksRequest, page, size);
+    }
+
+    @PostMapping("/uspeh/polozeni/ukupno-espb")
+    public Integer ukupnoEspbPolozeni(@RequestBody @Valid StudentIndeksRequest req) {
+        return polozenPredmetService.getUkupnoEspb(req);
+    }
+
+    @PostMapping("/uspeh/polozeni/prosecna-ocena")
+    public Double prosecnaOcenaPolozeni(@RequestBody @Valid StudentIndeksRequest req) {
+        return polozenPredmetService.getProsecnaOcena(req);
     }
 
 }

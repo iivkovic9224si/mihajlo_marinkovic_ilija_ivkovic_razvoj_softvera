@@ -19,15 +19,17 @@ public class IzlazakNaIspitConverter {
     }
 
     public static IzlazakNaIspitResponse toResponse(IzlazakNaIspit izlazakNaIspit) {
-        double ukupnoPoena = izlazakNaIspit.getBrojPoenaSaIspita() + izlazakNaIspit.getBrojPredispitnihPoena();
+        IzlazakNaIspitResponse r = new IzlazakNaIspitResponse();
+        r.setId(izlazakNaIspit.getId());
+        r.setBrojPoenaSaIspita(izlazakNaIspit.getBrojPoenaSaIspita());
+        r.setBrojPredispitnihPoena(izlazakNaIspit.getBrojPredispitnihPoena());
+        r.setNapomena(izlazakNaIspit.getNapomena());
+        r.setPonistava(izlazakNaIspit.isPonistava());
 
-        return new IzlazakNaIspitResponse(
-                izlazakNaIspit.getId(),
-                izlazakNaIspit.getBrojPoenaSaIspita(),
-                izlazakNaIspit.getBrojPredispitnihPoena(),
-                izlazakNaIspit.getNapomena(),
-                izlazakNaIspit.isPonistava(),
-                izlazakNaIspit.getPrijavaIspita() != null ? izlazakNaIspit.getPrijavaIspita().getId() : null
-        );
+        if (izlazakNaIspit.getPrijavaIspita() != null) {
+            r.setPrijavaIspitaID(izlazakNaIspit.getPrijavaIspita().getId());
+            r.setPrijavaIspita(PrijavaIspitaConverter.toPrijavaIspitaResponse(izlazakNaIspit.getPrijavaIspita()));
+        }
+        return r;
     }
 }

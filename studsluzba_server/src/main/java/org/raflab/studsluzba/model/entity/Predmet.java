@@ -21,6 +21,7 @@ public class Predmet {
 	private String naziv;
 	private String opis;
 	private Integer espb;
+    private Integer godinaStudija;
 
 	@ManyToOne
 	private StudijskiProgram studProgram;

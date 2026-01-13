@@ -5,6 +5,7 @@ import org.raflab.studsluzba.model.entity.StudentIndeks;
 import org.raflab.studsluzba.model.entity.StudijskiTokAktivnosti;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -35,5 +36,28 @@ public interface StudijskiTokAktivnostiRepository extends JpaRepository<Studijsk
             String studProgramOznaka,
             Integer indeksGodina,
             Integer indeksBroj
+    );
+
+    @Query("SELECT COALESCE(MAX(sta.godina), 0) FROM StudijskiTokAktivnosti sta " +
+            "WHERE sta.studentIndeks.broj = :broj " +
+            "AND sta.studentIndeks.godina = :indeksGodina " +
+            "AND sta.studentIndeks.studProgramOznaka = :studProgramOznaka " +
+            "AND (sta.tip = 'UPIS' OR sta.tip = 'OBNOVA')")
+    Integer getPoslednjaGodinaStudijaByIndeks(
+            Integer broj,
+            Integer indeksGodina,
+            String studProgramOznaka
+    );
+
+    @Query("SELECT COALESCE(MAX(sta.godina), 0) FROM StudijskiTokAktivnosti sta " +
+            "WHERE sta.studentIndeks.broj = :broj " +
+            "AND sta.studentIndeks.godina = :indeksGodina " +
+            "AND sta.studentIndeks.studProgramOznaka = :studProgramOznaka " +
+            "AND sta.tip = :tip")
+    Integer getPoslednjaGodinaByIndeksAndTip(
+            Integer broj,
+            Integer indeksGodina,
+            String studProgramOznaka,
+            VrstaStudijskeAktivnosti tip
     );
 }

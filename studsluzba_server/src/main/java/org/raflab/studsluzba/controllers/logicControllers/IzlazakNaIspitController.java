@@ -5,6 +5,7 @@ import org.raflab.studsluzba.services.IzlazakNaIspitService;
 import org.springframework.web.bind.annotation.*;
 import request.IzlazakNaIspitRequest;
 import response.IzlazakNaIspitResponse;
+import response.PrijavaIspitaResponse;
 
 import java.util.List;
 
@@ -48,6 +49,18 @@ public class IzlazakNaIspitController {
     @GetMapping("/izlasci/{studentId}/{drziPredmetId}")
     public Long countTimes(@PathVariable Long studentId, @PathVariable Long drziPredmetId) {
         return izlazakNaIspitService.countStudentPolagaoPredmet(studentId, drziPredmetId);
+    }
+
+    @GetMapping("/prijaveZaIzlazak/{godina}/{broj}/{oznaka}")
+    public List<PrijavaIspitaResponse> getPrijaveZaIzlazakZaStudenta(
+            @PathVariable Integer godina, @PathVariable Integer broj, @PathVariable String oznaka) {
+        return izlazakNaIspitService.findPrijaveZaIzlazakZaStudenta(godina, broj, oznaka);
+    }
+
+    @GetMapping("/izlasciZaStudenta/{godina}/{broj}/{oznaka}")
+    public List<IzlazakNaIspitResponse> getIzlasciZaStudenta(
+            @PathVariable Integer godina, @PathVariable Integer broj, @PathVariable String oznaka) {
+        return izlazakNaIspitService.findIzlasciZaStudenta(godina, broj, oznaka);
     }
 
 }

@@ -46,7 +46,8 @@ public class PredispitneObavezeConverter {
                             predmet.getOpis(),
                             predmet.getEspb(),
                             predmet.getStudProgram() != null ? predmet.getStudProgram().getOznaka() : null,
-                            predmet.isObavezan()
+                            predmet.isObavezan(),
+                            predmet.getGodinaStudija()
                     )
             );
         }

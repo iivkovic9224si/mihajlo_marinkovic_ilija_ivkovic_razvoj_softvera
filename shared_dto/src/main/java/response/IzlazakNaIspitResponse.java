@@ -14,4 +14,6 @@ public class IzlazakNaIspitResponse {
     private String napomena;
     private boolean ponistava;
     private Long prijavaIspitaID;
+
+    private PrijavaIspitaResponse prijavaIspita;
 }

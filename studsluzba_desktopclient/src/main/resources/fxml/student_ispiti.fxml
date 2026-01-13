@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.raflab.studsluzbadesktopclient.controllers.StudentIspitiController"
+      spacing="15">
+
+    <padding>
+        <Insets top="15" right="15" bottom="15" left="15"/>
+    </padding>
+
+    <!-- Statistika prijava -->
+    <HBox spacing="10" alignment="CENTER_LEFT"
+          style="-fx-background-color: #e9ecef; -fx-background-radius: 6; -fx-padding: 15;">
+        <Label text="Prijavljeni ispiti:" style="-fx-font-weight: bold; -fx-font-size: 13px;"/>
+        <Label fx:id="brojPrijavljenihLabel" text="0"
+               style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #28a745;"/>
+    </HBox>
+
+    <Separator/>
+
+    <!-- DOSTUPNI ISPITI + MOJE PRIJAVE -->
+    <GridPane hgap="10" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="NEVER"/>
+        </rowConstraints>
+
+        <!-- Dostupni ispiti za prijavu -->
+        <VBox GridPane.columnIndex="0" GridPane.rowIndex="0">
+            <HBox fx:id="dostupniHeader" spacing="5" alignment="CENTER_LEFT">
+                <Label text="📋 Dostupni ispiti"
+                       style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #17a2b8;"/>
+            </HBox>
+            <TableView fx:id="dostupniIspitiTable">
+                <columns>
+                    <TableColumn fx:id="dostupniSifraCol" text="Šifra" prefWidth="80"/>
+                    <TableColumn fx:id="dostupniPredmetCol" text="Predmet" prefWidth="220"/>
+                    <TableColumn fx:id="dostupniTerminCol" text="Termin" prefWidth="120"/>
+                    <TableColumn fx:id="dostupniStatusCol" text="Status" prefWidth="100"/>
+                    <TableColumn fx:id="dostupniPrijaviCol" text="Prijavi" prefWidth="80"/>
+                </columns>
+            </TableView>
+        </VBox>
+
+        <!-- Moje prijave -->
+        <VBox GridPane.columnIndex="1" GridPane.rowIndex="0">
+            <HBox fx:id="mojePrijaveHeader" spacing="5" alignment="CENTER_LEFT">
+                <Label text="✅ Moje prijave"
+                       style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #28a745;"/>
+                <Label fx:id="brojMojihPrijavljeniLabel" text="(0)" style="-fx-font-weight: bold;"/>
+            </HBox>
+            <TableView fx:id="mojePrijaveTable">
+                <columns>
+                    <TableColumn fx:id="mojeSifraCol" text="Šifra" prefWidth="80"/>
+                    <TableColumn fx:id="mojePredmetCol" text="Predmet" prefWidth="200"/>
+                    <TableColumn fx:id="mojeTerminCol" text="Termin" prefWidth="120"/>
+                    <TableColumn fx:id="mojeDatumPrijaveCol" text="Prijavljeno" prefWidth="110"/>
+                </columns>
+            </TableView>
+        </VBox>
+
+        <!-- OSVEŽI DUGME -->
+        <HBox GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2"
+              spacing="10" alignment="CENTER">
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="osveziBtn" text="🔄 Osveži ispite"
+                    style="-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 12 24 12 24;"
+                    onAction="#handleOsvezi"/>
+            <Region HBox.hgrow="ALWAYS"/>
+        </HBox>
+    </GridPane>
+
+    <Separator/>
+
+    <!-- Statistika izlazaka -->
+    <HBox spacing="10" alignment="CENTER_LEFT"
+          style="-fx-background-color: #e9ecef; -fx-background-radius: 6; -fx-padding: 15;">
+        <Label text="Evidentirani izlasci:" style="-fx-font-weight: bold; -fx-font-size: 13px;"/>
+        <Label fx:id="brojIzlazakaLabel" text="0"
+               style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #28a745;"/>
+    </HBox>
+
+    <Separator/>
+
+    <!-- ISPITI ZA IZLAZAK + MOJI IZLASCI -->
+    <GridPane hgap="10" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="NEVER"/>
+        </rowConstraints>
+
+        <!-- Ispiti (prijave) na koje može da izađe -->
+        <VBox GridPane.columnIndex="0" GridPane.rowIndex="0">
+            <HBox fx:id="prijaveZaIzlazakHeader" spacing="5" alignment="CENTER_LEFT">
+                <Label text="🧾 Ispiti za izlazak"
+                       style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #17a2b8;"/>
+            </HBox>
+            <TableView fx:id="prijaveZaIzlazakTable">
+                <columns>
+                    <TableColumn fx:id="izlazakSifraCol" text="Šifra" prefWidth="80"/>
+                    <TableColumn fx:id="izlazakPredmetCol" text="Predmet" prefWidth="220"/>
+                    <TableColumn fx:id="izlazakTerminCol" text="Termin" prefWidth="120"/>
+                    <TableColumn fx:id="izlazakStatusCol" text="Status" prefWidth="110"/>
+                    <TableColumn fx:id="izlazakEvidentirajCol" text="Evidentiraj" prefWidth="110"/>
+                </columns>
+            </TableView>
+        </VBox>
+
+        <!-- Moji izlasci -->
+        <VBox GridPane.columnIndex="1" GridPane.rowIndex="0">
+            <HBox fx:id="mojiIzlasciHeader" spacing="5" alignment="CENTER_LEFT">
+                <Label text="✅ Moji izlasci"
+                       style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #28a745;"/>
+                <Label fx:id="brojMojihIzlazakaLabel" text="(0)" style="-fx-font-weight: bold;"/>
+            </HBox>
+            <TableView fx:id="mojiIzlasciTable">
+                <columns>
+                    <TableColumn fx:id="mojiIzlasciSifraCol" text="Šifra" prefWidth="80"/>
+                    <TableColumn fx:id="mojiIzlasciPredmetCol" text="Predmet" prefWidth="200"/>
+                    <TableColumn fx:id="mojiIzlasciTerminCol" text="Termin" prefWidth="120"/>
+                    <TableColumn fx:id="mojiIzlasciPoeniCol" text="Poeni" prefWidth="80"/>
+                    <TableColumn fx:id="mojiIzlasciPonistenCol" text="Poništen" prefWidth="80"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </GridPane>
+
+</VBox>

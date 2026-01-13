@@ -16,4 +16,5 @@ public class PredmetRequest {
     private String oznakaStudProgram;
     @NotNull
     private boolean obavezan;
+    private Integer godinaStudija;
 }
