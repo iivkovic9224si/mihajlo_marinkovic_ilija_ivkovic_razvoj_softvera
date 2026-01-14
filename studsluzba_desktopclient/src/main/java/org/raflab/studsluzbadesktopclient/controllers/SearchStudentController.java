@@ -96,6 +96,7 @@ public class SearchStudentController {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/studentDetailView.fxml"));
                 loader.setControllerFactory(applicationContext::getBean);
+                loader.setClassLoader(getClass().getClassLoader());
                 Parent root = loader.load();
 
                 StudentDetailController controller = loader.getController();

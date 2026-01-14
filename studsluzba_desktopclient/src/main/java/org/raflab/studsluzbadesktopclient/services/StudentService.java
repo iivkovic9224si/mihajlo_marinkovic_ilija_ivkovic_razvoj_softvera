@@ -8,6 +8,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.reactive.function.client.WebClient;
 import pomocniDTO.PageResultDTO;
+import pomocniDTO.UverenjeData;
 import reactor.core.publisher.Mono;
 import response.DrziPredmetResponse;
 import response.IspitResponse;
@@ -153,4 +154,15 @@ public class StudentService {
         );
         return response.getBody();
     }
+
+    public UverenjeData getUverenjeData(StudentPodaciResponse student, StudentIndeksResponse index) {
+        return new UverenjeData(
+                student.getIme(),
+                student.getPrezime(),
+                index.getBroj() + "/" + index.getGodina() + "/" + index.getStudProgramOznaka(),
+                index.getStudProgramOznaka(),
+                java.time.LocalDate.now()
+        );
+    }
+
 }

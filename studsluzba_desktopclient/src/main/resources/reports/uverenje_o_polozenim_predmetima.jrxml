@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 6.21.5  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="uverenje_o_polozenim_predmetima" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="66d3a103-5f74-4e7f-8626-6cec62e1ced6">
+	<property name="net.sf.jasperreports.default.pdf.encoding" value="UTF-8"/>
+	<parameter name="pIme" class="java.lang.String"/>
+	<parameter name="pPrezime" class="java.lang.String"/>
+	<parameter name="pBrojIndeksa" class="java.lang.String"/>
+	<parameter name="pStudijskiProgram" class="java.lang.String"/>
+	<parameter name="pDatumIzdavanja" class="java.time.LocalDate"/>
+	<parameter name="pUkupnoEspb" class="java.lang.Integer"/>
+	<parameter name="pProsek" class="java.lang.Double"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="sifra" class="java.lang.String"/>
+	<field name="naziv" class="java.lang.String"/>
+	<field name="ocena" class="java.lang.Integer"/>
+	<field name="poeni" class="java.lang.Double"/>
+	<field name="espb" class="java.lang.Integer"/>
+	<field name="datum" class="java.time.LocalDate"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="55" y="24" width="461" height="30" uuid="39c70005-90fe-4b90-928c-2512e1a83558">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="DejaVu Sans" size="28" isBold="false" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Uverenje o položenim ispitima]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="64" y="15" width="430" height="48" uuid="900dbe2e-acdf-406b-85f8-e2609ecbae30">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="DejaVu Sans" size="28" isBold="false" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Uverenje o položenim ispitima]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="151" splitType="Stretch">
+			<textField>
+				<reportElement x="10" y="60" width="534" height="60" uuid="8f2479df-e94c-4619-8027-c480f4e8be0e"/>
+				<textElement textAlignment="Justified">
+					<font fontName="DejaVu Sans" size="16" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Student " + $P{pIme} + " " + $P{pPrezime} + ", sa rednim brojem indeksa " + $P{pBrojIndeksa} + ", je ostvario " + $P{pUkupnoEspb} + " ESPB sa prosekom " + $P{pProsek} + "."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="336" y="20" width="208" height="20" uuid="8402480d-194f-4cbd-8919-b7b2f60c6ca7"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="16" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Izdato dana: " + $P{pDatumIzdavanja}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="54" splitType="Stretch">
+			<staticText>
+				<reportElement x="9" y="12" width="60" height="30" uuid="223368b2-7344-42df-bead-8a4016a80695"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" isBold="true" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Šifra]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="76" y="12" width="168" height="30" uuid="a5707e91-b8d6-43e2-9133-ce34a2d54f26"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" isBold="true" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Naziv Predmeta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="254" y="12" width="50" height="30" uuid="5c707933-b3ab-4841-9b55-831936138407">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" isBold="true" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[ESPB]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="324" y="12" width="60" height="30" uuid="7bac56b2-889b-41e0-8a9f-40f2ea3fa70d">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" isBold="true" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Ocena]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="395" y="12" width="51" height="30" uuid="5f0d6a2b-335c-4e05-98ab-d7376ffb065e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" isBold="true" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Poeni]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="455" y="12" width="94" height="30" uuid="8c12b8a1-b9db-4741-80d0-1f483bb9ec5f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" isBold="true" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Datum]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="56" splitType="Stretch">
+			<textField>
+				<reportElement x="9" y="18" width="60" height="20" uuid="6f6cf75b-a08d-4921-8e64-484b380da025">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sifra}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="76" y="3" width="168" height="50" uuid="cba83a57-b5ae-4483-a7e6-385b65e03076">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{naziv}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="254" y="18" width="50" height="20" uuid="593cbb74-f6fc-49eb-b371-34dd4cc17b63"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{espb}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="324" y="18" width="60" height="20" uuid="461188bf-f44b-4350-9a32-beaab843691b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ocena}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="395" y="18" width="51" height="20" uuid="92c90470-821e-41b5-adad-422556156b39"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{poeni}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="455" y="18" width="94" height="20" uuid="09a165f5-95ed-45ba-8183-1b28edc25292"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{datum}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

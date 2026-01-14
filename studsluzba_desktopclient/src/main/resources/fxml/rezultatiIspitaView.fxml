@@ -21,4 +21,7 @@
             <TableColumn fx:id="colUkupnoPoena" text="Ukupno poena"/>
         </columns>
     </TableView>
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button fx:id="stampajBtn" text="🖨️ Štampaj rezultate" />
+    </HBox>
 </VBox>

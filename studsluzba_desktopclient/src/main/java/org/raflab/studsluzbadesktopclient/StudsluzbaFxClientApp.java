@@ -2,6 +2,7 @@ package org.raflab.studsluzbadesktopclient;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,6 +12,10 @@ import org.springframework.context.ConfigurableApplicationContext;
 public class StudsluzbaFxClientApp extends Application {
 
     protected ConfigurableApplicationContext springContext;
+
+    static {
+        FXMLLoader.setDefaultClassLoader(StudsluzbaFxClientApp.class.getClassLoader());
+    }
 
     public static void main(String[] args) {
         launch(StudsluzbaFxClientApp.class);

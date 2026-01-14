@@ -51,9 +51,7 @@ public class IspitService {
     }
 
     public Optional<IspitResponse> findById(Long id) {
-        return Optional.ofNullable(
-                restTemplate.getForObject(baseUrl + "/findById/" + id, IspitResponse.class)
-        );
+        return Optional.ofNullable(restTemplate.getForObject(baseUrl + "/findById/" + id, IspitResponse.class));
     }
 
     public Optional<IspitResponse> update(IspitRequest request) {

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 6.21.5  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rezultati_ispita" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6397dfe6-2ec3-4669-a82b-77ffa1286611">
+	<property name="net.sf.jasperreports.default.pdf.encoding" value="UTF-8"/>
+	<parameter name="pNazivPredmeta" class="java.lang.String"/>
+	<parameter name="pIspitniRok" class="java.lang.String"/>
+	<parameter name="pDatumIspita" class="java.lang.String"/>
+	<parameter name="pProsecnaOcena" class="java.lang.Double"/>
+	<parameter name="pBrojUcesnika" class="java.lang.Integer"/>
+	<parameter name="pGodinaSkolskeGodine" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="imeStudenta" class="java.lang.String"/>
+	<field name="prezimeStudenta" class="java.lang.String"/>
+	<field name="studProgram" class="java.lang.String"/>
+	<field name="godinaUpisa" class="java.lang.Integer"/>
+	<field name="brojIndeksa" class="java.lang.Integer"/>
+	<field name="ukupnoPoena" class="java.lang.Double"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="70" splitType="Stretch">
+			<staticText>
+				<reportElement x="172" y="15" width="210" height="40" uuid="8ee1f4b0-b40b-4732-8b4b-25773f7b4802"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="28" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Rezultati ispita]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="132" splitType="Stretch">
+			<textField>
+				<reportElement x="10" y="10" width="464" height="30" uuid="750d305f-b9e2-4abb-8b6d-0ad86324f25b"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Naziv predmeta: " + $P{pNazivPredmeta}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="10" y="50" width="464" height="30" uuid="fd9fb4cd-49fe-4d2e-a1e8-7d1ab1c6f946"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Ispitni rok: " +  $P{pIspitniRok} + " | Datum: " + $P{pDatumIspita}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="10" y="90" width="464" height="30" uuid="569f176f-c7de-4d73-8c62-7e2fa768c1bd"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Prosek ocena: " + (($P{pProsecnaOcena} != null) ? $P{pProsecnaOcena} : "-") + " | Broj učešća: " + $P{pBrojUcesnika}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="57" splitType="Stretch">
+			<staticText>
+				<reportElement x="10" y="10" width="90" height="30" uuid="5a139948-d251-4332-a0fb-0b660523a8b7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" isBold="true" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Ime]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="114" y="10" width="106" height="30" uuid="b72bb62f-1a7d-45fd-b606-5b5acecb7511"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" isBold="true" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Prezime]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="233" y="10" width="60" height="30" uuid="c0b0e1ee-792f-49dd-892f-4c425d315a27"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" isBold="true" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Prog.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="297" y="10" width="80" height="30" uuid="eba74af9-4823-45cd-8598-bdfc97b5ead3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" isBold="true" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[God.up.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="383" y="10" width="70" height="30" uuid="0275a662-8697-4e64-b151-929eb897e380"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" isBold="true" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Br.Ind.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="459" y="10" width="90" height="30" uuid="afae0385-b36d-4727-bf96-028cba9d93ed"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" isBold="true" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Poeni]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="55" splitType="Stretch">
+			<textField>
+				<reportElement x="10" y="10" width="90" height="30" uuid="09e6ecb9-3568-40bb-ab38-fa39b85811d8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{imeStudenta}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="114" y="10" width="106" height="30" uuid="24344008-ab97-46e8-84ce-13102c7b86e4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prezimeStudenta}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="233" y="10" width="60" height="30" uuid="ed370128-fdcb-4399-a3cf-7532bfab4db6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{studProgram}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="303" y="10" width="68" height="30" uuid="e7022135-8e1a-41a5-b928-9dcc45aeb27a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{godinaUpisa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="388" y="10" width="60" height="30" uuid="67022189-a3b2-4945-b005-f8d6d02ad122"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{brojIndeksa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="459" y="10" width="90" height="30" uuid="0dd423b5-2311-4111-a02b-9f064335cb8c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ukupnoPoena}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

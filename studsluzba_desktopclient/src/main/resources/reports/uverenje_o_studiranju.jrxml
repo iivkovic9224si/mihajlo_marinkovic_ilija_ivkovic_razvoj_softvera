@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 6.21.5  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="uverenje_o_studiranju" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4ef0874d-7217-46ed-bcfe-bfdaab806e29">
+	<property name="net.sf.jasperreports.default.pdf.encoding" value="UTF-8"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="datumIzdavanja" class="java.time.LocalDate"/>
+	<field name="ime" class="java.lang.String"/>
+	<field name="prezime" class="java.lang.String"/>
+	<field name="studijskiProgram" class="java.lang.String"/>
+	<field name="brojIndeksa" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="93" splitType="Stretch">
+			<staticText>
+				<reportElement x="103" y="20" width="348" height="40" uuid="64b1e333-ac76-4db9-bb88-75ebc59755b2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="28" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Uverenje o studiranju]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="43" splitType="Stretch">
+			<textField>
+				<reportElement x="320" y="8" width="224" height="27" uuid="75e6813c-05b2-4075-8346-8024b00f1ac8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Izdato dana: " + $F{datumIzdavanja}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<textField>
+				<reportElement x="25" y="27" width="505" height="70" uuid="82ab85af-cf4d-4017-8b4e-a55118049814">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Justified" verticalAlignment="Middle" markup="none">
+					<font fontName="DejaVu Sans" size="16" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Ovim se potvrđuje da student " + $F{ime} + " " + $F{prezime} + ", sa indeksom " + $F{brojIndeksa} + ", koji pohađa studijski program " + $F{studijskiProgram} + " redovno pohađa nastavu."]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

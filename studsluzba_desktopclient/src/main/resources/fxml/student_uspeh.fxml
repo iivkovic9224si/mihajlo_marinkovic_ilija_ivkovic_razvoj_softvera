@@ -69,14 +69,17 @@
             </TableView>
         </VBox>
 
-        <!-- REFRESH DUGME - U SREDINI WINDOW-A -->
+        <!-- DUGMAD - REFRESH + UVERENJE -->
         <HBox GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="2"
-              spacing="10" alignment="CENTER">
+              spacing="15" alignment="CENTER">
             <Region HBox.hgrow="ALWAYS"/>
             <Button fx:id="refreshBtn" text="🔄 Osveži uspeh"
                     style="-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 12 24 12 24;"/>
+            <Button fx:id="uverenjePolozeniBtn" text="📄 Uverenje o položenim"
+                    style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 12 24 12 24;"/>
             <Region HBox.hgrow="ALWAYS"/>
         </HBox>
+
     </GridPane>
 
 </VBox>

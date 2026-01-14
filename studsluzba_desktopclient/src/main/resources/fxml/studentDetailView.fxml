@@ -54,6 +54,10 @@
                         <Button fx:id="sacuvajBtn" text="Sačuvaj promene" minWidth="150"/>
                     </HBox>
 
+                    <HBox spacing="10" alignment="CENTER_RIGHT">
+                        <Button fx:id="generisiUverenjeBtn" text="Generiši uverenje o studiranju" minWidth="250"/>
+                    </HBox>
+
                 </VBox>
             </ScrollPane>
         </Tab>

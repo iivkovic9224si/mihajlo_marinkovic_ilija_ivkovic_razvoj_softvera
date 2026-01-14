@@ -4,7 +4,10 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.raflab.studsluzbadesktopclient.services.StudentUspehClientService;
+import pomocniDTO.UverenjeData;
 import request.StudentIndeksRequest;
 import response.StudentIndeksResponse;
 import response.StudentPodaciResponse;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -49,6 +53,8 @@ public class StudentDetailController {
 
     @FXML private StudentIspitiController ispitiIncludeController;
 
+    @FXML private Button generisiUverenjeBtn;
+
     @Autowired
     private StudentService studentService;
 
@@ -59,6 +65,9 @@ public class StudentDetailController {
 
     @FXML
     public void initialize() {
+        if (generisiUverenjeBtn != null) {
+            generisiUverenjeBtn.setOnAction(e -> generisiUverenje());
+        }
     }
 
     public void setStudentAndIndex(StudentPodaciResponse student, StudentIndeksResponse index) {
@@ -81,7 +90,7 @@ public class StudentDetailController {
             req.setGodina(index.getGodina());
             req.setBroj(index.getBroj());
             req.setStudProgramOznaka(index.getStudProgramOznaka());
-            uspehIncludeController.loadUspehForStudent(req);
+            uspehIncludeController.loadUspehForStudent(req, this);
         }
 
         if (ispitiIncludeController != null) {
@@ -179,5 +188,32 @@ public class StudentDetailController {
         studentService.update(student.getId(), student);
 
         new Alert(Alert.AlertType.INFORMATION, "Student sačuvan").showAndWait();
+    }
+
+    private void generisiUverenje() {
+        if (student == null || studentIndex == null) {
+            new Alert(Alert.AlertType.WARNING, "Odaberi studenta i indeks!").showAndWait();
+            return;
+        }
+
+        try {
+            UverenjeData data = studentService.getUverenjeData(student, studentIndex);
+
+            JasperReport report = JasperCompileManager.compileReport(
+                    getClass().getResourceAsStream("/reports/uverenje_o_studiranju.jrxml"));
+
+            JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(List.of(data));
+
+            JasperPrint jp = JasperFillManager.fillReport(report, new HashMap<>(), ds);
+
+            String fileName = "uverenje_" + student.getJmbg() + "_" + studentIndex.getBroj() + "_" + studentIndex.getGodina() + ".pdf";
+            JasperExportManager.exportReportToPdfFile(jp, fileName);
+
+            new Alert(Alert.AlertType.INFORMATION, "✅ Uverenje sačuvano: " + fileName).showAndWait();
+
+        } catch (Exception ex) {
+            new Alert(Alert.AlertType.ERROR, "❌ Greška: " + ex.getMessage()).showAndWait();
+            ex.printStackTrace();
+        }
     }
 }

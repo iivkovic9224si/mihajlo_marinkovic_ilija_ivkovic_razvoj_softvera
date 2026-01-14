@@ -82,12 +82,19 @@
             <version>21.0.2</version>
         </dependency>
 
-        <!-- JasperReports -->
+        <!-- ZAMENI postojeće jasperreports sa ovim -->
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
-            <version>6.21.0</version>
+            <version>6.21.5</version>  <!-- isti kao Studio -->
         </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-fonts</artifactId>
+            <version>6.21.5</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
