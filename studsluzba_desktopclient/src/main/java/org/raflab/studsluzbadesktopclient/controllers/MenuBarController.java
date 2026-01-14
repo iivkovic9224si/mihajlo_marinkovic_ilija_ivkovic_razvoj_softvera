@@ -46,7 +46,7 @@ public class MenuBarController {
 
     @FXML
     public void openNewStudent() {
-        mainView.openModal("newStudent", "Novi student", 1200, 900);
+        mainView.changeRoot("newStudent");
     }
 
     @FXML
