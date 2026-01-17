@@ -181,7 +181,8 @@ public class PolozenPredmetService {
                 pp.getPredmet().getEspb(),
                 pp.getBrojPoena(),
                 pp.getOcena(),
-                pp.getDatum()
+                pp.getDatum(),
+                pp.getPredmet().getGodinaStudija()
         ));
     }
 
