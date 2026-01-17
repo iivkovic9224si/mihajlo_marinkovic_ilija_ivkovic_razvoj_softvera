@@ -21,7 +21,11 @@
                 <columnConstraints>
                     <ColumnConstraints halignment="RIGHT" minWidth="150"/>
                     <ColumnConstraints hgrow="ALWAYS"/>
+                    <ColumnConstraints halignment="RIGHT" minWidth="150"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
                 </columnConstraints>
+
+                <!-- LEVA KOLONA -->
 
                 <!-- Tip aktivnosti -->
                 <Label text="Tip aktivnosti:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
@@ -52,25 +56,40 @@
                 <Label text="Indeks aktivan:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
                 <CheckBox fx:id="indeksAktivanCb" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
 
-                <!-- Napomena -->
-                <Label text="Napomena:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
-                <TextArea fx:id="napomenaTa" prefRowCount="3"
-                          GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+                <!-- DESNA KOLONA -->
 
-                <!-- 🚀 POSEDNAJA GODINA (NOVI RED 8) -->
-                <Label text="Poslednja godina:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+                <!-- ✅ UPISANE GODINE -->
+                <Label text="Upisane godine:" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+                <Label fx:id="lblUpisaneGodine" text="/"
+                       style="-fx-font-size: 14px; -fx-padding: 5; -fx-background-color: #e6f7ff;"
+                       GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+
+                <!-- ✅ OBNOVLJENE GODINE -->
+                <Label text="Obnovljene godine:" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+                <Label fx:id="lblObnovljeneGodine" text="/"
+                       style="-fx-font-size: 14px; -fx-padding: 5; -fx-background-color: #fff7e6;"
+                       GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+
+                <!-- 🚀 POSEDNAJA GODINA -->
+                <Label text="Poslednja godina:" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
                 <Label fx:id="lblPoslednjaGodina" text="Nema aktivnosti"
                        style="-fx-font-size: 14px; -fx-padding: 5; -fx-background-color: #f0f0f0;"
-                       GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+                       GridPane.rowIndex="2" GridPane.columnIndex="3"/>
 
-                <!-- UČITAJ PREDMETE (sada red 9) -->
-                <Label text="" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
+                <!-- Napomena -->
+                <Label text="Napomena:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+                <TextArea fx:id="napomenaTa" prefRowCount="2" prefHeight="60"
+                          GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.columnSpan="3"/>
+
+                <!-- UČITAJ PREDMETE -->
+                <Label text="" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
                 <Button fx:id="ucitajPredmeteBtn" text="🔄 Učitaj dostupne predmete"
                         onAction="#handleUcitajPredmete"
-                        GridPane.rowIndex="9" GridPane.columnIndex="1"/>
+                        GridPane.rowIndex="8" GridPane.columnIndex="1" GridPane.columnSpan="3"/>
 
-                <!-- Dugmad (sada red 10) -->
-                <HBox spacing="10" alignment="CENTER_RIGHT" GridPane.rowIndex="10" GridPane.columnIndex="1">
+                <!-- Dugmad -->
+                <HBox spacing="10" alignment="CENTER_RIGHT" GridPane.rowIndex="9" GridPane.columnIndex="0" GridPane.columnSpan="4">
+                    <Region HBox.hgrow="ALWAYS"/>
                     <Button text="Upiši" onAction="#handleUpis"/>
                     <Button text="Obnova" onAction="#handleObnova"/>
                 </HBox>
@@ -79,9 +98,9 @@
         </content>
     </TitledPane>
 
-    <TitledPane text="Predmeti za upis/obnovu" expanded="true">
+    <TitledPane text="Predmeti za upis/obnovu" expanded="true" prefHeight="350">
         <content>
-            <TableView fx:id="predmetiTable" prefHeight="200" editable="true">
+            <TableView fx:id="predmetiTable" prefHeight="300" editable="true">
                 <columns>
                     <TableColumn fx:id="selectCol" text="Izaberi" prefWidth="70"/>
                     <TableColumn fx:id="sifraCol" text="Šifra predmeta" prefWidth="150"/>

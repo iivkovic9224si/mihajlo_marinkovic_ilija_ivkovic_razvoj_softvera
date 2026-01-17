@@ -11,9 +11,7 @@ import pomocniDTO.StudentUpisaneGodineRequest;
 import request.DrziPredmetRequest;
 import request.StudijskiTokAktivnostiRequest;
 import response.DrziPredmetResponse;
-import response.StudijskiTokAktivnostiResponse;
 
-import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -25,6 +23,8 @@ public class StudentTokAktivnostiService {
     public StudentTokAktivnostiService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
+
+    // ================= POSTOJEĆE METODE =================
 
     public int upisiNaGodinu(StudijskiTokAktivnostiRequest req, List<DrziPredmetRequest> predmeti) {
         return send("upisstudenta", req, predmeti);
@@ -44,12 +44,13 @@ public class StudentTokAktivnostiService {
                     "http://localhost:8090/api/drziPredmet/findAll",
                     HttpMethod.GET,
                     new HttpEntity<>(headers),
-                    new ParameterizedTypeReference<List<DrziPredmetResponse>>() {});
+                    new ParameterizedTypeReference<List<DrziPredmetResponse>>() {}
+            );
 
             List<DrziPredmetRequest> validPredmeti = drziResp.getBody().stream()
                     .filter(dpr -> predmeti.stream().anyMatch(p ->
-                            p.getPredmetSifra().equals(dpr.getPredmetSifra())
-                                    && p.getNastavnikEmail().equals(dpr.getNastavnikEmail())   // ✅ bitno da se poklopi i nastavnik
+                            p.getPredmetSifra().equals(dpr.getPredmetSifra()) &&
+                                    p.getNastavnikEmail().equals(dpr.getNastavnikEmail())
                     ))
                     .map(this::mapToRequest)
                     .toList();
@@ -61,8 +62,7 @@ public class StudentTokAktivnostiService {
             return 1;
 
         } catch (RestClientResponseException e) {
-            // ✅ ovde hvataš i 400 i 500 i vadiš poruku iz tela
-            String body = e.getResponseBodyAsString(); // JSON error body [web:145][web:144]
+            String body = e.getResponseBodyAsString();
             throw new RuntimeException(extractMessage(body), e);
         }
     }
@@ -77,7 +77,6 @@ public class StudentTokAktivnostiService {
         }
     }
 
-
     private DrziPredmetRequest mapToRequest(DrziPredmetResponse dpr) {
         DrziPredmetRequest req = new DrziPredmetRequest();
         req.setPredmetSifra(dpr.getPredmetSifra());
@@ -85,7 +84,8 @@ public class StudentTokAktivnostiService {
         return req;
     }
 
-    // omot klasa za JSON telo
+    // ================= POSTOJEĆI DTO =================
+
     public static class AktivnostPayload {
         private StudijskiTokAktivnostiRequest studijskiTokAktivnostiRequest;
         private List<DrziPredmetRequest> drziPredmetRequests;
@@ -96,39 +96,28 @@ public class StudentTokAktivnostiService {
             this.drziPredmetRequests = l;
         }
 
-        // getteri/setteri
         public StudijskiTokAktivnostiRequest getStudijskiTokAktivnostiRequest() {
             return studijskiTokAktivnostiRequest;
         }
+
         public void setStudijskiTokAktivnostiRequest(StudijskiTokAktivnostiRequest s) {
             this.studijskiTokAktivnostiRequest = s;
         }
+
         public List<DrziPredmetRequest> getDrziPredmetRequests() {
             return drziPredmetRequests;
         }
+
         public void setDrziPredmetRequests(List<DrziPredmetRequest> d) {
             this.drziPredmetRequests = d;
         }
     }
 
+    // ================= POSTOJEĆA METODA =================
+
     public Integer getPoslednjaGodina(int godinaIndeksa, int brojIndeksa, String studProgramOznaka) {
         try {
-            StudentUpisaneGodineRequest req = new StudentUpisaneGodineRequest();
-            req.setGodina(godinaIndeksa);
-            req.setBroj(brojIndeksa);
-            req.setStudProgramOznaka(studProgramOznaka);
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);  // ✅ FIX
-
-            HttpEntity<StudentUpisaneGodineRequest> entity = new HttpEntity<>(req, headers);
-
-            ResponseEntity<List<Integer>> resp = restTemplate.exchange(
-                    "http://localhost:8090/api/student/upisanegodine",
-                    HttpMethod.POST, entity,  // ✅ proslijedi headers
-                    new ParameterizedTypeReference<List<Integer>>(){});
-
-            List<Integer> godine = resp.getBody();
+            List<Integer> godine = getUpisaneGodine(godinaIndeksa, brojIndeksa, studProgramOznaka);
             return godine.isEmpty() ? null : godine.get(godine.size() - 1);
         } catch (Exception e) {
             e.printStackTrace();
@@ -136,4 +125,49 @@ public class StudentTokAktivnostiService {
         }
     }
 
+    // ================= POSTOJEĆA METODA =================
+
+    public List<Integer> getUpisaneGodine(int godinaIndeksa, int brojIndeksa, String studProgramOznaka) {
+        StudentUpisaneGodineRequest req = new StudentUpisaneGodineRequest();
+        req.setGodina(godinaIndeksa);
+        req.setBroj(brojIndeksa);
+        req.setStudProgramOznaka(studProgramOznaka);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<StudentUpisaneGodineRequest> entity = new HttpEntity<>(req, headers);
+
+        ResponseEntity<List<Integer>> resp = restTemplate.exchange(
+                "http://localhost:8090/api/student/upisanegodine",
+                HttpMethod.POST,
+                entity,
+                new ParameterizedTypeReference<List<Integer>>() {}
+        );
+
+        return resp.getBody();
+    }
+
+    // ================= ✅ NOVA METODA ZA OBNOVLJENE GODINE =================
+
+    public List<Integer> getObnovljeneGodine(int godinaIndeksa, int brojIndeksa, String studProgramOznaka) {
+        StudentUpisaneGodineRequest req = new StudentUpisaneGodineRequest();
+        req.setGodina(godinaIndeksa);
+        req.setBroj(brojIndeksa);
+        req.setStudProgramOznaka(studProgramOznaka);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<StudentUpisaneGodineRequest> entity = new HttpEntity<>(req, headers);
+
+        ResponseEntity<List<Integer>> resp = restTemplate.exchange(
+                "http://localhost:8090/api/student/obnovljenegodine",
+                HttpMethod.POST,
+                entity,
+                new ParameterizedTypeReference<List<Integer>>() {}
+        );
+
+        return resp.getBody();
+    }
 }

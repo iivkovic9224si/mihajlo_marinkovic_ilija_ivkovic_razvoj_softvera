@@ -22,6 +22,7 @@ import response.StudijskiTokAktivnostiResponse;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @Component
@@ -67,6 +68,8 @@ public class StudentAktivnostiController {
     private TableColumn<PredmetSelection, String> nastavnikCol;
 
     @FXML private Label lblPoslednjaGodina;
+    @FXML private Label lblUpisaneGodine;
+    @FXML private Label lblObnovljeneGodine;
 
     @Autowired
     private StudentTokAktivnostiService aktivnostiService;
@@ -101,6 +104,8 @@ public class StudentAktivnostiController {
         selectCol.setCellFactory(tc -> new CheckBoxTableCell<>());
 
         lblPoslednjaGodina.setText("Nema upisanih godina");
+        lblUpisaneGodine.setText("/");
+        lblObnovljeneGodine.setText("/");
     }
 
     public void setStudent(StudentPodaciResponse student) {
@@ -112,8 +117,6 @@ public class StudentAktivnostiController {
         this.izabraniIndeks = izabraniIndeks;
         postaviIzabraniIndeksUI();
     }
-
-
 
     @FXML
     private void handleUpis() {
@@ -156,7 +159,7 @@ public class StudentAktivnostiController {
             }
 
             new Alert(Alert.AlertType.INFORMATION, "Aktivnost uspešno sačuvana.", ButtonType.OK).showAndWait();
-            osveziPoslednjuGodinuAsync();
+            osveziGodineAsync();
 
         } catch (RuntimeException ex) {
             // ✅ ovde stiže server poruka (ne preskači godinu / obnova pogrešna godina / ESPB > 60...)
@@ -231,45 +234,102 @@ public class StudentAktivnostiController {
             indeksBrojTf.setText(String.valueOf(izabraniIndeks.getBroj()));
             indeksAktivanCb.setSelected(izabraniIndeks.isAktivan());
 
-            osveziPoslednjuGodinuAsync(); // ✅ DODAJ OVDE
+            osveziGodineAsync(); // ✅ PROMENJENO: zove novu metodu
         } else {
             lblPoslednjaGodina.setText("Nema indeksa");
+            lblUpisaneGodine.setText("/");
+            lblObnovljeneGodine.setText("/");
         }
     }
 
-
-    private void osveziPoslednjuGodinuAsync() {
-        if (lblPoslednjaGodina == null) return; // ako FXML nije povezan
+    // ✅ NOVA METODA koja osvežava sve 3 labele
+    private void osveziGodineAsync() {
         if (izabraniIndeks == null) {
             lblPoslednjaGodina.setText("Nema indeksa");
+            lblUpisaneGodine.setText("/");
+            lblObnovljeneGodine.setText("/");
             return;
         }
 
         lblPoslednjaGodina.setText("Učitavam...");
+        lblUpisaneGodine.setText("Učitavam...");
+        lblObnovljeneGodine.setText("Učitavam...");
 
-        Task<Integer> task = new Task<>() {
+        Task<GodineResult> task = new Task<>() {
             @Override
-            protected Integer call() {
-                return aktivnostiService.getPoslednjaGodina(
+            protected GodineResult call() {
+                Integer poslednjaGodina = aktivnostiService.getPoslednjaGodina(
                         izabraniIndeks.getGodina(),
                         izabraniIndeks.getBroj(),
                         izabraniIndeks.getStudProgramOznaka()
                 );
+
+                List<Integer> upisaneGodine = aktivnostiService.getUpisaneGodine(
+                        izabraniIndeks.getGodina(),
+                        izabraniIndeks.getBroj(),
+                        izabraniIndeks.getStudProgramOznaka()
+                );
+
+                List<Integer> obnovljeneGodine = aktivnostiService.getObnovljeneGodine(
+                        izabraniIndeks.getGodina(),
+                        izabraniIndeks.getBroj(),
+                        izabraniIndeks.getStudProgramOznaka()
+                );
+
+                return new GodineResult(poslednjaGodina, upisaneGodine, obnovljeneGodine);
             }
         };
 
         task.setOnSucceeded(e -> {
-            Integer g = task.getValue();
-            lblPoslednjaGodina.setText(g != null ? ("" + g) : "Nema aktivnosti");
+            GodineResult result = task.getValue();
+
+            // Postavi poslednju godinu
+            lblPoslednjaGodina.setText(result.poslednjaGodina != null ?
+                    result.poslednjaGodina.toString() : "Nema aktivnosti");
+
+            // Postavi upisane godine
+            if (result.upisaneGodine == null || result.upisaneGodine.isEmpty()) {
+                lblUpisaneGodine.setText("/");
+            } else {
+                String upisane = result.upisaneGodine.stream()
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(", "));
+                lblUpisaneGodine.setText(upisane);
+            }
+
+            // Postavi obnovljene godine
+            if (result.obnovljeneGodine == null || result.obnovljeneGodine.isEmpty()) {
+                lblObnovljeneGodine.setText("/");
+            } else {
+                String obnovljene = result.obnovljeneGodine.stream()
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(", "));
+                lblObnovljeneGodine.setText(obnovljene);
+            }
         });
 
         task.setOnFailed(e -> {
-            lblPoslednjaGodina.setText("Greška pri učitavanju");
+            lblPoslednjaGodina.setText("Greška");
+            lblUpisaneGodine.setText("/");
+            lblObnovljeneGodine.setText("/");
             task.getException().printStackTrace();
         });
 
         Thread t = new Thread(task);
         t.setDaemon(true);
         t.start();
+    }
+
+    // ✅ POMOCNI DTO za rezultate
+    private static class GodineResult {
+        Integer poslednjaGodina;
+        List<Integer> upisaneGodine;
+        List<Integer> obnovljeneGodine;
+
+        GodineResult(Integer poslednjaGodina, List<Integer> upisaneGodine, List<Integer> obnovljeneGodine) {
+            this.poslednjaGodina = poslednjaGodina;
+            this.upisaneGodine = upisaneGodine;
+            this.obnovljeneGodine = obnovljeneGodine;
+        }
     }
 }
