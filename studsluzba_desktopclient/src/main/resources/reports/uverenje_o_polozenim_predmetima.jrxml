@@ -1,198 +1,154 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
-              http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-              name="uverenje_o_polozenim_predmetima"
-              pageWidth="595"
-              pageHeight="842"
-              columnWidth="555"
-              leftMargin="20"
-              rightMargin="20"
-              topMargin="20"
-              bottomMargin="20"
-              uuid="66d3a103-5f74-4e7f-8626-6cec62e1ced6">
-
-    <property name="net.sf.jasperreports.default.pdf.encoding" value="UTF-8"/>
-
-    <!-- ================= PARAMETERS ================= -->
-    <parameter name="pIme" class="java.lang.String"/>
-    <parameter name="pPrezime" class="java.lang.String"/>
-    <parameter name="pBrojIndeksa" class="java.lang.String"/>
-    <parameter name="pStudijskiProgram" class="java.lang.String"/>
-    <parameter name="pDatumIzdavanja" class="java.time.LocalDate"/>
-    <parameter name="pUkupnoEspb" class="java.lang.Integer"/>
-    <parameter name="pProsek" class="java.lang.Double"/>
-
-    <!-- ================= FIELDS ================= -->
-    <field name="sifra" class="java.lang.String"/>
-    <field name="naziv" class="java.lang.String"/>
-    <field name="ocena" class="java.lang.Integer"/>
-    <field name="poeni" class="java.lang.Double"/>
-    <field name="espb" class="java.lang.Integer"/>
-    <field name="datum" class="java.time.LocalDate"/>
-    <field name="godinaStudija" class="java.lang.Integer"/>
-
-    <!-- ================= GROUP ================= -->
-    <group name="GodinaStudijaGroup">
-        <groupExpression><![CDATA[$F{godinaStudija}]]></groupExpression>
-        <groupHeader>
-            <band height="35">
-                <staticText>
-                    <reportElement x="0" y="5" width="555" height="25"
-                                   backcolor="#E6E6E6"
-                                   mode="Opaque"/>
-                    <textElement>
-                        <font fontName="DejaVu Sans" size="16" isBold="true"/>
-                    </textElement>
-                    <text><![CDATA[Godina studija: ]]></text>
-                </staticText>
-
-                <textField>
-                    <reportElement x="160" y="5" width="100" height="25"/>
-                    <textElement>
-                        <font fontName="DejaVu Sans" size="16" isBold="true"/>
-                    </textElement>
-                    <textFieldExpression><![CDATA[$F{godinaStudija}]]></textFieldExpression>
-                </textField>
-            </band>
-        </groupHeader>
-    </group>
-
-    <!-- ================= TITLE ================= -->
-    <title>
-        <band height="60">
-            <staticText>
-                <reportElement x="0" y="10" width="555" height="40"/>
-                <textElement textAlignment="Center">
-                    <font fontName="DejaVu Sans" size="24"/>
-                </textElement>
-                <text><![CDATA[Uverenje o položenim ispitima]]></text>
-            </staticText>
-        </band>
-    </title>
-
-    <!-- ================= PAGE HEADER ================= -->
-    <pageHeader>
-        <band height="120">
-            <textField>
-                <reportElement x="0" y="50" width="555" height="60"/>
-                <textElement textAlignment="Justified">
-                    <font fontName="DejaVu Sans" size="14"/>
-                </textElement>
-                <textFieldExpression><![CDATA[
-                    "Student " + $P{pIme} + " " + $P{pPrezime} +
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 6.21.5  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="uverenje_o_polozenim_predmetima" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="66d3a103-5f74-4e7f-8626-6cec62e1ced6">
+	<property name="net.sf.jasperreports.default.pdf.encoding" value="UTF-8"/>
+	<parameter name="pIme" class="java.lang.String"/>
+	<parameter name="pPrezime" class="java.lang.String"/>
+	<parameter name="pBrojIndeksa" class="java.lang.String"/>
+	<parameter name="pStudijskiProgram" class="java.lang.String"/>
+	<parameter name="pDatumIzdavanja" class="java.time.LocalDate"/>
+	<parameter name="pUkupnoEspb" class="java.lang.Integer"/>
+	<parameter name="pProsek" class="java.lang.Double"/>
+	<field name="sifra" class="java.lang.String"/>
+	<field name="naziv" class="java.lang.String"/>
+	<field name="ocena" class="java.lang.Integer"/>
+	<field name="poeni" class="java.lang.Double"/>
+	<field name="espb" class="java.lang.Integer"/>
+	<field name="datum" class="java.time.LocalDate"/>
+	<field name="godinaStudija" class="java.lang.Integer"/>
+	<sortField name="godinaStudija"/>
+	<sortField name="naziv"/>
+	<group name="GodinaStudijaGroup">
+		<groupExpression><![CDATA[$F{godinaStudija}]]></groupExpression>
+		<groupHeader>
+			<band height="35">
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="5" width="555" height="25" backcolor="#E6E6E6" uuid="cf58b335-96e5-4be5-8d86-ad4cb7172f92"/>
+					<textElement>
+						<font fontName="DejaVu Sans" size="16" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Godina studija: ]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="160" y="5" width="100" height="25" uuid="9b2b2605-7506-4de3-af82-8518a12989c8"/>
+					<textElement>
+						<font fontName="DejaVu Sans" size="16" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{godinaStudija}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<title>
+		<band height="60">
+			<staticText>
+				<reportElement x="0" y="10" width="555" height="40" uuid="e86af88d-f7b1-4515-aa74-5404accb4648"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Sans" size="24"/>
+				</textElement>
+				<text><![CDATA[Uverenje o položenim ispitima]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="120">
+			<textField>
+				<reportElement x="0" y="50" width="555" height="60" uuid="6f00d115-7c10-4c31-8f8c-5a145cfd17d0"/>
+				<textElement textAlignment="Justified">
+					<font fontName="DejaVu Sans" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Student " + $P{pIme} + " " + $P{pPrezime} +
                     ", sa brojem indeksa " + $P{pBrojIndeksa} +
                     ", ostvario je " + $P{pUkupnoEspb} +
-                    " ESPB sa prosekom " + $P{pProsek} + "."
-                ]]></textFieldExpression>
-            </textField>
-
-            <textField>
-                <reportElement x="350" y="10" width="205" height="20"/>
-                <textElement>
-                    <font fontName="DejaVu Sans" size="12"/>
-                </textElement>
-                <textFieldExpression><![CDATA[
-                    "Izdato dana: " + $P{pDatumIzdavanja}
-                ]]></textFieldExpression>
-            </textField>
-        </band>
-    </pageHeader>
-
-    <!-- ================= COLUMN HEADER ================= -->
-    <columnHeader>
-        <band height="30">
-            <staticText>
-                <reportElement x="0" y="5" width="60" height="20"/>
-                <textElement textAlignment="Center">
-                    <font size="12" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Šifra]]></text>
-            </staticText>
-
-            <staticText>
-                <reportElement x="70" y="5" width="170" height="20"/>
-                <textElement textAlignment="Center">
-                    <font size="12" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Naziv]]></text>
-            </staticText>
-
-            <staticText>
-                <reportElement x="250" y="5" width="50" height="20"/>
-                <textElement textAlignment="Center">
-                    <font size="12" isBold="true"/>
-                </textElement>
-                <text><![CDATA[ESPB]]></text>
-            </staticText>
-
-            <staticText>
-                <reportElement x="310" y="5" width="50" height="20"/>
-                <textElement textAlignment="Center">
-                    <font size="12" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Ocena]]></text>
-            </staticText>
-
-            <staticText>
-                <reportElement x="370" y="5" width="60" height="20"/>
-                <textElement textAlignment="Center">
-                    <font size="12" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Poeni]]></text>
-            </staticText>
-
-            <staticText>
-                <reportElement x="440" y="5" width="100" height="20"/>
-                <textElement textAlignment="Center">
-                    <font size="12" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Datum]]></text>
-            </staticText>
-        </band>
-    </columnHeader>
-
-    <!-- ================= DETAIL ================= -->
-    <detail>
-        <band height="25">
-            <textField>
-                <reportElement x="0" y="5" width="60" height="20"/>
-                <textElement textAlignment="Center"/>
-                <textFieldExpression><![CDATA[$F{sifra}]]></textFieldExpression>
-            </textField>
-
-            <textField>
-                <reportElement x="70" y="5" width="170" height="20"/>
-                <textElement textAlignment="Left"/>
-                <textFieldExpression><![CDATA[$F{naziv}]]></textFieldExpression>
-            </textField>
-
-            <textField>
-                <reportElement x="250" y="5" width="50" height="20"/>
-                <textElement textAlignment="Center"/>
-                <textFieldExpression><![CDATA[$F{espb}]]></textFieldExpression>
-            </textField>
-
-            <textField>
-                <reportElement x="310" y="5" width="50" height="20"/>
-                <textElement textAlignment="Center"/>
-                <textFieldExpression><![CDATA[$F{ocena}]]></textFieldExpression>
-            </textField>
-
-            <textField>
-                <reportElement x="370" y="5" width="60" height="20"/>
-                <textElement textAlignment="Center"/>
-                <textFieldExpression><![CDATA[$F{poeni}]]></textFieldExpression>
-            </textField>
-
-            <textField>
-                <reportElement x="440" y="5" width="100" height="20"/>
-                <textElement textAlignment="Center"/>
-                <textFieldExpression><![CDATA[$F{datum}]]></textFieldExpression>
-            </textField>
-        </band>
-    </detail>
-
+                    " ESPB sa prosekom " + $P{pProsek} + "."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="350" y="10" width="205" height="20" uuid="c511e142-f8c9-4268-b446-3023b12343d3"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Izdato dana: " + $P{pDatumIzdavanja}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="30">
+			<staticText>
+				<reportElement x="0" y="5" width="60" height="20" uuid="c119b163-d546-469a-8feb-5e6685bf3e60"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Šifra]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="70" y="5" width="170" height="20" uuid="34fa17e5-54ef-4791-acb0-4214af27f36a"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Naziv]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="250" y="5" width="50" height="20" uuid="5a965b06-e8c3-4e87-868f-1d2840f5eba4"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESPB]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="310" y="5" width="50" height="20" uuid="1a181892-893c-4dbf-830d-38563299df58"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ocena]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="370" y="5" width="60" height="20" uuid="4b333071-1bca-4d2a-9f43-9d5f3613a239"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Poeni]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="440" y="5" width="100" height="20" uuid="2fa8170e-da30-47c7-8e18-007f7553383c"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Datum]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="25">
+			<textField>
+				<reportElement x="0" y="5" width="60" height="20" uuid="25658466-6199-4051-a0a3-f873c8b1060e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{sifra}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="70" y="5" width="170" height="20" uuid="f04422e3-54fb-4cf9-a894-44f87a65bbb4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{naziv}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="250" y="5" width="50" height="20" uuid="955ed6cb-0d87-4065-bf22-f7c69aeef130"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{espb}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="310" y="5" width="50" height="20" uuid="fbdcc198-2979-43ce-9e13-214ca5eff802"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{ocena}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="370" y="5" width="60" height="20" uuid="14986871-d804-4442-b945-770ac21ac87c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{poeni}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="440" y="5" width="100" height="20" uuid="a29168bc-a53f-485c-8898-440da5579b43"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{datum}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
 </jasperReport>
