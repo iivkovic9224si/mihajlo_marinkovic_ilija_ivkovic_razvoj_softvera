@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.raflab.studsluzbadesktopclient.services.StudentService;
 import org.springframework.stereotype.Component;
@@ -108,15 +109,37 @@ public class SearchStudentController {
                 controller.setStudentAndIndex(student, izabraniIndeks);
 
                 Stage stage = new Stage();
+
+                // KLJUČNE PROMENE ZA MODALNI DIALOG:
+                // 1. Postavi modality
+                stage.initModality(Modality.WINDOW_MODAL);
+
+                // 2. Postavi owner (glavni prozor)
+                Stage mainStage = (Stage) tabelaStudenti.getScene().getWindow();
+                stage.initOwner(mainStage);
+
+                // 3. Postavi da se centrira u odnosu na owner
+                stage.setX(mainStage.getX() + (mainStage.getWidth() - 900) / 2);
+                stage.setY(mainStage.getY() + (mainStage.getHeight() - 700) / 2);
+
                 stage.setTitle("Detalji studenta - " + student.getIme() + " " + student.getPrezime());
-                stage.setScene(new Scene(root));
-                stage.show();
+                stage.setScene(new Scene(root, 900, 700));
+
+                // DODAJ OVO: Postavi stage u kontroler
+                controller.setStage(stage);
+
+                // 4. Kada se dijalog zatvori, fokusiraj se nazad na glavni prozor
+                stage.setOnHidden(e -> {
+                    mainStage.requestFocus();
+                });
+
+                // 5. Koristi showAndWait() umesto show() za modalni dijalog
+                stage.showAndWait();
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
-
     }
 
 

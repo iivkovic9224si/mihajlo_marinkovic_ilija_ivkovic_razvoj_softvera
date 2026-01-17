@@ -80,6 +80,10 @@ public class SearchByIndexController {
             Stage stage = new Stage();
             stage.setTitle("Detalji studenta - " + student.getIme() + " " + student.getPrezime());
             stage.setScene(new Scene(root));
+
+            // DODAJ OVO: Postavi stage u kontroler
+            controller.setStage(stage);
+
             stage.show();
 
         } catch (Exception e) {

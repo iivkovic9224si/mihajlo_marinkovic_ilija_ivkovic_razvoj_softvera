@@ -2,10 +2,18 @@ package org.raflab.studsluzbadesktopclient.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.raflab.studsluzbadesktopclient.StudentDetailHistoryManager;
 import org.raflab.studsluzbadesktopclient.services.StudentUspehClientService;
 import pomocniDTO.UverenjeData;
 import request.StudentIndeksRequest;
@@ -55,18 +63,102 @@ public class StudentDetailController {
 
     @FXML private Button generisiUverenjeBtn;
 
+    @FXML
+    private TabPane tabPane;
+
+    @FXML
+    private Button nazadBtn;
+
+    @FXML
+    private Button napredBtn;
+
     @Autowired
     private StudentService studentService;
 
     private Map<String, Node> polja = new HashMap<>();
     private ToggleGroup polGroup;
 
-    public StudentDetailController() {}
+    private StudentDetailHistoryManager historyManager;
+    private double dragStartX;
+
+    private Stage stage; // Dodajemo referencu na stage
+
+    public StudentDetailController() {
+        this.historyManager = new StudentDetailHistoryManager();
+    }
 
     @FXML
     public void initialize() {
         if (generisiUverenjeBtn != null) {
             generisiUverenjeBtn.setOnAction(e -> generisiUverenje());
+        }
+
+        if (historyManager != null) {
+            historyManager.clear();
+        }
+
+        // Prvo ažuriraj dugmad
+        updateNavigationButtons();
+
+        // Onda dodaj listener za tab navigaciju
+        tabPane.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
+            if (newTab != null && newTab.getContent() != null) {
+                String tabName = newTab.getText();
+                Parent content = null;
+
+                // Pronađi pravi Parent element za tab
+                if (newTab.getContent() instanceof ScrollPane) {
+                    ScrollPane scrollPane = (ScrollPane) newTab.getContent();
+                    content = (Parent) scrollPane.getContent();
+                } else if (newTab.getContent() instanceof Parent) {
+                    content = (Parent) newTab.getContent();
+                }
+
+                if (content != null) {
+                    historyManager.navigate(content, tabName);
+                    updateNavigationButtons();
+                }
+            }
+        });
+
+        // Postavi inicijalni state, ali samo ako je tabPane već postavljen
+        Tab initialTab = tabPane.getSelectionModel().getSelectedItem();
+        if (initialTab != null && initialTab.getContent() != null) {
+            // Sačekaj malo da se sve inicijalizuje
+            javafx.application.Platform.runLater(() -> {
+                Parent initialContent = null;
+                if (initialTab.getContent() instanceof ScrollPane) {
+                    ScrollPane scrollPane = (ScrollPane) initialTab.getContent();
+                    initialContent = (Parent) scrollPane.getContent();
+                } else if (initialTab.getContent() instanceof Parent) {
+                    initialContent = (Parent) initialTab.getContent();
+                }
+
+                if (initialContent != null) {
+                    historyManager.navigate(initialContent, initialTab.getText());
+                    updateNavigationButtons();
+                }
+            });
+        }
+    }
+
+    private void updateNavigationButtons() {
+        if (nazadBtn != null) {
+            // Proveri da li smo na prvom tabu
+            Tab currentTab = tabPane.getSelectionModel().getSelectedItem();
+            boolean isFirstTab = currentTab != null && currentTab.getText().equals("Licni Podaci");
+
+            // Ako smo na prvom tabu, dugme treba da bude omogućeno
+            // (da možemo da zatvorimo prozor)
+            if (isFirstTab) {
+                nazadBtn.setDisable(false);
+            } else {
+                nazadBtn.setDisable(!historyManager.canGoBack());
+            }
+        }
+
+        if (napredBtn != null) {
+            napredBtn.setDisable(!historyManager.canGoForward());
         }
     }
 
@@ -214,6 +306,127 @@ public class StudentDetailController {
         } catch (Exception ex) {
             new Alert(Alert.AlertType.ERROR, "❌ Greška: " + ex.getMessage()).showAndWait();
             ex.printStackTrace();
+        }
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+        setupNavigationHandlers();
+    }
+
+    private void setupNavigationHandlers() {
+        if (stage == null || stage.getScene() == null) return;
+
+        Scene scene = stage.getScene();
+
+        // Mouse button 4/5 navigacija
+        scene.addEventFilter(MouseEvent.MOUSE_PRESSED, this::handleMouseButton);
+
+        // Swipe navigacija
+        scene.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> dragStartX = e.getSceneX());
+        scene.addEventFilter(MouseEvent.MOUSE_RELEASED, this::handleSwipe);
+
+        // Keyboard navigacija
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, this::handleKeyNavigation);
+    }
+
+    private void handleMouseButton(MouseEvent event) {
+        if (event.getButton() == MouseButton.BACK) { // Mouse button 4
+            goBack();
+            event.consume();
+        } else if (event.getButton() == MouseButton.FORWARD) { // Mouse button 5
+            goForward();
+            event.consume();
+        }
+    }
+
+    private void handleSwipe(MouseEvent event) {
+        double deltaX = event.getSceneX() - dragStartX;
+
+        // Threshold za swipe
+        if (deltaX > 100) {
+            goBack();
+        } else if (deltaX < -100) {
+            goForward();
+        }
+    }
+
+    private void handleKeyNavigation(KeyEvent event) {
+        if (event.isControlDown()) {
+            if (event.getCode() == KeyCode.OPEN_BRACKET) { // Ctrl + [
+                goBack();
+                event.consume();
+            } else if (event.getCode() == KeyCode.CLOSE_BRACKET) { // Ctrl + ]
+                goForward();
+                event.consume();
+            }
+        }
+    }
+
+    // Dodaj ove dve metode u StudentDetailController
+    public boolean canGoBack() {
+        return historyManager.canGoBack();
+    }
+
+    public boolean canGoForward() {
+        return historyManager.canGoForward();
+    }
+
+    // U StudentDetailController.goBack():
+    @FXML
+    public void goBack() {
+        Tab currentTab = tabPane.getSelectionModel().getSelectedItem();
+        boolean isFirstTab = currentTab != null && currentTab.getText().equals("Licni Podaci");
+
+        if (isFirstTab) {
+            // Ako smo na prvom tabu, SAKRIJ prozor
+            if (stage != null) {
+                stage.hide();
+
+                // Vrati fokus na owner prozor
+                Stage owner = (Stage) stage.getOwner();
+                if (owner != null) {
+                    owner.requestFocus();
+                }
+            }
+            return;
+        }
+
+        // Inače, idi nazad kroz history
+        StudentDetailHistoryManager.SceneState state = historyManager.goBack();
+        if (state != null) {
+            navigateToTabWithContent(state.getRoot());
+        }
+
+        updateNavigationButtons();
+    }
+
+
+    @FXML
+    public void goForward() {
+        StudentDetailHistoryManager.SceneState state = historyManager.goForward();
+        if (state != null) {
+            navigateToTabWithContent(state.getRoot());
+        }
+        updateNavigationButtons();
+    }
+
+    private void navigateToTabWithContent(Parent content) {
+        for (Tab tab : tabPane.getTabs()) {
+            Object tabContent = tab.getContent();
+            Parent tabParent = null;
+
+            if (tabContent instanceof ScrollPane) {
+                ScrollPane scrollPane = (ScrollPane) tabContent;
+                tabParent = (Parent) scrollPane.getContent();
+            } else if (tabContent instanceof Parent) {
+                tabParent = (Parent) tabContent;
+            }
+
+            if (tabParent != null && tabParent.equals(content)) {
+                tabPane.getSelectionModel().select(tab);
+                break;
+            }
         }
     }
 }
