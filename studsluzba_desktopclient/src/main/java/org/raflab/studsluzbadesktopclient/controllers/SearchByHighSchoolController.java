@@ -164,13 +164,16 @@ public class SearchByHighSchoolController {
                 Stage stage = new Stage();
                 stage.setTitle("Detalji studenta");
                 stage.setScene(new javafx.scene.Scene(root));
+
+                // DODAJ OVO: Postavi stage u kontroler
+                controller.setStage(stage);
+
                 stage.show();
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
-
     }
 
 }
