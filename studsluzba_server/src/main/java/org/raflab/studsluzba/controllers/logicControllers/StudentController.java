@@ -33,14 +33,14 @@ import java.util.stream.Collectors;
 @RequestMapping(path="/api/student")
 public class StudentController {
 
-	@Autowired
-	StudentIndeksRepository studentIndeksRepository;
+    @Autowired
+    StudentIndeksRepository studentIndeksRepository;
 
-	@Autowired
-	StudentPodaciService studentPodaciService;
+    @Autowired
+    StudentPodaciService studentPodaciService;
 
-	@Autowired
-	StudentIndeksService studentIndeksService;
+    @Autowired
+    StudentIndeksService studentIndeksService;
 
     @Autowired
     PolozenPredmetService polozenPredmetService;
@@ -48,51 +48,59 @@ public class StudentController {
     @Autowired
     EntityMappers entityMappers;
 
-
-
     @PostMapping(path="/add")
-   	public Long addNewStudentPodaci(@RequestBody StudentPodaciRequest studentPodaciRequest) {
-   	    return studentPodaciService.save(studentPodaciRequest).getId();
- 	}
-
-	//Ispisi sve redove iz tabele Student Podaci
-	@GetMapping(path="/all")
-	public Iterable<StudentPodaciResponse> getAllStudentPodaci() {
-        return studentPodaciService.findAll();
-	}
-
-	//Isto kao i ovo gore (ispisi sve redove iz tabele Student Podaci) samo Paginated
-	@GetMapping(path="/svi")
-	public Page<StudentPodaciResponse> getAllStudentPodaciPaginated(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) {
-		return studentPodaciService.findAll(PageRequest.of(page, size));
-	}
-
-	//Nadji Student Podaci preko id-ja studenta
-	@GetMapping(path="/podaci/{id}")
-	public Optional<StudentPodaciResponse> getStudentPodaci(@PathVariable Long id){
-		return studentPodaciService.findById(id);
-	}
-
-	//Dodaj novi red u tabelu Student Indeks
-	@PostMapping(path="/saveindeks")
-	public Long saveIndeks(@RequestBody StudentIndeksRequest studentIndeksRequest) {
-		return studentIndeksService.saveIndeks(studentIndeksRequest);
-	}
-
-
-	//Ispisi red iz tabele Student Indeks po id-ju studenta (student Indeks)
-    @GetMapping(path="/indeks/{id}")
-    public StudentIndeksResponse getStudentIndeks(@PathVariable Long id){
-    	Optional<StudentIndeks> rez = studentIndeksRepository.findById(id);
-    	if(rez.isEmpty()) return null;
-    	else {
-    		StudentIndeks retVal = rez.get();
-    		return entityMappers.fromStudentIndexToResponse(retVal);
-    	}
-
+    public Long addNewStudentPodaci(@RequestBody StudentPodaciRequest studentPodaciRequest) {
+        return studentPodaciService.save(studentPodaciRequest).getId();
     }
 
-	//Ispisi Student Indeks redove prema id-u iz tabele Student Podaci
+    //Ispisi sve redove iz tabele Student Podaci
+    @GetMapping(path="/all")
+    public Iterable<StudentPodaciResponse> getAllStudentPodaci() {
+        return studentPodaciService.findAll();
+    }
+
+    //Isto kao i ovo gore (ispisi sve redove iz tabele Student Podaci) samo Paginated
+    @GetMapping(path="/svi")
+    public Page<StudentPodaciResponse> getAllStudentPodaciPaginated(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) {
+        return studentPodaciService.findAll(PageRequest.of(page, size));
+    }
+
+    //Nadji Student Podaci preko id-ja studenta
+    @GetMapping(path="/podaci/{id}")
+    public Optional<StudentPodaciResponse> getStudentPodaci(@PathVariable Long id){
+        return studentPodaciService.findById(id);
+    }
+
+    // Dodaj novi endpoint za pronalaženje student ID-a preko JMBG-a
+    @GetMapping(path="/find-id-by-jmbg")
+    public Long findStudentIdByJmbg(@RequestParam String jmbg) {
+        return studentPodaciService.findStudentIdByJmbg(jmbg);
+    }
+
+    // Dodaj endpoint za proveru postojanja studenta preko JMBG-a
+    @GetMapping(path="/exists-by-jmbg")
+    public boolean existsByJmbg(@RequestParam String jmbg) {
+        return studentPodaciService.existsByJmbg(jmbg);
+    }
+
+    //Dodaj novi red u tabelu Student Indeks
+    @PostMapping(path="/saveindeks")
+    public Long saveIndeks(@RequestBody StudentIndeksRequest studentIndeksRequest) {
+        return studentIndeksService.saveIndeks(studentIndeksRequest);
+    }
+
+    // Ispisi red iz tabele Student Indeks po id-ju studenta (student Indeks)
+    @GetMapping(path="/indeks/{id}")
+    public StudentIndeksResponse getStudentIndeks(@PathVariable Long id){
+        Optional<StudentIndeks> rez = studentIndeksRepository.findById(id);
+        if(rez.isEmpty()) return null;
+        else {
+            StudentIndeks retVal = rez.get();
+            return entityMappers.fromStudentIndexToResponse(retVal);
+        }
+    }
+
+    //Ispisi Student Indeks redove prema id-u iz tabele Student Podaci
     @GetMapping(path="/indeksi/{idStudentPodaci}")
     public List<StudentIndeksResponse> getIndeksiForStudentPodaciId(@PathVariable Long idStudentPodaci){
         return studentIndeksRepository.findStudentIndeksiForStudentPodaciId(idStudentPodaci)
@@ -115,36 +123,35 @@ public class StudentController {
         return null;
     }
 
-
     //Vraca Student Indeks preko stringa oblika iivkovic9224si@raf.rs
     @GetMapping(path="/emailsearch")  // salje se email studenta
     public StudentIndeksResponse emailSearch(@RequestParam String studEmail) {
-      String[] parsedData = ParseUtils.parseEmail(studEmail);
-      if(parsedData!=null) {
-    	  StudentIndeks si = studentIndeksRepository.findStudentIndeks(parsedData[0], 2000+Integer.parseInt(parsedData[1]),Integer.parseInt(parsedData[2]));
-    	  return entityMappers.fromStudentIndexToResponse(si);
-      }else return null;
+        String[] parsedData = ParseUtils.parseEmail(studEmail);
+        if(parsedData!=null) {
+            StudentIndeks si = studentIndeksRepository.findStudentIndeks(parsedData[0], 2000+Integer.parseInt(parsedData[1]),Integer.parseInt(parsedData[2]));
+            return entityMappers.fromStudentIndexToResponse(si);
+        }else return null;
     }
 
     @GetMapping(path="/profile/{studentIndeksId}")
     public StudentProfileDTO getStudentProfile(@PathVariable  Long studentIndeksId) {
-    	return studentPodaciService.getStudentProfile(studentIndeksId);
+        return studentPodaciService.getStudentProfile(studentIndeksId);
     }
 
     @GetMapping(path="/webprofile/{studentIndeksId}")
     public StudentWebProfileDTO getStudentWebProfile(@PathVariable  Long studentIndeksId) {
-    	return studentPodaciService.getStudentWebProfile(studentIndeksId);
+        return studentPodaciService.getStudentWebProfile(studentIndeksId);
     }
 
     @GetMapping(path="/webprofile/email")
     public StudentWebProfileDTO getStudentWebProfileForEmail(@RequestParam String studEmail) {
-    	 String[] parsedData = ParseUtils.parseEmail(studEmail);
-         if(parsedData!=null) {
-       	  StudentIndeks si = studentIndeksRepository.findStudentIndeks(parsedData[0], 2000+Integer.parseInt(parsedData[1]),Integer.parseInt(parsedData[2]));
-       	  if(si!=null)
-       		  return studentPodaciService.getStudentWebProfile(si.getId());
-         }
-         return null;
+        String[] parsedData = ParseUtils.parseEmail(studEmail);
+        if(parsedData!=null) {
+            StudentIndeks si = studentIndeksRepository.findStudentIndeks(parsedData[0], 2000+Integer.parseInt(parsedData[1]),Integer.parseInt(parsedData[2]));
+            if(si!=null)
+                return studentPodaciService.getStudentWebProfile(si.getId());
+        }
+        return null;
     }
 
     @PostMapping(path="/uspeh/polozeni")
@@ -166,44 +173,42 @@ public class StudentController {
         return studentIndeksService.findNePolozeniPredmetiByStudentIndeks(studentIndeksRequest, page, size);
     }
 
-
     //pregled svih upisanih godina za broj indeksa
-	@PostMapping(path = "/upisanegodine")
-	public List<Integer> upisaneGodine(@RequestBody @Valid StudentIndeksRequest studentIndeksRequest) {
-		return studentIndeksService.getUpisaneGodineByStudentIndeks(studentIndeksRequest);
-	}
+    @PostMapping(path = "/upisanegodine")
+    public List<Integer> upisaneGodine(@RequestBody @Valid StudentIndeksRequest studentIndeksRequest) {
+        return studentIndeksService.getUpisaneGodineByStudentIndeks(studentIndeksRequest);
+    }
 
-	//pregled obnovljenih godina za broj indeksa
-	@PostMapping(path = "/obnovljenegodine")
-	public List<Integer> obnovljeneGodine(@RequestBody @Valid StudentIndeksRequest studentIndeksRequest) {
-		return studentIndeksService.getObnovljeneGodine(studentIndeksRequest);
-	}
+    //pregled obnovljenih godina za broj indeksa
+    @PostMapping(path = "/obnovljenegodine")
+    public List<Integer> obnovljeneGodine(@RequestBody @Valid StudentIndeksRequest studentIndeksRequest) {
+        return studentIndeksService.getObnovljeneGodine(studentIndeksRequest);
+    }
 
-	//selekcija studenata na osnovu imena i/ili prezimena (može samo ime, ili samo prezime ili oba da se unesu)
-	@GetMapping(path = "/imeandorprezime")
-	public Page<StudentPodaciResponse> getStudentByImeandorPrezime(@RequestParam(required = false) String ime, @RequestParam(required = false) String prezime, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) {
-		Pageable pageable = PageRequest.of(page, size, Sort.by("ime").ascending());
-		return studentIndeksService.getStudentPodaciByImeandorPrezime(ime, prezime, pageable);
-	}
+    //selekcija studenata na osnovu imena i/ili prezimena (može samo ime, ili samo prezime ili oba da se unesu)
+    @GetMapping(path = "/imeandorprezime")
+    public Page<StudentPodaciResponse> getStudentByImeandorPrezime(@RequestParam(required = false) String ime, @RequestParam(required = false) String prezime, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("ime").ascending());
+        return studentIndeksService.getStudentPodaciByImeandorPrezime(ime, prezime, pageable);
+    }
 
+    //Update postojeceg studenta
+    @PutMapping(path = "/updateujStudenta/{id}")
+    public Long updateStudent(@PathVariable Long id, @RequestBody @Valid StudentPodaciRequest studentPodaciRequest) {
+        return studentPodaciService.update(id, studentPodaciRequest);
+    }
 
-	//Update postojeceg studenta
-	@PutMapping(path = "/updateujStudenta/{id}")
-	public Long updateStudent(@PathVariable Long id, @RequestBody @Valid StudentPodaciRequest studentPodaciRequest) {
-		return studentPodaciService.update(id, studentPodaciRequest);
-	}
+    // Update postojeceg reda u tabeli Student Indeks
+    @PutMapping(path="/updateindeks/{id}")
+    public Long updateIndeks(@PathVariable Long id, @RequestBody StudentIndeksRequest request) {
+        return studentIndeksService.update(id, request);
+    }
 
-	// Update postojeceg reda u tabeli Student Indeks
-	@PutMapping(path="/updateindeks/{id}")
-	public Long updateIndeks(@PathVariable Long id, @RequestBody StudentIndeksRequest request) {
-		return studentIndeksService.update(id, request);
-	}
-
-	//Selekcija studenta (njegovih ličnih podataka) preko broja indeksa
-	@GetMapping(path = "/nadjiStudentaPrekoStudentIndeksa")
-	public StudentPodaciResponse nadjiStudentaPrekoStudentIndeks(@RequestParam String studProgramOznaka, @RequestParam int broj, @RequestParam int godina){
-		return studentIndeksService.getStudentPodaciByStudentIndeks(studProgramOznaka, godina, broj);
-	}
+    //Selekcija studenta (njegovih ličnih podataka) preko broja indeksa
+    @GetMapping(path = "/nadjiStudentaPrekoStudentIndeksa")
+    public StudentPodaciResponse nadjiStudentaPrekoStudentIndeks(@RequestParam String studProgramOznaka, @RequestParam int broj, @RequestParam int godina){
+        return studentIndeksService.getStudentPodaciByStudentIndeks(studProgramOznaka, godina, broj);
+    }
 
     @GetMapping(path = "/srednjaskola")
     public Page<StudentPodaciResponse> nadjiStudenteBySrednjaSkola(
@@ -218,19 +223,19 @@ public class StudentController {
         );
     }
 
-	@PostMapping(path = "/obrisiStudentIndeks")
-	public void obrisiStudentIndeks(@RequestBody StudentIndeksRequest request) {
-		studentIndeksService.deleteByStudentIndeks(
-				request.getStudProgramOznaka(),
-				request.getBroj(),
-				request.getGodina()
-		);
-	}
+    @PostMapping(path = "/obrisiStudentIndeks")
+    public void obrisiStudentIndeks(@RequestBody StudentIndeksRequest request) {
+        studentIndeksService.deleteByStudentIndeks(
+                request.getStudProgramOznaka(),
+                request.getBroj(),
+                request.getGodina()
+        );
+    }
 
-	@PostMapping(path = "/obrisiStudentPodaci")
-	public void obrisiStudentPodaci(@RequestBody StudentPodaciRequest request) {
-		studentPodaciService.deleteStudentPodaci(request);
-	}
+    @PostMapping(path = "/obrisiStudentPodaci")
+    public void obrisiStudentPodaci(@RequestBody StudentPodaciRequest request) {
+        studentPodaciService.deleteStudentPodaci(request);
+    }
 
     // Vraća sve indekse za dati StudentPodaci ID
     @GetMapping(path="/indeksi/all/{studentPodaciId}")
@@ -256,5 +261,4 @@ public class StudentController {
     public Double prosecnaOcenaPolozeni(@RequestBody @Valid StudentIndeksRequest req) {
         return polozenPredmetService.getProsecnaOcena(req);
     }
-
 }

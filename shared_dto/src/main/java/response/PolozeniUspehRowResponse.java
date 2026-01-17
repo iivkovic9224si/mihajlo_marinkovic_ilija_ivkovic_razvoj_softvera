@@ -16,4 +16,5 @@ public class PolozeniUspehRowResponse {
     private double poeni;
     private Integer ocena;
     private LocalDate datum;
+    private Integer godinaStudija;
 }

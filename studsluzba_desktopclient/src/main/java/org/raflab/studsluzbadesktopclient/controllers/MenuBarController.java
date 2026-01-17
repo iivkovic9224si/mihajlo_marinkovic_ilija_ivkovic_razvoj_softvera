@@ -21,7 +21,7 @@ public class MenuBarController {
     @FXML
     private Button forwardBtn;
 
-    public MenuBarController(StudentService studentService, MainView mainView) {
+    public MenuBarController(MainView mainView) {
         this.mainView = mainView;
     }
 
@@ -45,11 +45,6 @@ public class MenuBarController {
     }
 
     @FXML
-    public void openNewStudent() {
-        mainView.changeRoot("newStudent");
-    }
-
-    @FXML
     public void openStudProgramiPredmeti() {
         mainView.changeRoot("studProgramiPredmeti");
         refreshHistoryButtons();
@@ -61,6 +56,19 @@ public class MenuBarController {
         mainView.changeRoot("ispitView");
         refreshHistoryButtons();
     }
+
+    @FXML
+    public void openDodajStudenta() {
+        mainView.changeRoot("dodajStudenta");
+        refreshHistoryButtons();
+    }
+
+    @FXML
+    public void openDodajIndeks() {
+        mainView.changeRoot("dodajIndex");
+        refreshHistoryButtons();
+    }
+
 
     // ---------------- NAVIGACIJA ----------------
     @FXML

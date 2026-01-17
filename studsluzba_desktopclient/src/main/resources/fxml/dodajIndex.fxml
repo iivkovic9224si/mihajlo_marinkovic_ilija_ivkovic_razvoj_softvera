@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.raflab.studsluzbadesktopclient.controllers.DodajIndexController"
+      spacing="15">
+
+    <padding>
+        <Insets top="15" right="15" bottom="15" left="15"/>
+    </padding>
+
+    <Label text="Dodaj indeks"
+           style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+
+    <Separator/>
+
+    <!-- JMBG -->
+    <TitledPane text="Student" expanded="true">
+        <VBox spacing="10" style="-fx-padding: 10;">
+            <HBox spacing="10">
+                <TextField fx:id="jmbgTf"
+                           promptText="Unesite JMBG studenta"
+                           HBox.hgrow="ALWAYS"/>
+                <Button fx:id="proveriBtn"
+                        text="Proveri"
+                        onAction="#proveriStudenta"/>
+            </HBox>
+            <Label fx:id="statusLabel"/>
+        </VBox>
+    </TitledPane>
+
+    <!-- INDEKS -->
+    <TitledPane text="Podaci o indeksu" expanded="true">
+        <GridPane hgap="10" vgap="10"
+                  style="-fx-padding: 10;">
+            <columnConstraints>
+                <ColumnConstraints minWidth="160"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+            </columnConstraints>
+
+            <Label text="Studijski program:" GridPane.rowIndex="0"/>
+            <TextField fx:id="studProgramOznakaTf"
+                       GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+            <Label text="Godina upisa:" GridPane.rowIndex="1"/>
+            <TextField fx:id="godinaTf"
+                       GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+            <Label text="Način finansiranja:" GridPane.rowIndex="2"/>
+            <TextField fx:id="nacinFinansiranjaTf"
+                       GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+            <Label text="Aktivan:" GridPane.rowIndex="3"/>
+            <CheckBox fx:id="aktivanCb"
+                      GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+            <Label text="Važi od:" GridPane.rowIndex="4"/>
+            <DatePicker fx:id="vaziOdDp"
+                        GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+        </GridPane>
+    </TitledPane>
+
+    <HBox alignment="CENTER_RIGHT">
+        <Button fx:id="sacuvajIndeksBtn"
+                text="Sačuvaj indeks"
+                onAction="#handleSacuvajIndeks"
+                style="-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-weight: bold;"/>
+    </HBox>
+
+</VBox>

@@ -30,4 +30,25 @@ public class NoviStudentService {
                 .retrieve()
                 .bodyToMono(Long.class);
     }
+
+    public Mono<Boolean> existsStudentByJmbg(String jmbg) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/exists-by-jmbg")
+                        .queryParam("jmbg", jmbg)
+                        .build())
+                .retrieve()
+                .bodyToMono(Boolean.class);
+    }
+
+    public Mono<Long> findStudentIdByJmbg(String jmbg) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/find-id-by-jmbg")
+                        .queryParam("jmbg", jmbg)
+                        .build())
+                .retrieve()
+                .bodyToMono(Long.class);
+    }
+
 }
