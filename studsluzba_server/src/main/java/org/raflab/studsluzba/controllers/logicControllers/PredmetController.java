@@ -74,8 +74,15 @@ public class PredmetController {
     public List<PredmetResponse> getDostupniPredmeti(
             @RequestParam String indeksGodinaBroj,
             @RequestParam int maxGodina,
-            @RequestParam String studProgramOznaka
+            @RequestParam String studProgramOznaka,
+            @RequestParam(required = false) Integer indeksGodina,
+            @RequestParam(required = false) Integer indeksBroj
     ) {
+        if (indeksGodina != null && indeksBroj != null) {
+            // ✅ Filter položenih
+            return predmetService.getDostupniZaUpis(maxGodina, studProgramOznaka, indeksGodina, indeksBroj);
+        }
+        // ✅ Bez filtera
         return predmetService.getDostupniZaUpis(indeksGodinaBroj, maxGodina, studProgramOznaka);
     }
 

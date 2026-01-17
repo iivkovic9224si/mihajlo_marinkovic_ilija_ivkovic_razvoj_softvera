@@ -75,15 +75,27 @@
                         <Label text="ESPB:" GridPane.rowIndex="2"/>
                         <TextField fx:id="espbTf" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
-                        <Label text="Opis:" GridPane.rowIndex="3"/>
-                        <TextField fx:id="opisTf" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                        <Label text="Godina studija:" GridPane.rowIndex="3"/>
+                        <Spinner fx:id="godinaStudijaSpinner" editable="true"
+                                 GridPane.rowIndex="3" GridPane.columnIndex="1">
+                            <valueFactory>
+                                <SpinnerValueFactory.IntegerSpinnerValueFactory min="1" max="4" initialValue="1"/>
+                            </valueFactory>
+                        </Spinner>
+
+                        <!-- Button pomeri na rowIndex="6" -->
+                        <Button text="Sačuvaj predmet" onAction="#handleSavePredmet"
+                                GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+                        <Label text="Opis:" GridPane.rowIndex="4"/>
+                        <TextField fx:id="opisTf" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
 
                         <CheckBox text="Obavezan" fx:id="obavezanCb"
-                                  GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                                  GridPane.rowIndex="5" GridPane.columnIndex="1"/>
 
                         <Button text="Sačuvaj predmet"
                                 onAction="#handleSavePredmet"
-                                GridPane.rowIndex="5" GridPane.columnIndex="1"
+                                GridPane.rowIndex="6" GridPane.columnIndex="1"
                                 style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold;"/>
                     </GridPane>
                 </VBox>

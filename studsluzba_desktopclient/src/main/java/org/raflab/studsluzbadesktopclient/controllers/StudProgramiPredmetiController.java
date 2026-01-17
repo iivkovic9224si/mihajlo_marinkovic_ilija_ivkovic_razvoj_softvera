@@ -44,6 +44,8 @@ public class StudProgramiPredmetiController {
     @FXML private TextField sifraTf, nazivTf, espbTf, opisTf;
     @FXML private CheckBox obavezanCb;
     @FXML private TextField godinaOdTf, godinaDoTf;
+    @FXML private Spinner<Integer> godinaStudijaSpinner;
+
 
     public StudProgramiPredmetiController(
             StudProgramClientService studProgramService,
@@ -131,6 +133,25 @@ public class StudProgramiPredmetiController {
             return;
         }
 
+        if (espbTf.getText().trim().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Greška");
+            alert.setHeaderText("ESPB polje je prazno!");
+            alert.showAndWait();
+            espbTf.requestFocus();
+            return;
+        }
+
+        int espb = Integer.parseInt(espbTf.getText().trim());
+
+        if(espb <= 0){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Greška");
+            alert.setHeaderText("ESPB mora biti veci od 0");
+            alert.showAndWait();
+            return;
+        }
+
         String sifra = sifraTf.getText();
 
         if (sifra == null || !sifra.matches("PR\\d{3}")) {
@@ -149,6 +170,7 @@ public class StudProgramiPredmetiController {
         req.setOpis(opisTf.getText());
         req.setObavezan(obavezanCb.isSelected());
         req.setOznakaStudProgram(selectedProgram.getOznaka());
+        req.setGodinaStudija(godinaStudijaSpinner.getValue());
 
         predmetService.save(req)
                 .subscribeOn(Schedulers.boundedElastic())
@@ -175,7 +197,11 @@ public class StudProgramiPredmetiController {
     @FXML
     public void handleProsek() {
         if (selectedPredmet == null) {
-            System.out.println("No predmet selected, cannot calculate prosek.");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Greška");
+            alert.setHeaderText("Nije selektovan predmet");
+            alert.setContentText("Molimo izaberite predmet.");
+            alert.showAndWait();
             return;
         }
 
@@ -271,7 +297,7 @@ public class StudProgramiPredmetiController {
                 // 3) Jasper
                 InputStream jrxml = getClass().getResourceAsStream("/reports/prosecneOcenePredmeta.jrxml");
                 if (jrxml == null) {
-                    Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "❌ Ne nađen JRXML").showAndWait());
+                    Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "❌ Nije nađen JRXML").showAndWait());
                     return;
                 }
 

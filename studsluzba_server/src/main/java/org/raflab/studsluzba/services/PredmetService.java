@@ -1,17 +1,24 @@
 package org.raflab.studsluzba.services;
 
 import lombok.RequiredArgsConstructor;
+import org.raflab.studsluzba.model.entity.PolozenPredmet;
 import org.raflab.studsluzba.model.entity.Predmet;
+import org.raflab.studsluzba.model.entity.StudentIndeks;
 import org.raflab.studsluzba.model.entity.StudijskiProgram;
 import org.raflab.studsluzba.repositories.PolozenPredmetRepository;
 import org.raflab.studsluzba.repositories.PredmetRepository;
+import org.raflab.studsluzba.repositories.StudentIndeksRepository;
 import org.raflab.studsluzba.repositories.StudijskiProgramRepository;
 import org.raflab.studsluzba.utils.converters.PredmetConverter;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import request.PredmetRequest;
 import response.PredmetResponse;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +27,7 @@ public class PredmetService {
     final PredmetRepository predmetRepository;
     final StudijskiProgramRepository studijskiProgramRepository;
     final PolozenPredmetRepository polozenPredmetRepository;
+    final StudentIndeksRepository studentIndeksRepository;
 
     // SAVE
     public PredmetResponse save(PredmetRequest request) {
@@ -178,11 +186,44 @@ public class PredmetService {
         return prosecna;
     }
 
+    public List<PredmetResponse> getDostupniZaUpis(int maxGodina, String studProgramOznaka,
+                                                   int indeksGodina, int indeksBroj) {
+
+        // 1. Pronađi indeks - ✅ KORISTI POSTOJEĆU METODU IZ REPA (kao u uspeh-u)
+        Optional<StudentIndeks> indeksOpt = studentIndeksRepository.findByGodinaAndBrojAndStudProgramOznaka(
+                indeksGodina, indeksBroj, studProgramOznaka);
+        if (indeksOpt.isEmpty()) {
+            return List.of(); // Prazna lista umesto throw
+        }
+        StudentIndeks studentIndeks = indeksOpt.get();
+
+        // 2. Svi kandidati
+        List<Predmet> kandidati = predmetRepository.findDostupniZaUpis(maxGodina, studProgramOznaka);
+
+        // 3. Položene šifre - ✅ Page.getContent()
+        Pageable noLimit = PageRequest.of(0, Integer.MAX_VALUE); // ✅ ALTERNATIVA unpaged()
+        List<String> polozeneSifre = polozenPredmetRepository
+                .findPolozeniByStudentIndeks(studentIndeks, noLimit)
+                .getContent()
+                .stream()
+                .map(pp -> pp.getPredmet().getSifra())
+                .collect(Collectors.toList());
+
+        // 4. Filter
+        List<Predmet> dostupni = kandidati.stream()
+                .filter(p -> !polozeneSifre.contains(p.getSifra()))
+                .collect(Collectors.toList());
+
+        return dostupni.stream()
+                .map(PredmetConverter::toPredmetResponse)
+                .collect(Collectors.toList());
+    }
+
+    // ✅ STARA METODA (bez filtera - kompatibilnost)
     public List<PredmetResponse> getDostupniZaUpis(String indeksGodinaBroj, int maxGodina, String studProgramOznaka) {
         return predmetRepository.findDostupniZaUpis(maxGodina, studProgramOznaka)
                 .stream()
                 .map(PredmetConverter::toPredmetResponse)
                 .collect(Collectors.toList());
     }
-
 }

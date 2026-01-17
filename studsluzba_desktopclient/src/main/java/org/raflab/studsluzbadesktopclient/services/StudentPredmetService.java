@@ -1,5 +1,6 @@
 package org.raflab.studsluzbadesktopclient.services;
 
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -27,6 +28,28 @@ public class StudentPredmetService {
 
         ResponseEntity<PredmetResponse[]> response = restTemplate.getForEntity(url, PredmetResponse[].class);
         return response.getBody() != null ? Arrays.asList(response.getBody()) : List.of();
+    }
+
+    public List<PredmetResponse> getDostupniPredmeti(int godinaUpisa, String program,
+                                                     String indeksGodinaBroj, int indeksGodina, int indeksBroj) {
+        String url = UriComponentsBuilder.fromHttpUrl(baseUrl + "/predmet/dostupni")
+                .queryParam("indeksGodinaBroj", indeksGodinaBroj)
+                .queryParam("maxGodina", godinaUpisa)
+                .queryParam("studProgramOznaka", program)
+                .queryParam("indeksGodina", indeksGodina)
+                .queryParam("indeksBroj", indeksBroj)
+                .toUriString();
+
+        // ✅ exchange() za ParameterizedTypeReference + HttpEntity
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<List<PredmetResponse>> resp = restTemplate.exchange(
+                url, HttpMethod.GET, entity,
+                new ParameterizedTypeReference<List<PredmetResponse>>() {});
+
+        return resp.getBody() != null ? resp.getBody() : List.of();
     }
 }
 

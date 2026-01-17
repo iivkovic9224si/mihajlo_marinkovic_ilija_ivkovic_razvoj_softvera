@@ -115,12 +115,20 @@ public class NoviStudentController {
 
         noviStudentService.sacuvajIndeks(req)
                 .subscribeOn(Schedulers.boundedElastic())
-                .subscribe(
-                        id -> Platform.runLater(() ->
-                                showInfo("Indeks uspešno sačuvan.")),
-                        err -> Platform.runLater(() ->
-                                showError(err.getMessage()))
-                );
+                .onErrorReturn(-1L)
+                .defaultIfEmpty(-1L)
+                .subscribe(id -> Platform.runLater(() -> {
+                    if (id == -1L) {
+                        showError("Studijski program '" + studProgramOznakaTf.getText().trim() + "' ne postoji!\n\n" +
+                                "Dostupni:\n• RN - Računarske nauke\n• RI - Računarsko inženjerstvo\n• SI - Softversko inženjerstvo\n• IT - Informacione tehnologije");
+                        studProgramOznakaTf.selectAll();
+                        studProgramOznakaTf.requestFocus();
+                    } else {
+                        showInfo("Indeks sačuvan!");
+                    }
+                }));
+        req.setStudProgramOznaka(studProgramOznakaTf.getText().trim().toUpperCase()); // normalizacija
+
     }
 
     // ================== VALIDACIJE ==================
@@ -181,10 +189,7 @@ public class NoviStudentController {
 
     // ================== POMOCNE ==================
 
-    @FXML
-    private void handlePonisti() {
-        ((Stage) imeTf.getScene().getWindow()).close();
-    }
+
 
     private void showError(String msg) {
         new Alert(Alert.AlertType.ERROR, msg).showAndWait();

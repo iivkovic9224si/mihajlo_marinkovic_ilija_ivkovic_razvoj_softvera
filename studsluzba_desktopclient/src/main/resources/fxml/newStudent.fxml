@@ -21,7 +21,6 @@
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Label text="Novi student" style="-fx-font-weight: bold; -fx-font-size: 16;"/>
         <Region HBox.hgrow="ALWAYS"/>
-        <Button text="Poništi" onAction="#handlePonisti"/>
         <Button text="Sačuvaj studenta" onAction="#handleSacuvaj"
                 style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold;"/>
     </HBox>
@@ -144,15 +143,15 @@
 
                     <Label text="Stud. program (oznaka):" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
                     <TextField fx:id="studProgramOznakaTf" GridPane.columnIndex="1" GridPane.rowIndex="0"
-                               promptText="npr. RAF_IT"/>
+                               promptText="RN/RI/SI/IT"/>
 
                     <Label text="Godina upisa (YYYY):" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
                     <TextField fx:id="godinaTf" GridPane.columnIndex="1" GridPane.rowIndex="1"
-                               promptText="npr. 2024"/>
+                               promptText="2026"/>
 
                     <Label text="Način finansiranja:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
                     <TextField fx:id="nacinFinansiranjaTf" GridPane.columnIndex="1" GridPane.rowIndex="2"
-                               promptText="Budžet / Samofin."/>
+                               promptText="Budzet / Samofinansirajuci"/>
 
                     <Label text="Aktivan:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
                     <CheckBox fx:id="aktivanCb" GridPane.columnIndex="1" GridPane.rowIndex="3"/>

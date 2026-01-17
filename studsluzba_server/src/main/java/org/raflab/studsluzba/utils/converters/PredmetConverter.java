@@ -16,7 +16,7 @@ public class PredmetConverter {
         predmet.setOpis(request.getOpis());
         predmet.setEspb(request.getEspb());
         predmet.setObavezan(request.isObavezan());
-        // Postavi postojeći entitet StudijskiProgram
+        predmet.setGodinaStudija(request.getGodinaStudija());
         predmet.setStudProgram(studProgram);
         return predmet;
     }
