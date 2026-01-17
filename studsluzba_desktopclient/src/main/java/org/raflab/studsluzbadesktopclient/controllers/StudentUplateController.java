@@ -7,6 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import org.raflab.studsluzbadesktopclient.MainView;
 import org.raflab.studsluzbadesktopclient.services.UplataService;
 import org.springframework.stereotype.Component;
 import reactor.core.scheduler.Schedulers;

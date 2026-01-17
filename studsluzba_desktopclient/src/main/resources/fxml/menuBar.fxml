@@ -33,7 +33,8 @@
                         <MenuItem text="Po indeksu" onAction="#searchByIndex"/>
                     </items>
                 </Menu>
-                <MenuItem text="Novi" onAction="#openNewStudent"/>
+                <MenuItem text="Dodaj studenta" onAction="#openDodajStudenta"/>
+                <MenuItem text="Dodaj indeks" onAction="#openDodajIndeks"/>
             </items>
         </Menu>
 
