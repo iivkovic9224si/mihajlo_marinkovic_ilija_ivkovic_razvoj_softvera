@@ -9,68 +9,83 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
 import org.raflab.studsluzbadesktopclient.services.StudentService;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
+import response.StudentIndeksResponse;
 import response.StudentPodaciResponse;
 
 @Component
 public class SearchByIndexController {
 
     private final StudentService studentService;
+    private final ApplicationContext applicationContext; // ← DODAJO SE
 
-    @FXML
-    private TextField indeksTf;
+    @FXML private TextField indeksTf;
 
-    public SearchByIndexController(StudentService studentService) {
+    public SearchByIndexController(StudentService studentService, ApplicationContext applicationContext) {
         this.studentService = studentService;
+        this.applicationContext = applicationContext; // ← Spring Context
     }
 
     @FXML
     public void handleSearchByIndex(ActionEvent event) {
-        String indeks = indeksTf.getText();
-        if (indeks == null || indeks.isBlank()) {
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Unesite broj indeksa!");
+        String indeksInput = indeksTf.getText().trim().toUpperCase();
+
+        // VALIDACIJA
+        if (!(indeksInput.matches("[A-Z]{2}\\d+") || indeksInput.matches("[a-z]{2}\\d+"))) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Pogrešan format");
+            alert.setHeaderText("Format: oznaka + godina + broj");
+            alert.setContentText("RN25100");
             alert.showAndWait();
+            indeksTf.selectAll();
             return;
         }
 
-        studentService.searchStudentByIndex(indeks)
-                .doOnError(ex -> Platform.runLater(() -> {
-                    Alert alert = new Alert(Alert.AlertType.ERROR,
-                            "Došlo je do greške prilikom pretrage: " + ex.getMessage());
-                    alert.showAndWait();
-                }))
-                .subscribe(studentIndexDTO -> Platform.runLater(() -> {
-                    if (studentIndexDTO != null && studentIndexDTO.getStudent() != null) {
-                        StudentPodaciResponse student = studentIndexDTO.getStudent();
-                        showStudentDetail(student); // otvara novi prozor
-                    } else {
-                        Alert alert = new Alert(Alert.AlertType.ERROR,
-                                "Student sa unetim indeksom nije pronađen!");
+
+        // ✅ FIX: Koristi specijalni "NOT_FOUND" objekat
+        studentService.searchStudentByIndex(indeksInput)
+                .onErrorReturn(new StudentIndeksResponse()) // prazni DTO (ne null)
+                .defaultIfEmpty(new StudentIndeksResponse()) // prazni DTO
+                .subscribe(dto -> Platform.runLater(() -> {
+
+                    // ✅ SVE GREŠKE U JEDNU
+                    if (dto.getStudent() == null) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Student ne postoji");
+                        alert.setHeaderText("Student sa indeksom **'" + indeksInput + "' ne postoji**");
+                        alert.setContentText("Proveri oznaku, godinu i broj.");
                         alert.showAndWait();
+                        indeksTf.selectAll();
+                    } else {
+                        showStudentDetail(dto.getStudent(), dto);
                     }
                 }));
     }
 
-    private void showStudentDetail(StudentPodaciResponse student) {
+
+    private void showStudentDetail(StudentPodaciResponse student, StudentIndeksResponse indeks) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/studentDetailView.fxml"));
+            loader.setControllerFactory(applicationContext::getBean);
+            loader.setClassLoader(getClass().getClassLoader());
+
             Parent root = loader.load();
 
             StudentDetailController controller = loader.getController();
-            controller.setStudent(student);
+            controller.setStudentAndIndex(student, indeks); // BITNO: kao "profil"
 
             Stage stage = new Stage();
-            stage.setTitle("Detalji studenta");
+            stage.setTitle("Detalji studenta - " + student.getIme() + " " + student.getPrezime());
             stage.setScene(new Scene(root));
             stage.show();
 
         } catch (Exception e) {
             e.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.ERROR,
-                    "Neuspešno otvaranje detalja studenta: " + e.getMessage());
-            alert.showAndWait();
+            new Alert(Alert.AlertType.ERROR, "Neuspešno otvaranje detalja studenta: " + e.getMessage()).showAndWait();
         }
     }
+
 }
