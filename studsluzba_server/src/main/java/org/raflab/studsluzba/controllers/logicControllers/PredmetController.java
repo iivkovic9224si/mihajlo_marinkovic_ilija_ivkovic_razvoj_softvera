@@ -2,6 +2,7 @@ package org.raflab.studsluzba.controllers.logicControllers;
 
 import org.raflab.studsluzba.services.PredmetService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import request.PredmetRequest;
 import response.PredmetResponse;
@@ -18,8 +19,16 @@ public class PredmetController {
     private PredmetService predmetService;
 
     @PostMapping("/save")
-    public void save(@RequestBody @Valid PredmetRequest request) {
-        predmetService.save(request);
+    @ResponseStatus(HttpStatus.CREATED)
+    public PredmetResponse save(@RequestBody @Valid PredmetRequest request) {
+        return predmetService.save(request);
+    }
+
+    // 👉 PRETVARANJE IllegalStateException u 409
+    @ExceptionHandler(IllegalStateException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String handleConflict(IllegalStateException ex) {
+        return ex.getMessage();
     }
 
     @GetMapping(path="/findAll")
