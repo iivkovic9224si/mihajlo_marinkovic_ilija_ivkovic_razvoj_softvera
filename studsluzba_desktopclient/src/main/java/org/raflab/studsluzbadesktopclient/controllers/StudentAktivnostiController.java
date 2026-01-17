@@ -203,20 +203,22 @@ public class StudentAktivnostiController {
 
         int godinaUpisa = godinaSpinner.getValue();
         String program = programTf.getText();
+        int indeksGodina = Integer.parseInt(indeksGodinaTf.getText());
+        int indeksBroj = Integer.parseInt(indeksBrojTf.getText());
         String indeksGodinaBroj = indeksGodinaTf.getText() + "/" + indeksBrojTf.getText();
 
         try {
-            List<PredmetResponse> predmeti = predmetService.getDostupniPredmeti(godinaUpisa, program, indeksGodinaBroj);
+            List<PredmetResponse> predmeti = predmetService.getDostupniPredmeti(
+                    godinaUpisa, program, indeksGodinaBroj, indeksGodina, indeksBroj);
 
             predmetiTable.getItems().clear();
             predmeti.forEach(p -> predmetiTable.getItems().add(
-                    new PredmetSelection(p.getSifra(), p.getNaziv())
+                    new PredmetSelection(p.getSifra(), p.getNaziv())  // ✅ FIX: naziv umesto null
             ));
 
             new Alert(Alert.AlertType.INFORMATION,
-                    "Učitano " + predmeti.size() + " predmeta za godine ≤" + godinaUpisa,
+                    "✅ Učitano " + predmeti.size() + " NEPOLOŽENIH predmeta za godine ≤" + godinaUpisa,
                     ButtonType.OK).showAndWait();
-
         } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "Greška: " + e.getMessage(), ButtonType.OK).showAndWait();
         }
