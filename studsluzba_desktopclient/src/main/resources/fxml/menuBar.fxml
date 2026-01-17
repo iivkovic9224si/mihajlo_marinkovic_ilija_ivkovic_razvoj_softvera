@@ -34,15 +34,6 @@
                     </items>
                 </Menu>
                 <MenuItem text="Novi" onAction="#openNewStudent"/>
-                <MenuItem text="Grupe"/>
-            </items>
-        </Menu>
-
-        <!-- NASTAVNICI -->
-        <Menu text="Nastavnici">
-            <items>
-                <MenuItem text="Pretraži"/>
-                <MenuItem text="Novi"/>
             </items>
         </Menu>
 
@@ -57,15 +48,6 @@
         <Menu text="Ispiti">
             <items>
                 <MenuItem text="Ispitni rokovi" onAction="#openIspitniRokovi"/>
-            </items>
-        </Menu>
-
-        <!-- ADMINISTRACIJA -->
-        <Menu text="Administracija">
-            <items>
-                <MenuItem text="Šifarnici"/>
-                <MenuItem text="Školske godine"/>
-                <MenuItem text="Korisnici"/>
             </items>
         </Menu>
 

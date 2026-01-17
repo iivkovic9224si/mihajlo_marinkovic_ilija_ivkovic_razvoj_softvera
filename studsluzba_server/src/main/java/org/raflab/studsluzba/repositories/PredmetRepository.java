@@ -12,21 +12,21 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PredmetRepository extends CrudRepository<Predmet, Long> {
-	
-	@Query("select p from Predmet p where p.studProgram.godinaAkreditacije = :godinaAkreditacije")
-	List<Predmet> getPredmetForGodinaAkreditacije(Integer godinaAkreditacije);
 
-	List<Predmet> getPredmetsByStudProgramAndObavezan(StudijskiProgram studProgram, boolean obavezan);
+    @Query("select p from Predmet p where p.studProgram.godinaAkreditacije = :godinaAkreditacije")
+    List<Predmet> getPredmetForGodinaAkreditacije(Integer godinaAkreditacije);
 
-	List<Predmet> findByIdIn(List<Long> ids);
-	List<Predmet> findByNazivIn(List<String> nazivi);
+    List<Predmet> getPredmetsByStudProgramAndObavezan(StudijskiProgram studProgram, boolean obavezan);
+
+    List<Predmet> findByIdIn(List<Long> ids);
+    List<Predmet> findByNazivIn(List<String> nazivi);
 
     Optional<Predmet> findBySifra(String sifra);
 
+    boolean existsBySifra(String sifra); // ✅ DODATO
 
     List<Predmet> findByStudProgram(StudijskiProgram sp);
 
-    // 1. Dostupni predmeti za upis (godina_studija <= maxGodina + program + obavezni)
     @Query("SELECT p FROM Predmet p WHERE " +
             "p.godinaStudija <= :maxGodina AND " +
             "p.studProgram.oznaka = :studProgramOznaka AND " +
@@ -34,7 +34,5 @@ public interface PredmetRepository extends CrudRepository<Predmet, Long> {
     List<Predmet> findDostupniZaUpis(@Param("maxGodina") Integer maxGodina,
                                      @Param("studProgramOznaka") String studProgramOznaka);
 
-    // 2. Svi predmeti za program (za filter obaveznih)
     List<Predmet> findByStudProgramOznakaAndObavezan(String oznakaStudProgram, boolean obavezan);
-
 }

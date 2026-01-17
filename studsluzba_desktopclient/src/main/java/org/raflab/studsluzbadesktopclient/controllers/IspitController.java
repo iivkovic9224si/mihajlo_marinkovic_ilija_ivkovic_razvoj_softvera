@@ -105,7 +105,7 @@ public class IspitController {
             return;
         }
 
-        String godina = extractSkolskaGodina(rokPocetak.getValue(), rokKraj.getValue());
+        String godina = extractSkolskaGodina(rokPocetak.getValue());
 
         IspitniRokRequest request = new IspitniRokRequest();
         request.setPocetak(rokPocetak.getValue());
@@ -126,11 +126,18 @@ public class IspitController {
         }).start();
     }
 
-    private String extractSkolskaGodina(LocalDate pocetak, LocalDate kraj) {
-        int startYear = pocetak.getYear();
-        int endYear = (pocetak.getMonthValue() >= 9) ? startYear + 1 : startYear;
-        return startYear + "/" + endYear;
+    private String extractSkolskaGodina(LocalDate pocetak) {
+        int year = pocetak.getYear();
+
+        // Ako je pre 1. oktobra → pripada PRETHODNOJ školskoj godini
+        if (pocetak.getMonthValue() < 10) {
+            return (year - 1) + "/" + year;
+        }
+
+        // Ako je od 1. oktobra nadalje → nova školska godina
+        return year + "/" + (year + 1);
     }
+
 
     private void showAlert(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);

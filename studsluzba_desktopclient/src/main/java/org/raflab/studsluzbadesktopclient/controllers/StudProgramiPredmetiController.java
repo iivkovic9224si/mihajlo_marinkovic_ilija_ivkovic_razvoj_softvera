@@ -116,77 +116,56 @@ public class StudProgramiPredmetiController {
 
     @FXML
     public void handleSavePredmet() {
+
         if (selectedProgram == null) {
-            // ⚠ Dodaj upozorenje ako nije selektovan studijski program
-            Alert alert = new Alert(Alert.AlertType.WARNING);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Greška");
             alert.setHeaderText("Nije selektovan studijski program");
-            alert.setContentText("Molimo izaberite studijski program pre dodavanja predmeta.");
+            alert.setContentText("Morate izabrati studijski program.");
             alert.showAndWait();
             return;
         }
 
-        try {
-            PredmetRequest req = new PredmetRequest();
-            req.setSifra(sifraTf.getText());
-            req.setNaziv(nazivTf.getText());
-            req.setEspb(Integer.parseInt(espbTf.getText()));
-            req.setOpis(opisTf.getText());
-            req.setObavezan(obavezanCb.isSelected());
-            req.setOznakaStudProgram(selectedProgram.getOznaka());
+        String sifra = sifraTf.getText();
 
-            PredmetResponse newPredmet = new PredmetResponse();
-            newPredmet.setSifra(req.getSifra());
-            newPredmet.setNaziv(req.getNaziv());
-            newPredmet.setEspb(req.getEspb());
-            newPredmet.setOpis(req.getOpis());
-            newPredmet.setObavezan(req.isObavezan());
-
-            System.out.println("Saving predmet: " + req.getNaziv());
-
-            predmetService.save(req)
-                    .subscribeOn(Schedulers.boundedElastic())
-                    .subscribe(
-                            v -> System.out.println("Backend saved: " + req.getNaziv()),
-                            err -> System.out.println("Backend error: " + err)
-                    );
-
-            Platform.runLater(() -> {
-                var items = predmetTable.getItems();
-                if (items == null) {
-                    items = FXCollections.observableArrayList();
-                    predmetTable.setItems(items);
-                }
-
-                boolean exists = items.stream()
-                        .anyMatch(p -> p.getSifra().equals(newPredmet.getSifra()));
-
-                if (!exists) {
-                    items.add(newPredmet);
-                    predmetTable.refresh();
-                    System.out.println("ADDED TO TABLE: " + newPredmet.getNaziv());
-                } else {
-                    System.out.println("⚠Already exists: " + newPredmet.getSifra());
-                }
-
-                sifraTf.clear();
-                nazivTf.clear();
-                espbTf.clear();
-                opisTf.clear();
-                obavezanCb.setSelected(false);
-
-                System.out.println("Forms cleared!");
-            });
-
-        } catch (NumberFormatException e) {
-            System.out.println("Greška: Nevalidan ESPB broj!");
+        if (sifra == null || !sifra.matches("PR\\d{3}")) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Greška");
-            alert.setHeaderText("Nevalidan ESPB");
-            alert.setContentText("Unesite validan broj ESPB bodova.");
+            alert.setHeaderText("Neispravna šifra");
+            alert.setContentText("Šifra mora biti u formatu PR123.");
             alert.showAndWait();
+            return;
         }
+
+        PredmetRequest req = new PredmetRequest();
+        req.setSifra(sifra);
+        req.setNaziv(nazivTf.getText());
+        req.setEspb(Integer.parseInt(espbTf.getText()));
+        req.setOpis(opisTf.getText());
+        req.setObavezan(obavezanCb.isSelected());
+        req.setOznakaStudProgram(selectedProgram.getOznaka());
+
+        predmetService.save(req)
+                .subscribeOn(Schedulers.boundedElastic())
+                .subscribe(
+                        v -> Platform.runLater(() -> {
+                            loadPredmeti(); // refresh iz baze
+
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("Uspešno");
+                            alert.setHeaderText("Predmet sačuvan");
+                            alert.showAndWait();
+                        }),
+                        err -> Platform.runLater(() -> {
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setTitle("Greška");
+                            alert.setHeaderText("Duplikat šifre");
+                            alert.setContentText("Predmet sa tom šifrom već postoji.");
+                            alert.showAndWait();
+                        })
+                );
     }
+
 
     @FXML
     public void handleProsek() {
@@ -195,17 +174,59 @@ public class StudProgramiPredmetiController {
             return;
         }
 
+        if (godinaOdTf.getText().isBlank() || godinaDoTf.getText().isBlank()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Greška");
+            alert.setHeaderText("Godine nisu unete");
+            alert.setContentText("Molimo unesite godinu od i godinu do.");
+            alert.showAndWait();
+            return;
+        }
+
+
         try {
             int od = Integer.parseInt(godinaOdTf.getText());
             int doG = Integer.parseInt(godinaDoTf.getText());
+
+            if (od > doG) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Greška");
+                alert.setHeaderText("Neispravan opseg godina");
+                alert.setContentText("Godina OD ne može biti veća od godine DO.");
+                alert.showAndWait();
+                return;
+            }
+
 
             System.out.println("📊 Calculating prosek for: " + selectedPredmet.getNaziv() +
                     " (" + od + " - " + doG + ")");
 
             predmetService.getProsecnaOcena(selectedPredmet.getSifra(), od, doG)
-                    .doOnError(err -> System.out.println("Error fetching prosek: " + err))
                     .subscribeOn(Schedulers.boundedElastic())
-                    .subscribe(prosek -> Platform.runLater(() -> prosekLabel.setText(String.format("%.2f", prosek))));
+                    .subscribe(
+                            prosek -> Platform.runLater(() -> {
+                                if (prosek == null || prosek == 0.0) {
+                                    prosekLabel.setText("---");
+
+                                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                    alert.setTitle("Nema rezultata");
+                                    alert.setHeaderText("Nema ocena");
+                                    alert.setContentText("Ne postoje ocene za izabrani period.");
+                                    alert.showAndWait();
+                                } else {
+                                    prosekLabel.setText(String.format("%.2f", prosek));
+                                }
+                            }),
+                            err -> Platform.runLater(() -> {
+                                prosekLabel.setText("---");
+
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                alert.setTitle("Nema rezultata");
+                                alert.setHeaderText("Nema ocena");
+                                alert.setContentText("Nije moguće izračunati prosek.");
+                                alert.showAndWait();
+                            })
+                    );
 
         } catch (NumberFormatException e) {
             System.out.println("Greška: Nevalidne godine!");

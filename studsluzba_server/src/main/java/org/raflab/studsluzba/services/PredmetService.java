@@ -23,11 +23,25 @@ public class PredmetService {
 
     // SAVE
     public PredmetResponse save(PredmetRequest request) {
-        if(request.getOznakaStudProgram() == null || request.getOznakaStudProgram().isBlank()) {
+
+        if (request.getSifra() == null || request.getSifra().isBlank()) {
+            throw new IllegalArgumentException("Šifra predmeta ne sme biti prazna.");
+        }
+
+        // ✅ KLJUČNO: zabrana duplikata
+        if (predmetRepository.existsBySifra(request.getSifra())) {
+            throw new IllegalStateException(
+                    "Predmet sa šifrom '" + request.getSifra() + "' već postoji."
+            );
+        }
+
+        if (request.getOznakaStudProgram() == null || request.getOznakaStudProgram().isBlank()) {
             throw new IllegalArgumentException("Oznaka studijskog programa ne sme biti prazna.");
         }
 
-        StudijskiProgram studProgram = studijskiProgramRepository.findByOznakaSingle(request.getOznakaStudProgram());
+        StudijskiProgram studProgram =
+                studijskiProgramRepository.findByOznakaSingle(request.getOznakaStudProgram());
+
         if (studProgram == null) {
             throw new IllegalArgumentException(
                     "Studijski program sa oznakom '" + request.getOznakaStudProgram() + "' ne postoji!"
@@ -36,6 +50,7 @@ public class PredmetService {
 
         Predmet predmet = PredmetConverter.toPredmet(request, studProgram);
         Predmet saved = predmetRepository.save(predmet);
+
         return PredmetConverter.toPredmetResponse(saved);
     }
 

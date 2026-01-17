@@ -15,13 +15,6 @@ public class NoviStudentService {
         this.webClient = builder.baseUrl("http://localhost:8090/api/student").build();
     }
 
-    // fallback ako Spring ne ubrizga builder
-    public NoviStudentService() {
-        this.webClient = WebClient.builder()
-                .baseUrl("http://localhost:8090/api/student")
-                .build();
-    }
-
     public Mono<Long> dodajStudenta(StudentPodaciRequest req) {
         return webClient.post()
                 .uri("/add")
