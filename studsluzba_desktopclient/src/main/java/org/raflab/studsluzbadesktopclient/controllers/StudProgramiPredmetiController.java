@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import net.sf.jasperreports.engine.*;
 import org.raflab.studsluzbadesktopclient.services.PredmetClientService;
 import org.raflab.studsluzbadesktopclient.services.StudProgramClientService;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,10 @@ import request.PredmetRequest;
 import request.StudijskiProgramRequest;
 import response.PredmetResponse;
 import response.StudijskiProgramResponse;
+
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class StudProgramiPredmetiController {
@@ -236,6 +241,58 @@ public class StudProgramiPredmetiController {
 
     @FXML
     public void handleIzvestaj() {
-        System.out.println("📄 Izvestaj clicked.");
+        if (selectedProgram == null || selectedPredmet == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setHeaderText("Izaberite program i predmet");
+            alert.showAndWait();
+            return;
+        }
+
+        new Thread(() -> {
+            try {
+                int godinaOd = Integer.parseInt(godinaOdTf.getText());
+                int godinaDo = Integer.parseInt(godinaDoTf.getText());
+
+                // 1) Prosečna ocena (već postoji)
+                Double prosek = predmetService.getProsecnaOcena(selectedPredmet.getSifra(), godinaOd, godinaDo)
+                        .block(); // blokirajući poziv
+
+                // 2) Parametri iz selekcije
+                Map<String, Object> params = new HashMap<>();
+                params.put("pOznakaStudPrograma", selectedProgram.getOznaka());
+                params.put("pNazivStudPrograma", selectedProgram.getNaziv());
+                params.put("pPredmetSifra", selectedPredmet.getSifra());
+                params.put("pPredmetNaziv", selectedPredmet.getNaziv());
+                params.put("pGodinaOd", godinaOd);
+                params.put("pGodinaDo", godinaDo);
+                params.put("pUkupnoEspb", selectedPredmet.getEspb().toString());
+                params.put("pProsekPoena", prosek != null ? prosek : 0.0);
+
+                // 3) Jasper
+                InputStream jrxml = getClass().getResourceAsStream("/reports/prosecneOcenePredmeta.jrxml");
+                if (jrxml == null) {
+                    Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "❌ Ne nađen JRXML").showAndWait());
+                    return;
+                }
+
+                JasperReport report = JasperCompileManager.compileReport(jrxml);
+                JasperPrint print = JasperFillManager.fillReport(report, params, new JREmptyDataSource()); // prazna tabela OK
+
+                String fileName = String.format("prosek_%s_%s_%d-%d.pdf",
+                        selectedPredmet.getSifra(), selectedProgram.getOznaka(), godinaOd, godinaDo);
+                JasperExportManager.exportReportToPdfFile(print, fileName);
+
+                Platform.runLater(() ->
+                        new Alert(Alert.AlertType.INFORMATION, "✅ PDF: " + fileName).showAndWait()
+                );
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                Platform.runLater(() ->
+                        new Alert(Alert.AlertType.ERROR, "❌ Greška: " + ex.getMessage()).showAndWait()
+                );
+            }
+        }).start();
     }
+
 }

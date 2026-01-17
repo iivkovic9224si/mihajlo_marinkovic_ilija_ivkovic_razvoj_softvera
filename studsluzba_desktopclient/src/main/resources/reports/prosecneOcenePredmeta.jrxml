@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 6.21.5  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="prosecneOcenePredmeta" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="909360a7-9a8d-44d3-a300-2ad6ba9c7302">
+	<property name="net.sf.jasperreports.default.pdf.encoding" value="UTF-8"/>
+	<parameter name="pOznakaStudPrograma" class="java.lang.String"/>
+	<parameter name="pNazivStudPrograma" class="java.lang.String"/>
+	<parameter name="pPredmetSifra" class="java.lang.String"/>
+	<parameter name="pPredmetNaziv" class="java.lang.String"/>
+	<parameter name="pGodinaOd" class="java.lang.Integer"/>
+	<parameter name="pGodinaDo" class="java.lang.Integer"/>
+	<parameter name="pUkupnoEspb" class="java.lang.String"/>
+	<parameter name="pProsekPoena" class="java.lang.Double"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="165" splitType="Stretch">
+			<staticText>
+				<reportElement x="66" y="5" width="423" height="69" uuid="2530db45-a2db-4dca-b5d1-2a252acd7364"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="28" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Prosečna ocena na predmetu za raspon godina]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="130" splitType="Stretch">
+			<textField>
+				<reportElement x="5" y="5" width="495" height="23" uuid="1741de81-3bc2-4c01-bcf8-dd95fba1eb15">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="DejaVu Sans" size="16" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Naziv programa: " + $P{pNazivStudPrograma} + " (" + $P{pOznakaStudPrograma} + ")"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="5" y="34" width="309" height="23" uuid="61653639-8c56-42c3-b050-d211d82ea272">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="DejaVu Sans" size="16" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Predmet: " + $P{pPredmetNaziv} + " (" + $P{pPredmetSifra} + ")"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="5" y="66" width="308" height="24" uuid="530757ea-16c3-4d9e-a369-360f94df426f"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="16" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Raspon godina: " + $P{pGodinaOd} + " - " + $P{pGodinaDo} + " | ESPB: " + $P{pUkupnoEspb}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="5" y="100" width="308" height="24" uuid="8b8ee4bf-9017-4b35-8b8f-9951cfa92a5e"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="16" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Prosečna ocena: " + $P{pProsekPoena}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="36" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="51" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
