@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import request.PredmetRequest;
+import response.PredmetResponse;
 
 @Service
 public class PredmetClientService {
@@ -23,6 +24,13 @@ public class PredmetClientService {
                 .bodyToMono(Void.class)
                 .doOnError(err -> System.out.println("Error in save WebClient: " + err))
                 .doOnSuccess(v -> System.out.println("WebClient save success"));
+    }
+
+    public Mono<PredmetResponse> findBySifra(String sifra) {
+        return webClient.get()
+                .uri("/findBySifra/{sifra}", sifra)
+                .retrieve()
+                .bodyToMono(PredmetResponse.class);
     }
 
     public Mono<Double> getProsecnaOcena(String sifra, int od, int doG) {

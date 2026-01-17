@@ -62,6 +62,15 @@ public class PredmetService {
         return PredmetConverter.toPredmetResponse(saved);
     }
 
+    public PredmetResponse findBySifraPredmet(String sifra) {
+        Predmet predmet = predmetRepository.findBySifra(sifra)
+                .orElseThrow(() ->
+                        new IllegalStateException("Predmet sa šifrom " + sifra + " ne postoji"));
+
+        return PredmetConverter.toPredmetResponse(predmet);
+    }
+
+
     // FIND ALL
     public List<PredmetResponse> findAll() {
         List<Predmet> predmeti = (List<Predmet>) predmetRepository.findAll();

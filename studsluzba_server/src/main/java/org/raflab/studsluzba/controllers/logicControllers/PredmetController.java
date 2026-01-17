@@ -46,6 +46,12 @@ public class PredmetController {
         return predmetService.update(sifra,predmetRequest);
     }
 
+    @GetMapping(path = "/findBySifra/{sifra}")
+    public PredmetResponse findBySifraPredmet(@PathVariable String sifra) {
+        return predmetService.findBySifraPredmet(sifra);
+    }
+
+
     @GetMapping(path = "/delete/{id}")
     public void deleteById(@PathVariable Long id) {
         predmetService.delete(id);

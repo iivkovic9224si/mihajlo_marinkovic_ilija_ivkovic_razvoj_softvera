@@ -40,14 +40,12 @@ public class StudentIspitiController {
 
     // Dostupni ispiti
     @FXML private TableColumn<PrijavaIspitaResponse, String> dostupniSifraCol;
-    @FXML private TableColumn<PrijavaIspitaResponse, String> dostupniPredmetCol;
     @FXML private TableColumn<PrijavaIspitaResponse, String> dostupniTerminCol;
     @FXML private TableColumn<PrijavaIspitaResponse, String> dostupniStatusCol;
     @FXML private TableColumn<PrijavaIspitaResponse, Void> dostupniPrijaviCol;
 
     // Moje prijave
     @FXML private TableColumn<PrijavaIspitaResponse, String> mojeSifraCol;
-    @FXML private TableColumn<PrijavaIspitaResponse, String> mojePredmetCol;
     @FXML private TableColumn<PrijavaIspitaResponse, String> mojeTerminCol;
     @FXML private TableColumn<PrijavaIspitaResponse, LocalDate> mojeDatumPrijaveCol;
 
@@ -63,14 +61,12 @@ public class StudentIspitiController {
 
     // LEVO: prijave za izlazak
     @FXML private TableColumn<PrijavaIspitaResponse, String> izlazakSifraCol;
-    @FXML private TableColumn<PrijavaIspitaResponse, String> izlazakPredmetCol;
     @FXML private TableColumn<PrijavaIspitaResponse, String> izlazakTerminCol;
     @FXML private TableColumn<PrijavaIspitaResponse, String> izlazakStatusCol;
     @FXML private TableColumn<PrijavaIspitaResponse, Void> izlazakEvidentirajCol;
 
     // DESNO: moji izlasci
     @FXML private TableColumn<IzlazakNaIspitResponse, String> mojiIzlasciSifraCol;
-    @FXML private TableColumn<IzlazakNaIspitResponse, String> mojiIzlasciPredmetCol;
     @FXML private TableColumn<IzlazakNaIspitResponse, String> mojiIzlasciTerminCol;
     @FXML private TableColumn<IzlazakNaIspitResponse, String> mojiIzlasciPoeniCol;
     @FXML private TableColumn<IzlazakNaIspitResponse, Boolean> mojiIzlasciPonistenCol;
@@ -88,7 +84,6 @@ public class StudentIspitiController {
 
         // ---------------- Dostupni ispiti ----------------
         dostupniSifraCol.setCellValueFactory(c -> new SimpleStringProperty(getPredmetSifra(c.getValue())));
-        dostupniPredmetCol.setCellValueFactory(c -> new SimpleStringProperty(getPredmetNaziv(c.getValue())));
         dostupniTerminCol.setCellValueFactory(c -> new SimpleStringProperty(getIspitTermin(c.getValue(), dateFormatter, timeFormatter)));
         dostupniStatusCol.setCellValueFactory(c -> new SimpleStringProperty("Dostupan"));
 
@@ -98,7 +93,6 @@ public class StudentIspitiController {
 
         // ---------------- Moje prijave ----------------
         mojeSifraCol.setCellValueFactory(c -> new SimpleStringProperty(getPredmetSifra(c.getValue())));
-        mojePredmetCol.setCellValueFactory(c -> new SimpleStringProperty(getPredmetNaziv(c.getValue())));
         mojeTerminCol.setCellValueFactory(c -> new SimpleStringProperty(getIspitTermin(c.getValue(), dateFormatter, timeFormatter)));
         mojeDatumPrijaveCol.setCellValueFactory(c -> new SimpleObjectProperty<>(c.getValue().getDatumPrijave()));
 
@@ -113,7 +107,6 @@ public class StudentIspitiController {
 
         // ---------------- Prijave za izlazak ----------------
         izlazakSifraCol.setCellValueFactory(c -> new SimpleStringProperty(getPredmetSifra(c.getValue())));
-        izlazakPredmetCol.setCellValueFactory(c -> new SimpleStringProperty(getPredmetNaziv(c.getValue())));
         izlazakTerminCol.setCellValueFactory(c -> new SimpleStringProperty(getIspitTermin(c.getValue(), dateFormatter, timeFormatter)));
         izlazakStatusCol.setCellValueFactory(c -> new SimpleStringProperty("Može da izađe"));
 
@@ -124,8 +117,6 @@ public class StudentIspitiController {
         // ---------------- Moji izlasci ----------------
         mojiIzlasciSifraCol.setCellValueFactory(c ->
                 new SimpleStringProperty(getPredmetSifra(c.getValue().getPrijavaIspita())));
-        mojiIzlasciPredmetCol.setCellValueFactory(c ->
-                new SimpleStringProperty(getPredmetNaziv(c.getValue().getPrijavaIspita())));
         mojiIzlasciTerminCol.setCellValueFactory(c ->
                 new SimpleStringProperty(getIspitTermin(c.getValue().getPrijavaIspita(), dateFormatter, timeFormatter)));
 
@@ -218,14 +209,6 @@ public class StudentIspitiController {
     // ---------------- Helper metode ----------------
 
     private String getPredmetSifra(PrijavaIspitaResponse prijava) {
-        try {
-            return prijava.getSlusaPredmetResponse() != null ? prijava.getSlusaPredmetResponse().getPredmet() : "";
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    private String getPredmetNaziv(PrijavaIspitaResponse prijava) {
         try {
             return prijava.getSlusaPredmetResponse() != null ? prijava.getSlusaPredmetResponse().getPredmet() : "";
         } catch (Exception e) {

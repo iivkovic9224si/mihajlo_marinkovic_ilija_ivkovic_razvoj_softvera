@@ -40,9 +40,8 @@
             </HBox>
             <TableView fx:id="dostupniIspitiTable">
                 <columns>
-                    <TableColumn fx:id="dostupniSifraCol" text="Šifra" prefWidth="80"/>
-                    <TableColumn fx:id="dostupniPredmetCol" text="Predmet" prefWidth="220"/>
-                    <TableColumn fx:id="dostupniTerminCol" text="Termin" prefWidth="120"/>
+                    <TableColumn fx:id="dostupniSifraCol" text="Šifra" prefWidth="120"/>
+                    <TableColumn fx:id="dostupniTerminCol" text="Termin" prefWidth="140"/>
                     <TableColumn fx:id="dostupniStatusCol" text="Status" prefWidth="100"/>
                     <TableColumn fx:id="dostupniPrijaviCol" text="Prijavi" prefWidth="80"/>
                 </columns>
@@ -58,10 +57,9 @@
             </HBox>
             <TableView fx:id="mojePrijaveTable">
                 <columns>
-                    <TableColumn fx:id="mojeSifraCol" text="Šifra" prefWidth="80"/>
-                    <TableColumn fx:id="mojePredmetCol" text="Predmet" prefWidth="200"/>
-                    <TableColumn fx:id="mojeTerminCol" text="Termin" prefWidth="120"/>
-                    <TableColumn fx:id="mojeDatumPrijaveCol" text="Prijavljeno" prefWidth="110"/>
+                    <TableColumn fx:id="mojeSifraCol" text="Šifra" prefWidth="120"/>
+                    <TableColumn fx:id="mojeTerminCol" text="Termin" prefWidth="140"/>
+                    <TableColumn fx:id="mojeDatumPrijaveCol" text="Prijavljeno" prefWidth="120"/>
                 </columns>
             </TableView>
         </VBox>
@@ -108,9 +106,8 @@
             </HBox>
             <TableView fx:id="prijaveZaIzlazakTable">
                 <columns>
-                    <TableColumn fx:id="izlazakSifraCol" text="Šifra" prefWidth="80"/>
-                    <TableColumn fx:id="izlazakPredmetCol" text="Predmet" prefWidth="220"/>
-                    <TableColumn fx:id="izlazakTerminCol" text="Termin" prefWidth="120"/>
+                    <TableColumn fx:id="izlazakSifraCol" text="Šifra" prefWidth="120"/>
+                    <TableColumn fx:id="izlazakTerminCol" text="Termin" prefWidth="140"/>
                     <TableColumn fx:id="izlazakStatusCol" text="Status" prefWidth="110"/>
                     <TableColumn fx:id="izlazakEvidentirajCol" text="Evidentiraj" prefWidth="110"/>
                 </columns>
@@ -126,10 +123,9 @@
             </HBox>
             <TableView fx:id="mojiIzlasciTable">
                 <columns>
-                    <TableColumn fx:id="mojiIzlasciSifraCol" text="Šifra" prefWidth="80"/>
-                    <TableColumn fx:id="mojiIzlasciPredmetCol" text="Predmet" prefWidth="200"/>
-                    <TableColumn fx:id="mojiIzlasciTerminCol" text="Termin" prefWidth="120"/>
-                    <TableColumn fx:id="mojiIzlasciPoeniCol" text="Poeni" prefWidth="80"/>
+                    <TableColumn fx:id="mojiIzlasciSifraCol" text="Šifra" prefWidth="120"/>
+                    <TableColumn fx:id="mojiIzlasciTerminCol" text="Termin" prefWidth="140"/>
+                    <TableColumn fx:id="mojiIzlasciPoeniCol" text="Poeni" prefWidth="90"/>
                     <TableColumn fx:id="mojiIzlasciPonistenCol" text="Poništen" prefWidth="80"/>
                 </columns>
             </TableView>
