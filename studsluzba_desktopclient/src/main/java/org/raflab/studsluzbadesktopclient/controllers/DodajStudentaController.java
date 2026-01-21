@@ -10,11 +10,14 @@ import request.StudentPodaciRequest;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.logging.Logger;
 
 @Component
 public class DodajStudentaController {
 
     private final NoviStudentService noviStudentService;
+    private static final Logger logger = Logger.getLogger(DodajStudentaController.class.getName());
+
 
     // ---------- PODACI ----------
     @FXML private TextField imeTf;
@@ -64,6 +67,7 @@ public class DodajStudentaController {
                         err -> Platform.runLater(() ->
                                 showError(err.getMessage()))
                 );
+        logger.info("Sacuvan student sa jmbg-om: " + jmbg);
     }
 
     // ================== REALNO ČUVANJE ==================
