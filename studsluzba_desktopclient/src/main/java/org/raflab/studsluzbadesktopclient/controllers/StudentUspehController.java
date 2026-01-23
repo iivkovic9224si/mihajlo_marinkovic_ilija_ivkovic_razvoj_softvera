@@ -168,7 +168,7 @@ public class StudentUspehController {
                     JasperExportManager.exportReportToPdfFile(jasperPrint, fileName);
 
                     // 5. Preview (Swing) - obavezno na EDT thread-u
-                    SwingUtilities.invokeLater(() -> JasperViewer.viewReport(jasperPrint, false));
+                    JasperViewer.viewReport(jasperPrint, false);
 
                     return fileName;
                 })

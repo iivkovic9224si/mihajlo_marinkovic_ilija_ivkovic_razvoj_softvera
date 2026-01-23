@@ -9,6 +9,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 import org.raflab.studsluzbadesktopclient.services.IspitService;
 import org.springframework.stereotype.Component;
 import response.RezultatiIspitaResponse;
@@ -136,10 +137,7 @@ public class RezultatiIspitaController {
                 String fileName = "rezultati_ispita_" + ispitId + ".pdf";
                 JasperExportManager.exportReportToPdfFile(print, fileName);
 
-                // ✅ PREVIEW (sada radi jer je headless=false)
-                javax.swing.SwingUtilities.invokeLater(() -> {
-                    net.sf.jasperreports.view.JasperViewer.viewReport(print, false);
-                });
+                JasperViewer.viewReport(print, false);
 
                 Platform.runLater(() ->
                         new Alert(Alert.AlertType.INFORMATION, "✅ Rezultati sačuvani i otvoreni: " + fileName).showAndWait()

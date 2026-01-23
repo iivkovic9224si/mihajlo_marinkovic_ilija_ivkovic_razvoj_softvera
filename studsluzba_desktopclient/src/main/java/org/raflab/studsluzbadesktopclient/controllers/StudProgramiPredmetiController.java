@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.view.JasperViewer;
 import org.raflab.studsluzbadesktopclient.services.PredmetClientService;
 import org.raflab.studsluzbadesktopclient.services.StudProgramClientService;
 import org.springframework.stereotype.Component;
@@ -308,10 +309,7 @@ public class StudProgramiPredmetiController {
                         selectedPredmet.getSifra(), selectedProgram.getOznaka(), godinaOd, godinaDo);
                 JasperExportManager.exportReportToPdfFile(print, fileName);
 
-                // ✅ PREVIEW (sada radi jer je headless=false)
-                javax.swing.SwingUtilities.invokeLater(() -> {
-                    net.sf.jasperreports.view.JasperViewer.viewReport(print, false);
-                });
+                JasperViewer.viewReport(print, false);
 
                 Platform.runLater(() ->
                         new Alert(Alert.AlertType.INFORMATION, "✅ PDF sačuvan i preview otvoren: " + fileName).showAndWait()

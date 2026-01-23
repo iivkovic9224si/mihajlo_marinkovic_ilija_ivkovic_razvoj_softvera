@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 import org.raflab.studsluzbadesktopclient.StudentDetailHistoryManager;
 import org.raflab.studsluzbadesktopclient.services.StudentUspehClientService;
 import pomocniDTO.UverenjeData;
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
+import javax.swing.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -301,9 +303,7 @@ public class StudentDetailController {
             JasperExportManager.exportReportToPdfFile(jp, fileName);
 
             // ✅ Preview (sada radi jer je headless=false)
-            javax.swing.SwingUtilities.invokeLater(() -> {
-                net.sf.jasperreports.view.JasperViewer.viewReport(jp, false);
-            });
+            JasperViewer.viewReport(jp, false);
 
             new Alert(Alert.AlertType.INFORMATION, "✅ Uverenje sačuvano i otvoreno: " + fileName).showAndWait();
 
