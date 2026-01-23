@@ -22,6 +22,7 @@ module stud_sluzba_desktop_client {
     requires shared.dto;
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.datatype.jsr310;
+    requires javafx.swing;
 
     exports org.raflab.studsluzbadesktopclient;
     exports org.raflab.studsluzbadesktopclient.controllers;

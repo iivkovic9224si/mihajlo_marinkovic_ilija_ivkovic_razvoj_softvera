@@ -3,18 +3,27 @@ package org.raflab.studsluzbadesktopclient.controllers;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.swing.JRViewer;
+import net.sf.jasperreports.view.JasperViewer;
 import org.raflab.studsluzbadesktopclient.services.StudentUspehClientService;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import request.StudentIndeksRequest;
 import response.PolozeniUspehRowResponse;
 import response.PredmetResponse;
 import response.StudentPodaciResponse;
 
+
+import javax.swing.*;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -123,44 +132,56 @@ public class StudentUspehController {
             return;
         }
 
-        try {
-            // 1. Dohvati SVE položene (page 0, size 1000)
-            var polozeniPage = uspehService.getPolozeniPage(currentStudentIndeks, 0, 1000).block();
-            List<PolozeniUspehRowResponse> polozeniLista = polozeniPage.getContent();
+        Mono.fromCallable(() -> {
+                    // 1. Dohvati SVE položene (page 0, size 1000)
+                    var polozeniPage = uspehService.getPolozeniPage(currentStudentIndeks, 0, 1000).block();
+                    List<PolozeniUspehRowResponse> polozeniLista = polozeniPage.getContent();
 
-            // 2. Header parametri
-            Integer ukupnoEspb = uspehService.getUkupnoEspbPolozeni(currentStudentIndeks).block();
-            Double prosek = uspehService.getProsecnaOcenaPolozeni(currentStudentIndeks).block();
+                    // 2. Header parametri
+                    Integer ukupnoEspb = uspehService.getUkupnoEspbPolozeni(currentStudentIndeks).block();
+                    Double prosek = uspehService.getProsecnaOcenaPolozeni(currentStudentIndeks).block();
 
-            StudentPodaciResponse studentPodaci = parentController.getStudent();
+                    StudentPodaciResponse studentPodaci = parentController.getStudent();
 
-            Map<String, Object> params = new HashMap<>();
-            params.put("pIme", studentPodaci.getIme());
-            params.put("pPrezime", studentPodaci.getPrezime());
-            params.put("pBrojIndeksa", currentStudentIndeks.getBroj() + "/" + currentStudentIndeks.getGodina() + currentStudentIndeks.getStudProgramOznaka());
-            params.put("pStudijskiProgram", currentStudentIndeks.getStudProgramOznaka());
-            params.put("pDatumIzdavanja", LocalDate.now());
-            params.put("pUkupnoEspb", ukupnoEspb);
-            params.put("pProsek", prosek);
+                    Map<String, Object> params = new HashMap<>();
+                    params.put("pIme", studentPodaci.getIme());
+                    params.put("pPrezime", studentPodaci.getPrezime());
+                    params.put("pBrojIndeksa", currentStudentIndeks.getBroj() + "/" + currentStudentIndeks.getGodina()
+                            + currentStudentIndeks.getStudProgramOznaka());
+                    params.put("pStudijskiProgram", currentStudentIndeks.getStudProgramOznaka());
+                    params.put("pDatumIzdavanja", LocalDate.now());
+                    params.put("pUkupnoEspb", ukupnoEspb);
+                    params.put("pProsek", prosek);
 
-            // 3. Kompajliraj + puni report
-            JasperReport jasperReport = JasperCompileManager.compileReport(
-                    getClass().getResourceAsStream("/reports/uverenje_o_polozenim_predmetima.jrxml"));
+                    // 3. Kompajliraj + puni report
+                    JasperReport jasperReport = JasperCompileManager.compileReport(
+                            getClass().getResourceAsStream("/reports/uverenje_o_polozenim_predmetima.jrxml"));
 
-            JRBeanCollectionDataSource datasource = new JRBeanCollectionDataSource(polozeniLista);
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, datasource);
+                    JRBeanCollectionDataSource datasource = new JRBeanCollectionDataSource(polozeniLista);
+                    JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, datasource);
 
-            // 4. Sačuvaj PDF
-            String fileName = String.format("uverenje_polozeni_%d_%d_%s.pdf",
-                    currentStudentIndeks.getBroj(), currentStudentIndeks.getGodina(), currentStudentIndeks.getStudProgramOznaka());
-            JasperExportManager.exportReportToPdfFile(jasperPrint, fileName);
+                    // 4. Sačuvaj PDF
+                    String fileName = String.format("uverenje_polozeni_%d_%d_%s.pdf",
+                            currentStudentIndeks.getBroj(),
+                            currentStudentIndeks.getGodina(),
+                            currentStudentIndeks.getStudProgramOznaka());
+                    JasperExportManager.exportReportToPdfFile(jasperPrint, fileName);
 
-            showAlert(Alert.AlertType.INFORMATION, "✅ Uverenje sačuvano: " + fileName);
+                    // 5. Preview (Swing) - obavezno na EDT thread-u
+                    SwingUtilities.invokeLater(() -> JasperViewer.viewReport(jasperPrint, false));
 
-        } catch (Exception ex) {
-            showAlert(Alert.AlertType.ERROR, "❌ Greška: " + ex.getMessage());
-            ex.printStackTrace();
-        }
+                    return fileName;
+                })
+                .subscribeOn(Schedulers.boundedElastic())
+                .subscribe(fileName ->
+                                Platform.runLater(() ->
+                                        showAlert(Alert.AlertType.INFORMATION, "✅ Uverenje sačuvano i otvoreno: " + fileName)
+                                ),
+                        ex -> Platform.runLater(() -> {
+                            String msg = (ex.getMessage() != null) ? ex.getMessage() : (ex.getClass().getSimpleName());
+                            showAlert(Alert.AlertType.ERROR, "❌ Greška: " + msg);
+                            ex.printStackTrace();
+                        }));
     }
 
     private void showAlert(Alert.AlertType type, String content) {

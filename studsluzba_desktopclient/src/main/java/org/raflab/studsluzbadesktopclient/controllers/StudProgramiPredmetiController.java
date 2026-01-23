@@ -308,17 +308,24 @@ public class StudProgramiPredmetiController {
                         selectedPredmet.getSifra(), selectedProgram.getOznaka(), godinaOd, godinaDo);
                 JasperExportManager.exportReportToPdfFile(print, fileName);
 
+                // ✅ PREVIEW (sada radi jer je headless=false)
+                javax.swing.SwingUtilities.invokeLater(() -> {
+                    net.sf.jasperreports.view.JasperViewer.viewReport(print, false);
+                });
+
                 Platform.runLater(() ->
-                        new Alert(Alert.AlertType.INFORMATION, "✅ PDF: " + fileName).showAndWait()
+                        new Alert(Alert.AlertType.INFORMATION, "✅ PDF sačuvan i preview otvoren: " + fileName).showAndWait()
                 );
 
             } catch (Exception ex) {
                 ex.printStackTrace();
+                String msg = (ex.getMessage() != null) ? ex.getMessage() : ex.getClass().getSimpleName();
                 Platform.runLater(() ->
-                        new Alert(Alert.AlertType.ERROR, "❌ Greška: " + ex.getMessage()).showAndWait()
+                        new Alert(Alert.AlertType.ERROR, "❌ Greška: " + msg).showAndWait()
                 );
             }
         }).start();
     }
+
 
 }

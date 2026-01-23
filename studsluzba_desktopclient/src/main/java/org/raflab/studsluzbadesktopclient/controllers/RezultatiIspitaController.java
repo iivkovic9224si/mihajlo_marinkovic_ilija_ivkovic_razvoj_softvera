@@ -67,6 +67,7 @@ public class RezultatiIspitaController {
         if (stampajBtn != null) stampajBtn.setOnAction(e -> stampajRezultate());
     }
 
+
     private void stampajRezultate() {
         if (ispitId == null) {
             new Alert(Alert.AlertType.WARNING, "Nije postavljen ispitId!").showAndWait();
@@ -93,7 +94,6 @@ public class RezultatiIspitaController {
                 Map<String, Object> params = new HashMap<>();
 
                 // TODO: prilagodi ove gettere tačno tvojoj DrziPredmetResponse strukturi:
-                // Zameni TODO sekciju sa ovim:
                 String nazivPredmeta = "N/A";
                 Integer godinaSkolskeGodine = null;
 
@@ -114,7 +114,6 @@ public class RezultatiIspitaController {
                     rokNaziv = rok.getGodina() + " | " + rok.getPocetak().format(df) + " - " + rok.getKraj().format(df);
                 }
 
-
                 String datumIspita = ispit.getDatumIspita().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
                         + " " + ispit.getVremePocetkaIspita().format(DateTimeFormatter.ofPattern("HH:mm"));
 
@@ -124,8 +123,7 @@ public class RezultatiIspitaController {
                 params.put("pProsecnaOcena", prosek);
                 params.put("pBrojUcesnika", rezultati.size());
 
-
-                // 5) Jasper (compile -> fill -> export) [web:328][web:333]
+                // 5) Jasper (compile -> fill -> export + PREVIEW)
                 InputStream jrxml = getClass().getResourceAsStream("/reports/rezultati_ispita.jrxml");
                 if (jrxml == null) {
                     Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Ne mogu da nađem /reports/rezultati_ispita.jrxml").showAndWait());
@@ -138,16 +136,23 @@ public class RezultatiIspitaController {
                 String fileName = "rezultati_ispita_" + ispitId + ".pdf";
                 JasperExportManager.exportReportToPdfFile(print, fileName);
 
+                // ✅ PREVIEW (sada radi jer je headless=false)
+                javax.swing.SwingUtilities.invokeLater(() -> {
+                    net.sf.jasperreports.view.JasperViewer.viewReport(print, false);
+                });
+
                 Platform.runLater(() ->
-                        new Alert(Alert.AlertType.INFORMATION, "✅ Sačuvano: " + fileName).showAndWait()
+                        new Alert(Alert.AlertType.INFORMATION, "✅ Rezultati sačuvani i otvoreni: " + fileName).showAndWait()
                 );
 
             } catch (Exception ex) {
                 ex.printStackTrace();
+                String msg = (ex.getMessage() != null) ? ex.getMessage() : ex.getClass().getSimpleName();
                 Platform.runLater(() ->
-                        new Alert(Alert.AlertType.ERROR, "❌ Greška: " + ex.getMessage()).showAndWait()
+                        new Alert(Alert.AlertType.ERROR, "❌ Greška: " + msg).showAndWait()
                 );
             }
         }).start();
     }
+
 }

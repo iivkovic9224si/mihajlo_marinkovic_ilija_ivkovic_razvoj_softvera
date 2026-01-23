@@ -295,19 +295,25 @@ public class StudentDetailController {
                     getClass().getResourceAsStream("/reports/uverenje_o_studiranju.jrxml"));
 
             JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(List.of(data));
-
             JasperPrint jp = JasperFillManager.fillReport(report, new HashMap<>(), ds);
 
             String fileName = "uverenje_" + student.getJmbg() + "_" + studentIndex.getBroj() + "_" + studentIndex.getGodina() + ".pdf";
             JasperExportManager.exportReportToPdfFile(jp, fileName);
 
-            new Alert(Alert.AlertType.INFORMATION, "✅ Uverenje sačuvano: " + fileName).showAndWait();
+            // ✅ Preview (sada radi jer je headless=false)
+            javax.swing.SwingUtilities.invokeLater(() -> {
+                net.sf.jasperreports.view.JasperViewer.viewReport(jp, false);
+            });
+
+            new Alert(Alert.AlertType.INFORMATION, "✅ Uverenje sačuvano i otvoreno: " + fileName).showAndWait();
 
         } catch (Exception ex) {
-            new Alert(Alert.AlertType.ERROR, "❌ Greška: " + ex.getMessage()).showAndWait();
+            String msg = (ex.getMessage() != null) ? ex.getMessage() : ex.getClass().getSimpleName();
+            new Alert(Alert.AlertType.ERROR, "❌ Greška: " + msg).showAndWait();
             ex.printStackTrace();
         }
     }
+
 
     public void setStage(Stage stage) {
         this.stage = stage;

@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
@@ -23,7 +24,8 @@ public class StudsluzbaFxClientApp extends Application {
 
     @Override
     public void init() throws Exception {
-        springContext = SpringApplication.run(StudsluzbaFxClientApp.class);
+        SpringApplicationBuilder builder = new SpringApplicationBuilder(StudsluzbaFxClientApp.class);
+        springContext = builder.headless(false).run();
     }
 
     @Override
